@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charSet="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - M2N Tech</title>
+    
+    <environment>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    </environment>
+    <environment>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    </environment>
+    <environment>
+        <link rel="stylesheet" type="text/css" href="~/css/site.css?@DateTime.Now" />
+    </environment>
+    <environment>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+    </environment>
+    <environment>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/sweetalert2@8.18.3/dist/sweetalert2.css">
+    </environment>
+</head>
+<body style="height:100%; overflow:hidden;">
+
+    <div class="container">
+        <partial name="_CookieConsentPartial" /><br /><br /><br />
+        <main role="main" class="pb-3">
+            <div>
+                <div class="loading" id="divLoading">
+                    <img src="~/img/loading.gif" style="width:32px" alt="loading..." />
+                </div>
+            </div>
+
+            @RenderBody()
+        </main>
+    </div>
+
+    <environment>
+        <script type="text/javascript" src="~/js/site.js" asp-append-version="true"></script>
+    </environment>
+    <environment>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    </environment>
+    <environment>
+        <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.0.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+    </environment>
+    <environment>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8.18.3/dist/sweetalert2.all.min.js"></script>
+    </environment>
+    <script src="~/lib/jquery.mask.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

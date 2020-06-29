@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@section scripts{
+    <script type="text/javascript" src="~/js/Home/Index.js?@DateTime.Now"></script>
+    <script src="https://unpkg.com/jspdf-autotable"></script>
+}
+<div class="row form-group">
+    <div class="col-lg-6 col-md-6 col-xl-6" id="gfativosregionalDiv">
+        <div class="card mb-4 shadow p-3 mb-5 bg-white rounded">
+            <div class="card-header">
+                <i class="fa fa-sort-numeric-up"></i>
+                <span><b>Regional x Ativos</b></span>
+                <a role="button" href="javascript: GerarPdf('#gfativosregionalDiv');"><i class="fas fa-file-pdf float-right"></i></a>
+                <a role="button" href="javascript: ExibirGrafico('gfativosregional', 'btnExibirRegional');"><i id="btnExibirRegional" class="fas fa-eye-slash float-right" style="padding-right:10px;"></i></a>
+            </div>
+            <div class="card-body" id="gfativosregional">
+                <canvas id="ativosregional" width="350" height="150" class="chartjs-render-monitor" style="display: block; height: 150px; width: 250px;"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-xl-6" id="graficoImagemDiv">
+        <div class="card mb-4 shadow p-3 mb-5 bg-white rounded">
+            <div class="card-header">
+                <i class="fa fa-sort-numeric-up"></i>
+                <span><b>Imagem x Ativos</b></span>
+                <a role="button" href="javascript: GerarPdf('#graficoImagemDiv');"><i class="fas fa-file-pdf float-right"></i></a>
+                <a role="button" href="javascript: ExibirGrafico('gfImagemAtivos', 'btnExibirImagem');"><i id="btnExibirImagem" class="fas fa-eye-slash float-right" style="padding-right:10px;"></i></a>
+            </div>
+            <div class="card-body" id="gfImagemAtivos">
+                <canvas id="imagemAtivos" width="350" height="150" class="chartjs-render-monitor" style="display: block; height: 150px; width: 250px;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6" id="gfSomaAtivosDiv">
+        <div class="card mb-4 shadow p-3 mb-5 bg-white rounded">
+            <div class="card-header">
+                <i class="fa fa-sort-numeric-up"></i>
+                <span><b>Soma Ativos Valor</b></span>
+                <a role="button" href="javascript: GerarPdf('#gfSomaAtivosDiv');"><i class="fas fa-file-pdf float-right"></i></a>
+                <a role="button" href="javascript: ExibirGrafico('gfSomaAtivos', 'btnExibirSoma');"><i id="btnExibirSoma" class="fas fa-eye-slash float-right" style="padding-right:10px;"></i></a>
+            </div>
+            <div class="card-body" id="gfSomaAtivos">
+                <canvas id="somaAtivos" width="350" height="150" class="chartjs-render-monitor" style="display: block; height: 150px; width: 250px;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>

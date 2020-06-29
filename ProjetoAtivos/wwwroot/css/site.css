@@ -1,0 +1,211 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web asSets. */
+.dropdown.bootstrap-select.custom-select {
+    border-color: white;
+    
+}
+
+
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  font-size: 14px;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.border-top {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  line-height: 60px; /* Vertically center the text there */
+}
+label,input{
+    display:inline-block;
+    vertical-align: middle;
+}
+
+/*Login*/
+.login-css {
+    min-width:100px;
+    width: 400px;
+    margin: 0 auto;
+    background-color: white;
+}
+.form-large{
+    width:850px;
+    margin:0 auto;
+    background-color:white;
+}
+
+.login-css-margin {
+    padding-top: 30px;
+    padding-left: 25px;
+    padding-right: 30px;
+    padding-bottom: 30px;
+}
+    
+h5 {
+    text-align: center;
+}
+
+    
+.botao-alinhamento {
+    padding-left: 120px
+}
+
+.gradiente-login {
+    /*background-color: #1cc88a;*/
+    background-image: linear-gradient(180deg, #1c83c8 10%, #0388fc 100%);
+    background-size: cover;
+}
+
+textarea{
+    text-transform: uppercase;
+}
+.loading {
+    position: relative;
+    z-index: 10000;
+    text-align: center;
+    float: right;
+    background-color: white;
+    border: 2px solid gray;
+    padding-top: 7px;
+    display: none;
+    width: 100px;
+    right:100px;
+}
+
+input, select {
+    border-left: none;
+}
+.map-container-9,
+.map-container-10,
+.map-container-11 {
+    overflow: hidden;
+    padding-bottom: 56.25%;
+    position: relative;
+    height: 0;
+}
+
+    .map-container-9 iframe,
+    .map-container-10 iframe,
+    .map-container-11 iframe {
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+    }
+
+/* O container geral define a perspectiva */
+.flip-container {
+    perspective: 1000px;
+}
+
+    .flip-container:target .flipper,
+    .flip-container.hover .flipper,
+    .flip-container.flip .flipper {
+        transform: rotateY(180deg);
+    }
+
+.flip-container, .front, .back {
+    /*width: 320px;
+    height: 480px;*/
+}
+
+/* define a velocidade da transição */
+.flipper {
+    transition: 0.6s;
+    transform-style: preserve-3d;
+    position: relative;
+}
+
+/* esconde o verso durante a animação */
+.front, .back {
+    backface-visibility: hidden;
+    top: 0;
+    left: 0;
+}
+
+/* frente posicionada sobre o verso */
+    .front {
+    z-index: 2;
+}
+
+/* verso inicialmente escondido */
+.back {
+    transform: rotateY(180deg);
+}
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #printable, #printable * {
+        visibility: visible;
+    }
+
+    #printable {
+        position: fixed;
+        left: 15px;
+        top: 0;
+    }
+}
+.galeria img:hover {
+    -webkit-transform: scale(3);
+    -moz-transform: scale(3);
+    -o-transform: scale(3);
+    -ms-transform: scale(3);
+    transform: scale(3);
+}
+
+@media only screen and (max-device-width: 900px) {
+    .btn span {
+        display: none;
+    }
+    button:after {
+        content:"";
+    }
+}

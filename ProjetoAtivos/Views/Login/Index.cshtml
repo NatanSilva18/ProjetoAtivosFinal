@@ -1,0 +1,75 @@
+﻿
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+@section scripts{
+    <script type="text/javascript" src="js/Login/Login.js" asp-append-version="true"></script>
+}
+<form action="javascript:Login();">
+    <div class="login-css z-depth-5">
+        <div class="login-css-margin">
+            <div class="row">
+                <div>
+                    <h5>Login</h5>
+                </div>
+                <div style="padding-top:30px;">
+                    <div>
+                        <div class="input-field col s10">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input id="txtUsuario" type="email" class="validate" required="" aria-required="true" maxlength="50" autocomplete="off">
+                            <label for="txtUsuario">Usuario</label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="input-field col s10">
+                            <i class="material-icons prefix">lock</i>
+                            <input id="txtSenha" type="password" class="validate" required="" aria-required="true" minlength="6" maxlength="30">
+                            <label for="txtSenha">Senha</label>
+
+                        </div>
+                    </div>
+
+                    <div class="row" style="padding-left:18px">
+                        <p>
+                            <label>
+                                <input type="checkbox" id="ckMostrarSenha" onclick="MostrarSenha();" />
+                                <span>Mostrar senha</span>
+                            </label>
+                        </p>
+                    </div>
+                    <div class="center-align">
+                        <div class="row">
+                            <button class="waves-effect waves-light btn-large" type="submit" id="btnLogin" autofocus>Login</button>
+                        </div>
+
+                    </div>
+                    <p style="text-align: center;font-size: 16px;">
+                        <a href="javascript:;" class="forGet" data-fancybox data-src="#esqueceuSenha" style="color:#19aa8d" onclick="LimparInputLogin();">Esqueceu a Senha?</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+@*Div Esqueceu a Senha*@
+<div style="display: none; width:400px; min-width: 150px; max-width: 600px" id="esqueceuSenha">
+    <h5>Esqueceu a Senha</h5>
+    <div class="row">
+        <form action="javascript: EsqueceuSenha();">
+            <div class="input-field col s12">
+                <i class="material-icons prefix">account_circle</i>
+                <input id="txtEsqUsuario" type="email" class="validate" required="" aria-required="true" maxlength="50">
+                <label for="txtEsqUsuario">Usuario</label>
+                <span class="helper-text" data-error="Email Incorreto"></span>
+            </div>
+            <div class="row botao-alinhamento">
+                <button class="waves-effect waves-light btn-large" type="submit" id="btnEsqueci">Enviar</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+

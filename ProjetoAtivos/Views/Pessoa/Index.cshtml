@@ -1,0 +1,296 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section scripts{
+    <script type="text/javascript" src="js/Pessoa/Index.js?@DateTime.Now"></script>
+    <script src="https://unpkg.com/jspdf-autotable"></script>
+}
+
+@*Pesquisar Pessoas*@
+<h2>Cadastro de Pessoa</h2>
+<hr />
+<div class="card mb-4 shadow p-3 mb-5 bg-white rounded">
+    <div class="card-body">
+        <form action="javascript:ObterPessoas()">
+            <div class="row form-group">
+                <div class="col-lg-8">
+                    <div class="input-group">
+                        <div class="input-group-append">
+                            <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-search"></i></div>
+                        </div>
+                        <input type="search" name="txtPesquisar" id="txtPesquisar" class="form-control" placeholder="Pesquisar" value="" autofocus autocomplete="off" />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label><b><i class="fas fa-filter"></i> Filtro:</b></label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="rdFiltro" id="rdFiltro1" value="Nome" checked>
+                                <label class="form-check-label" for="rdFiltro1">Nome</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-5">
+                            <label><b><i class="fas fa-flag"></i> Status:</b></label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="rdAtivo" id="rdAtivo1" value="1" checked>
+                                <label class="form-check-label" for="rdAtivo1">Ativo</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="rdAtivo" id="rdAtivo2" value="0">
+                                <label class="form-check-label" for="rdAtivo2">Inativo</label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="d-inline">
+                    <button type="submit" id="btnPesquisar" name="btnPesquisar" class="btn btn-primary" title="Pesquisar Pessoas"><i class="fas fa-search"></i> <span>Pesquisar</span></button>
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#novaPessoa" onclick="javascript: LimparCampos();" title="Nova Pessoa"><i class="fas fa-plus"></i> <span>Novo</span></button>
+                    <button type="button" class="btn btn-danger" onclick="javascript:LimparTabela()" title="Limpar Tabela Pessoas"><i class="fas fa-ban"></i> <span>Cancelar</span></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<iframe id="txtArea1" style="display:none"></iframe>
+
+@*Tabela Pessoa*@
+<div id="tbbPessoa" style="display:none" class="card mb-4">
+    <div class="card-header">
+        <i class="fa fa-table"></i>
+        <div class="float-right">
+            <a style="padding-right:15px;" class="btn btn-info " role="button" href="javascript:GerarExcel();" title="Gerar Tabela Excel"><i class="fa fa-file-excel"></i> Excel</a>
+            <a class="btn btn-info" role="button" href="javascript:GerarRelatorio();" title="Gerar Tabela PDF"><i class="fa fa-file-pdf"></i> Pdf</a>
+        </div>
+        <span><b>Pessoas Cadastradas</b></span>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive-xl table-responsive-sm table-responsive-md">
+            <table id="tablePessoa" class="table table-sm table-hover" style="width:100%"></table>
+        </div>
+    </div>
+</div>
+@*Nova Pessoa*@
+<div id="novaPessoa" class="modal fade bd-example-modal-lg" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="novoPessoaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Cadastrar Pessoas</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <form name="formPessoa" id="formPessoa" action="javascript:Gravar();" method="post">
+                        <div class="form-group">
+                            <input type="hidden" name="txtId" id="txtId" value="0" />
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="txtMatricula">Matricula *</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-users"></i></div>
+                                            </div>
+                                            <input class="form-control" type="text" name="txtMatricula" id="txtMatricula" required autocomplete="off" maxlength="50" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="txtNome">Nome *</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-users"></i></div>
+                                            </div>
+                                            <input class="form-control" type="text" name="txtNome" id="txtNome" required autocomplete="off" maxlength="50" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="txtEmail">Email *</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-at"></i></div>
+                                            </div>
+                                            <input class="form-control" type="text" name="txtEmail" id="txtEmail" required autocomplete="off" maxlength="50" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="txtCargo">Cargo *</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-users"></i></div>
+                                            </div>
+                                            <input class="form-control" type="text" name="txtCargo" id="txtCargo" required autocomplete="off" maxlength="50" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="txtTelefone">Telefone *</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-phone"></i></div>
+                                            </div>
+                                            <input class="form-control" type="text" name="txtTelefone" id="txtTelefone" required autocomplete="off" maxlength="13" minlength="13" data-mask="(00)0000-0000" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="txtTelefone2">Celular *</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-phone"></i></div>
+                                            </div>
+                                            <input class="form-control" type="text" name="txtTelefone2" id="txtTelefone2" required autocomplete="off" maxlength="14" minlength="14" data-mask="(00)00000-0000" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <h6>Endereço</h6>
+                            <hr />
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="txtLogradouro">Logradouro *</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-map-marker"></i></div>
+                                            </div>
+                                            <input class="form-control" type="text" name="txtLogradouro" id="txtLogradouro" required autocomplete="off" maxlength="30" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label for="txtNumero">Numero *</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-map-marker"></i></div>
+                                            </div>
+                                            <input class="form-control" type="number" name="txtNumero" id="txtNumero" required autocomplete="off" min="0" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <div class="form-group">
+                                        <label for="txtReferencia">Referencia *</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-map-marker"></i></div>
+                                            </div>
+                                            <input class="form-control" type="text" name="txtReferencia" id="txtReferencia" required autocomplete="off" maxlength="30" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label for="txtBairro">Bairro *</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-map-marker"></i></div>
+                                            </div>
+                                            <input class="form-control" type="text" name="txtBairro" id="txtBairro" required autocomplete="off" maxlength="30" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label for="txtCep">CEP *</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-map-marker"></i></div>
+                                            </div>
+                                            <input class="form-control" type="text" name="txtCep" id="txtCep" required autocomplete="off" maxlength="30" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label for="txtCidade">Cidade *</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-map-marker"></i></div>
+                                            </div>
+                                            <input class="form-control" type="text" name="txtCidade" id="txtCidade" required autocomplete="off" maxlength="30" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label for="cbbEstado">Estado *</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-map"></i></div>
+                                            </div>
+                                            <select id="cbbEstado" name="cbbEstado" class="form-control" required>
+                                                <option value="" disabled selected></option>
+                                                <option value="São Paulo">São Paulo</option>
+                                                <option value="Rio de Janeiro">Rio de Janeiro</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="form-group form-check">
+                                            <input type="checkbox" class="form-check-input" id="cbAtivo" checked>
+                                            <label class="form-check-label" for="cbAtivo">Ativo</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-8">
+                                        (*) - Campos Obrigatórios
+                                    </div>
+                                </div><br />
+
+                                <div class="d-inline">
+                                    <button type="submit" name="btnConfirmar" id="btnConfirmar" class="btn btn-success"><i class="fas fa-check"></i> Confirmar</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-ban"></i> Cancelar</button>
+                                </div>
+                            </div>
+</form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
