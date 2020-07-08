@@ -423,7 +423,7 @@ function PreencherTabela(dados) {
 
         if (this.stAtivo == 1) {
             txt += '<tr class="galeria" ondblclick="Alterar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded float-left" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
-            txt += '<a role="button" class="btn btn-warning" href="javascript:Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
+            txt += '<a role="button" class="btn btn-warning" href="javascript:UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
             txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
             txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>';
 
@@ -442,6 +442,8 @@ function PreencherTabela(dados) {
 }
 function ObterAtivos() {
     $("#divLoading").show(300);
+    document.getElementById('btnPesquisar').disabled = true;
+
     var Chave = $("#txtPesquisar").val();
     var Filtro = document.querySelector('input[name="rdFiltro"]:checked').value;
     var Ativo = document.querySelector('input[name="rdAtivo"]:checked').value;
@@ -455,7 +457,6 @@ function ObterAtivos() {
         type: 'POST',
         url: '/Ativo/ObterAtivos',
         data: { Chave: Chave, Filtro: Filtro, Ativo: Ativo, Regiao: regiao, Filial: filial },
-        async:false,
         success: function (result) {
             if (result != null && result.length > 0) {
                 PreencherTabela(result);
@@ -480,11 +481,14 @@ function ObterAtivos() {
             }
             $("#divLoading").hide(300);
             $("#txtPesquisar").val("");
+            document.getElementById('btnPesquisar').disabled = false;
 
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
             $("#divLoading").hide(300);
+            document.getElementById('btnPesquisar').disabled = true;
+
         }
     });
 };
@@ -492,6 +496,7 @@ function ObterAtivos() {
 
 function Gravar() {
     $("#divLoading").show();
+    document.getElementById('btnConfirmar').disabled = true;
 
     navigator.geolocation.getCurrentPosition(function Responder(position) {
         var Latitude = position.coords.latitude;
@@ -519,7 +524,6 @@ function Gravar() {
             $.ajax({
                 type: 'POST',
                 url: '/Ativo/Gravar',
-                async: false,
                 data: {
                     Codigo: Codigo, Regional: Regional, Filial: Filial, Sala: Sala, Placa: Placa, Tag: Tag, Estado: Estado, Observacao: Observacao,
                     Descricao: Descricao, TipoAtivo: TipoAtivo, Marca: Marca, NumeroSerie: NumeroSerie, Modelo: Modelo, Valor: Valor, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude
@@ -552,21 +556,23 @@ function Gravar() {
                                 timer: 5000
                             })
                         }
-
-                        $("#divLoading").hide(6000);
                     }
+                    document.getElementById('btnConfirmar').disabled = false;
                     ObterAtivos();
+                    $("#divLoading").hide();
                 },
                 error: function (XMLHttpRequest, txtStatus, errorThrown) {
                     alert("Status: " + txtStatus); alert("Error: " + errorThrown);
                     $("#divLoading").hide(400);
+                    document.getElementById('btnConfirmar').disabled = false;
                 }
             });
         }
-        else
+        else {
             Mensagem("divAlerta", 'Por favor Envie a Imagem');
-
-       
+            document.getElementById('btnConfirmar').disabled = false;
+            $("#divLoading").hide();
+        }
     });
 };
 function ExcluirLogico(Codigo) {
@@ -688,6 +694,7 @@ function Alterar(Codigo) {
         data: {
             Codigo: Codigo
         },
+        async: true,
         success: function (result) {
 
             if (result != null) {
@@ -815,77 +822,83 @@ function MostraImagens(imgs) {
 
 }
 function SalvarFotos() {
-    document.getElementById('btnSalvarFotos').innerHTML = '<div class="spinner-border text-primary" role="status"><span class="sr-only" > Loading...</span></div>';
 
     var arquivos = document.getElementById("fuArquivo");
-    var txr2;
-    var formData = new FormData();
-    formData.append("id", $("#txtId").val());
-    formData.append("nome", $("#txtNome").val());
-    for (var i = 0; i < arquivos.files.length; i++) {
-        if (arquivos.files[i].size > 0) {
-            formData.append("arquivo" + i, arquivos.files[i]);
+    if (arquivos.files.length > 0) {
+        document.getElementById('btnSalvarFotos').innerHTML = '<div class="spinner-border text-primary" role="status"><span class="sr-only" > Loading...</span></div>';
+        var txr2;
+        var formData = new FormData();
+        formData.append("id", $("#txtId").val());
+        formData.append("nome", $("#txtNome").val());
+        for (var i = 0; i < arquivos.files.length; i++) {
+            if (arquivos.files[i].size > 0) {
+                formData.append("arquivo" + i, arquivos.files[i]);
+            }
         }
-    }
 
-    $.ajax({
-        type: 'POST',
-        url: '/Ativo/ReceberDados',
-        data: formData,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        success: function (response) {
-            var txt = "";
-            $.each(response, function () {
-                if (this.id >= 0) {
-                    $("#txtQtd").val(parseInt($("#txtQtd").val()) + 1);
+        $.ajax({
+            type: 'POST',
+            url: '/Ativo/ReceberDados',
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                var txt = "";
+                $.each(response, function () {
+                    if (this.id >= 0) {
+                        $("#txtQtd").val(parseInt($("#txtQtd").val()) + 1);
 
-                    txr2 = 'data:image/jpg;base64, ' + this.dados;
+                        txr2 = 'data:image/jpg;base64, ' + this.dados;
 
-                    var imgs = $("#minhaImagemHidden").val();
+                        var imgs = $("#minhaImagemHidden").val();
 
-                    if(imgs != "")
-                        imgs+="**Separdor Imagem**";
+                        if (imgs != "")
+                            imgs += "**Separdor Imagem**";
 
-                    imgs += txr2;
+                        imgs += txr2;
 
-                    $("#minhaImagemHidden").val(imgs);
+                        $("#minhaImagemHidden").val(imgs);
 
-                    var txt = '  <div class="col-lg-2" id="fotos' + $("#txtQtd").val() +'">\
+                        var txt = '  <div class="col-lg-2" id="fotos' + $("#txtQtd").val() + '">\
                                         <div class="form-group">\
                                             <div class="card " style="width: 10rem;">\
-                                                <img id="minhaImagem" src="'+ txr2+'" class="card-img-top" alt="...">\
+                                                <img id="minhaImagem" src="'+ txr2 + '" class="card-img-top" alt="...">\
                                                     <div class="card-body">\
-                                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="javascript: ExcluirFoto('+ $("#txtQtd").val() +')"><i class="fas fa-trash"></i></button>\
+                                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="javascript: ExcluirFoto('+ $("#txtQtd").val() + ')"><i class="fas fa-trash"></i></button>\
                                                     </div>\
                                                 </div>\
                                             </div>\
                                         </div>';
-                    $("#fotos").show();
-                    $("#modalFotos").show();
+                        $("#fotos").show();
+                        $("#modalFotos").show();
 
 
-                    $("#imagem").append(txt)
-                    //document.getElementById("imagem").innerHTML = txt;
+                        $("#imagem").append(txt)
+                        //document.getElementById("imagem").innerHTML = txt;
 
-                }
-                if (this.id == -1) {
-                    Mensagem("divAlerta", this.dados);
-                }
+                    }
+                    if (this.id == -1) {
+                        Mensagem("divAlerta", this.dados);
+                    }
 
-                if (this.id == -2) {
-                    Mensagem("divAlerta", this.dados);
-                }
+                    if (this.id == -2) {
+                        Mensagem("divAlerta", this.dados);
+                    }
 
-                document.getElementById('btnSalvarFotos').innerHTML = 'Adicionar';
+                    document.getElementById('btnSalvarFotos').innerHTML = 'Adicionar';
 
-            });
-        },
-        error: function (error) {
-            alert(error);
-        }
-    });
+                });
+            },
+            error: function (error) {
+                alert(error);
+            }
+        });
+    }
+    else {
+        Mensagem("divAlerta", 'Selecione um arquivo!');
+
+    }
 
 };
 function ExcluirFoto(Codigo) {   

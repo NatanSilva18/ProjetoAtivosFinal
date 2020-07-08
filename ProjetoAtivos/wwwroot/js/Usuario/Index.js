@@ -132,7 +132,8 @@ function PreencherTabela(dados) {
         <tbody>';
     $.each(dados, function () {
         txt += '<tr ondblclick="Alterar(' + this.codigo + ');"><th scope="row">' + this.codigo + '</th><td>' + this.email + '</td><td>' + Nivel(this.nivel) + '</td><td>' + this.pesNome + '</td><td align="right" class="form-group">'
-
+        txt += '<a role="button" class="btn btn-warning" href="javascript:Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
+        txt += ' <a role="button" class="btn btn-danger" href="javascript:Excluir(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
         txt += '</td></tr>';
 
     });

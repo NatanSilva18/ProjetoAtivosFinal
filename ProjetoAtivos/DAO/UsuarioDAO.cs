@@ -143,7 +143,7 @@ namespace ProjetoAtivos.DAO
         internal Usuario BuscarUsuario(int Codigo)
         {
             b.getComandoSQL().Parameters.Clear();
-            b.getComandoSQL().CommandText = @"select u.user_codigo, u.user_login, u.user_senha, u.pes_codigo,u.tpus_codigo, p.pes_nome 
+            b.getComandoSQL().CommandText = @"select u.user_codigo, u.user_login, u.user_senha, u.pes_codigo,u.tpu_codigo, p.pes_nome 
                                               from usuario u inner join pessoa p on p.pes_codigo = u.pes_codigo 
                                               where u.user_codigo = @codigo;";
             b.getComandoSQL().Parameters.AddWithValue("@codigo", Codigo);
