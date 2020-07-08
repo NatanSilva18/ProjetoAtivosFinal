@@ -34,9 +34,9 @@
 
                 </div>
                 <div class="d-inline">
-                    <button type="submit" id="btnPesquisar" name="btnPesquisar" class="btn btn-primary"><i class="fas fa-search"></i> Pesquisar</button>
-                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#novoUsu" onclick="javascript: LimparCampos();"><i class="fas fa-plus"></i> Novo Usuario</button>
-                    <button type="button" class="btn btn-danger" onclick="javascript:Cancelar()"><i class="fas fa-ban"></i> Cancelar</button>
+                    <button type="submit" id="btnPesquisar" name="btnPesquisar" class="btn btn-primary"><i class="fas fa-search"></i> <span>Pesquisar</span></button>
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#novoUsu" onclick="javascript: LimparCampos();"><i class="fas fa-plus"></i> <span>Usuario</span></button>
+                    <button type="button" class="btn btn-danger" onclick="javascript:Cancelar()"><i class="fas fa-ban"></i> <span>Cancelar</span></button>
                 </div>
             </div>
         </form>
@@ -111,6 +111,7 @@
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-lock"></i></div>
                                             </div>
                                             <input class="form-control" type="password" name="txtSenha" id="txtSenha" required autocomplete="off" maxlength="30" />
+                                            <div class="input-group-text" style="background-color: #FFF"><a role="button" href="javascript: ExibirSenha('txtSenha', 'iconSenha');"><i id="iconSenha" class="fas fa-eye"></i></a></div>
                                         </div>
                                     </div>
                                 </div>
@@ -122,6 +123,7 @@
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-lock"></i></div>
                                             </div>
                                             <input class="form-control" type="password" name="txtConfSenha" id="txtConfSenha" required autocomplete="off" maxlength="30" />
+                                            <div class="input-group-text" style="background-color: #FFF"><a role="button" href="javascript: ExibirSenha('txtConfSenha', 'iconConfiSenha');"><i id="iconConfiSenha" class="fas fa-eye"></i></a></div>
                                         </div>
                                     </div>
                                 </div>

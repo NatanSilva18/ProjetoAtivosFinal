@@ -68,9 +68,9 @@ namespace ProjetoAtivos.Controllers
         }
         public JsonResult BuscarUsuario(int Codigo)
         {
-            List<object> Dado = new List<object>();
+            object Dado = new object();
             var L = ctlUsuario.BuscarUsuario(Codigo);
-            Dado.Add(new
+            Dado = (new
             {
                 Codigo = L.GetCodigo(),
                 Email = L.GetLogin(),

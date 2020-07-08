@@ -115,9 +115,9 @@ function LimparCampos() {
 };
 function Nivel(Nivel) {
     if (Nivel == 1)
-        return "Administrador";
+        return '<span class="badge badge-success">Administrador</span>';
     else
-        return "Atendente"
+        return '<span class="badge badge-info">Comum</span>';
 }
 function PreencherTabela(dados) {
     var txt = '<thead>\
@@ -152,18 +152,16 @@ function Alterar(Codigo) {
         },
         success: function (result) {
 
-            if (result.length > 0) {
+            if (result != null) {
                 $('#novoUsu').modal('show');
 
-                $("#txtId").val(result[0].codigo);
-                $("#txtOperacao").val(1);
-                $("#txtEmail").val(result[0].email);
-                $("#txtSenha").val(result[0].senha);
-                $("#txtConfSenha").val(result[0].senha);
-                $("#cbbNivel").val(result[0].nivel);
-                $("#txtCodigoPes").val(result[0].codigoPessoa);
-                $("#divPessoa").hide();
-                $("#btnPesquisarPessoa").hide();
+                $("#txtId").val(result.codigo);
+                $("#txtEmail").val(result.email);
+                $("#txtSenha").val(result.senha);
+                $("#txtConfSenha").val(result.senha);
+                $("#cbbTipoUser").val(result.nivel);
+   
+                $('#cbbPessoas').selectpicker('val', result.codigoPessoa);
             }
 
         },
@@ -312,4 +310,24 @@ function Gravar() {
                 $("#divLoading").hide(400);
             }
         });
+};
+
+function ExibirSenha(Campo, NameIcon) {
+    var element = document.getElementById('' + NameIcon);
+
+    var key_attr = $('#' + Campo).attr('type');
+
+    if (key_attr != 'text') {
+
+        $('#' + Campo).attr('type', 'text');
+        element.classList.remove('fa-eye');
+        element.classList.add('fa-eye-slash');
+
+    } else {
+
+        $('#' + Campo).attr('type', 'password');
+        element.classList.remove('fa-eye-slash');
+        element.classList.add('fa-eye');
+    }
+
 };
