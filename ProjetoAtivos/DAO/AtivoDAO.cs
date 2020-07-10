@@ -83,22 +83,7 @@ namespace ProjetoAtivos.DAO
             }
             else
             {
-                b.getComandoSQL().CommandText = @"
-
-                            UPDATE Ativos
-                               SET ati_descricao = @descricao
-                                  ,ati_estado = @estado
-                                  ,ati_observacao = @observacao
-                                  ,ati_tag = @tag
-                                  ,ati_marca = @marca
-                                  ,ati_modelo = @modelo
-                                  ,ati_numeroSerie = @numserie
-                                  ,ati_stativo = @ativo
-                                  ,tpa_codigo = @tpativo
-                                  ,ati_valor = @valor
-                                  ,ati_placa = @placa
-                             WHERE ati_codigo = @codigo;
-                ";
+                b.getComandoSQL().CommandText = @"UPDATE Ativos SET ati_descricao = @descricao, ati_estado = @estado, ati_observacao = @observacao, ati_tag = @tag, ati_marca = @marca, ati_modelo = @modelo, ati_numeroSerie = @numserie, ati_stativo = @ativo, tpa_codigo = @tpativo, ati_valor = @valor, ati_placa = @placa WHERE ati_codigo = @codigo;";
 
                 b.getComandoSQL().Parameters.AddWithValue("@codigo", Ativo.GetCodigo());
 
@@ -116,8 +101,10 @@ namespace ProjetoAtivos.DAO
             b.getComandoSQL().Parameters.AddWithValue("@valor", Ativo.GetValor());
             b.getComandoSQL().Parameters.AddWithValue("@tpativo", Ativo.GetTipoAtivo().GetCodigo());
 
-
-            OK = b.ExecutaComando(true, out Codigo) == 1;
+            if (Ativo.GetCodigo() == 0)
+                OK = b.ExecutaComando(true, out Codigo) == 1;
+            else
+                OK = b.ExecutaComando(true) == 1;
 
             if (OK)
             {

@@ -124,6 +124,8 @@
                 <div class="container-fluid">
                     <form name="formRegional" id="formRegional" action="javascript: Gravar();" method="post">
                         <input type="hidden" id="minhaImagemHidden" name="minhaImagemHidden" value="" />
+                        <input type="hidden" id="validaPlaca" name="validaPlaca" value="0" />
+
                         <div class="form-group">
                             <input type="hidden" name="txtId" id="txtId" value="0" />
 
@@ -245,7 +247,7 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
                                             </div>
-                                            <input class="form-control" type="text" name="txtObservacao" id="txtObservacao" autocomplete="off" maxlength="30" disabled/>
+                                            <input class="form-control" type="text" name="txtObservacao" id="txtObservacao" autocomplete="off" maxlength="30" disabled />
                                         </div>
 
                                     </div>
@@ -257,7 +259,7 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
                                             </div>
-                                            <input class="form-control" type="text" name="txtDescricao" id="txtDescricao" required autocomplete="off" maxlength="30" disabled/>
+                                            <input class="form-control" type="text" name="txtDescricao" id="txtDescricao" required autocomplete="off" maxlength="30" disabled />
                                         </div>
 
                                     </div>
@@ -269,7 +271,7 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-dollar-sign"></i></div>
                                             </div>
-                                            <input class="form-control money" type="number" name="txtValor" id="txtValor" required autocomplete="off" maxlength="30" disabled />
+                                            <input class="form-control money" type="number" name="txtValor" id="txtValor" required autocomplete="off" maxlength="30" disabled min="0" />
                                         </div>
 
                                     </div>
@@ -284,7 +286,7 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
                                             </div>
-                                            <input class="form-control" type="text" name="txtMarca" id="txtMarca" required autocomplete="off" maxlength="30" disabled/>
+                                            <input class="form-control" type="text" name="txtMarca" id="txtMarca" required autocomplete="off" maxlength="30" disabled />
                                         </div>
 
                                     </div>
@@ -296,7 +298,7 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
                                             </div>
-                                            <input class="form-control" type="text" name="txtNumSerie" id="txtNumSerie" required autocomplete="off" maxlength="30" disabled/>
+                                            <input class="form-control" type="text" name="txtNumSerie" id="txtNumSerie" required autocomplete="off" maxlength="30" disabled />
                                         </div>
 
                                     </div>
@@ -308,7 +310,7 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
                                             </div>
-                                            <input class="form-control" type="text" name="txtModelo" id="txtModelo" required autocomplete="off" maxlength="30" disabled/>
+                                            <input class="form-control" type="text" name="txtModelo" id="txtModelo" required autocomplete="off" maxlength="30" disabled />
                                         </div>
 
                                     </div>
@@ -318,7 +320,7 @@
                                 <div class="col-lg-6">
                                     <div class="input-group">
                                         <div class="custom-file" id="customFile" lang="pt-br">
-                                            <input type="file" class="custom-file-input" id="fuArquivo" aria-describedby="fileHelp" required  disabled>
+                                            <input type="file" class="custom-file-input" id="fuArquivo" aria-describedby="fileHelp" required disabled>
                                             <label class="custom-file-label" for="fuArquivo" id="labelFoto">
                                                 Selecione a Foto
                                             </label>
@@ -327,7 +329,7 @@
                                             <button class="btn btn-success" type="button" onclick="javascript: SalvarFotos();" id="btnSalvarFotos">Adicionar</button>
                                         </div>
                                     </div>
-                                   
+
                                 </div>
 
                                 <div id="divAlerta" class="alert alert-danger col-lg-6" role="alert" style="display:none"></div>

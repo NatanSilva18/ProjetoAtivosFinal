@@ -93,11 +93,6 @@ namespace ProjetoAtivos.Models
             this.Observacao = Observacao;
         }
 
-        internal bool Receber(Localizacao loc)
-        {
-            return new TransferenciaDAO().Receber(this, loc);
-        }
-
         public bool GetStatus()
         {
             return this.Status;
@@ -280,11 +275,12 @@ namespace ProjetoAtivos.Models
                     this.FilialDestino = new FilialDAO().BuscarFilialEmail(this.FilialDestino.GetCodigo());
 
                     string dest = FilialOrigem.GetResponsavel().GetEmail();
-                    string dest2 = FilialOrigem.GetRegional().GetPessoa().GetEmail();
+                    string dest2 = FilialDestino.GetRegional().GetPessoa().GetEmail();
 
 
-                    var result = EnviarEmail("m2ntech.20@gmail.com", "ParebemSystem", dest, "Aprovação Ativo Origem", "Assunto");
-                    var result2 = EnviarEmail("m2ntech.20@gmail.com", "ParebemSystem", dest2, "Aprovação Ativo Origem", "Assunto");
+                    var result = EnviarEmail("m2ntech.20@gmail.com", "ParebemSystem", dest, "PareBem Aprovação de Ativos", "Olá, Existe uma Aprovação de Ativos Pendente. <br> Filial de Origem: " + this.FilialOrigem.GetRazao() + " <br>Filial Destino:" + this.FilialDestino.GetRazao() + "<br> Por favor Faça o login. Para Aprovação.... <a href='http://www.m2nsolutions.com.br'>ParebemSystem</a>");
+
+                    var result2 = EnviarEmail("m2ntech.20@gmail.com", "ParebemSystem", dest, "PareBem Aprovação de Ativos", "Olá, Existe uma Aprovação de Ativos Pendente. <br> Filial de Origem: " + this.FilialOrigem.GetRazao() + " <br>Filial Destino:" + this.FilialDestino.GetRazao() + "<br> Por favor Faça o login. Para Aprovação.... <a href='http://www.m2nsolutions.com.br'>ParebemSystem</a>");
                 }
 
                 return ok;
@@ -332,13 +328,37 @@ namespace ProjetoAtivos.Models
                 string dest = t.FilialOrigem.GetResponsavel().GetEmail();
                 string dest2 = t.FilialDestino.GetResponsavel().GetEmail();
 
-                var result = EnviarEmail("m2ntech.20@gmail.com", "ParebemSystem", dest, "Aprovação Ativo Origem", "Assunto");
-                var result2 = EnviarEmail("m2ntech.20@gmail.com", "ParebemSystem", dest2, "Aprovação Ativo Origem", "Assunto");
+                var result = EnviarEmail("m2ntech.20@gmail.com", "ParebemSystem", dest, "Pare bem Ativos - Aprovação Origem", "Ativo Aprovado com Sucesso, Seguirá para se aprovado no Destino...");
+                var result2 = EnviarEmail("m2ntech.20@gmail.com", "ParebemSystem", dest, "Pare bem Ativos - Aprovação Origem", "Ativo Aprovado com Sucesso, Seguirá para se aprovado no Destino...");
             }
 
             return ok;
         }
+        internal bool Receber(Localizacao loc)
+        {
+            if (new TransferenciaDAO().Receber(this, loc))
+            {
+                Transferencia Transf = new Transferencia().BuscarTransferencia(this.Codigo);
+                this.FilialDestino = Transf.GetFilialDestino();
+                this.FilialOrigem = Transf.GetFilialOrigem();
 
+
+                this.FilialOrigem = new FilialDAO().BuscarFilialEmail(this.FilialOrigem.GetCodigo());
+                this.FilialDestino = new FilialDAO().BuscarFilialEmail(this.FilialDestino.GetCodigo());
+
+                string dest = FilialOrigem.GetResponsavel().GetEmail();
+                string dest2 = FilialDestino.GetRegional().GetPessoa().GetEmail();
+
+
+                var result = EnviarEmail("m2ntech.20@gmail.com", "ParebemSystem", dest, "PareBem Aprovação de Ativos", "Transferenica Aprovada com Sucesso... O Ativo ja se encontrada no local de destino!");
+
+                var result2 = EnviarEmail("m2ntech.20@gmail.com", "ParebemSystem", dest2, "Pare Bem Aprovação de Ativos", "Transferenica Aprovada com Sucesso... O Ativo ja se encontrada no local de destino!");
+
+                return true;
+            }
+            else
+                return false;
+        }
         internal void EnviarNotificação()
         {
             string corpo = @"";

@@ -286,6 +286,9 @@ function LimparCampos() {
     $("#txtValor").val("");
     $("#txtModelo").val("");
     $("#txtQtd").val("0");
+    $("#validaPlaca").val("0");
+
+    
     $("#modalFotos").hide();
 
     $("#imagem").html("");
@@ -422,14 +425,14 @@ function PreencherTabela(dados) {
     $.each(dados, function () {
 
         if (this.stAtivo == 1) {
-            txt += '<tr class="galeria" ondblclick="Alterar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded float-left" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
+            txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded float-left" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
             txt += '<a role="button" class="btn btn-warning" href="javascript:UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
             txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
             txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>';
 
         }
         else {
-            txt += '<tr class="galeria" ondblclick="Alterar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded float-left" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
+            txt += '<tr class="galeria" ondblclick="Ativar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded float-left" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
             txt += '<a role="button" class="btn btn-success" href="javascript:Ativar(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>';
         }
         txt += '</td></tr>';
@@ -498,82 +501,87 @@ function Gravar() {
     $("#divLoading").show();
     document.getElementById('btnConfirmar').disabled = true;
 
-    navigator.geolocation.getCurrentPosition(function Responder(position) {
-        var Latitude = position.coords.latitude;
-        var Longitude = position.coords.longitude;
+    if (document.getElementById('validaPlaca').value == '0') {
+        navigator.geolocation.getCurrentPosition(function Responder(position) {
+            var Latitude = position.coords.latitude;
+            var Longitude = position.coords.longitude;
 
-        var Codigo = $('#txtId').val();
-        var Regional = $('#cbbRegional').val();
-        var Filial = $('#cbbFilial').val();
-        var Sala = $('#cbbSala').val();
-        var Placa = $('#txtPlaca').val();
-        var Tag = $('#txtTag').val();
-        var Estado = $('#cbbEstado').val();
-        var Observacao = $('#txtObservacao').val();
-        var Descricao = $('#txtDescricao').val();
-        var TipoAtivo = $('#cbbTpAtivo').val();
-        var Marca = $('#txtMarca').val();
-        var NumeroSerie = $('#txtNumSerie').val();
-        var Modelo = $('#txtModelo').val();
-        var Valor = $('#txtValor').val();
+            var Codigo = $('#txtId').val();
+            var Regional = $('#cbbRegional').val();
+            var Filial = $('#cbbFilial').val();
+            var Sala = $('#cbbSala').val();
+            var Placa = $('#txtPlaca').val();
+            var Tag = $('#txtTag').val();
+            var Estado = $('#cbbEstado').val();
+            var Observacao = $('#txtObservacao').val();
+            var Descricao = $('#txtDescricao').val();
+            var TipoAtivo = $('#cbbTpAtivo').val();
+            var Marca = $('#txtMarca').val();
+            var NumeroSerie = $('#txtNumSerie').val();
+            var Modelo = $('#txtModelo').val();
+            var Valor = $('#txtValor').val();
 
-        var VerificaImagem = $('#minhaImagemHidden').val();
+            var VerificaImagem = $('#minhaImagemHidden').val();
 
-        if (VerificaImagem != "") {
-            var Imagem = $('#minhaImagemHidden').val();
-            $.ajax({
-                type: 'POST',
-                url: '/Ativo/Gravar',
-                data: {
-                    Codigo: Codigo, Regional: Regional, Filial: Filial, Sala: Sala, Placa: Placa, Tag: Tag, Estado: Estado, Observacao: Observacao,
-                    Descricao: Descricao, TipoAtivo: TipoAtivo, Marca: Marca, NumeroSerie: NumeroSerie, Modelo: Modelo, Valor: Valor, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude
-                },
-                success: function (result) {
-                    $('#novoAtivo').modal('hide');
+            if (VerificaImagem != "") {
+                var Imagem = $('#minhaImagemHidden').val();
+                $.ajax({
+                    type: 'POST',
+                    url: '/Ativo/Gravar',
+                    data: {
+                        Codigo: Codigo, Regional: Regional, Filial: Filial, Sala: Sala, Placa: Placa, Tag: Tag, Estado: Estado, Observacao: Observacao,
+                        Descricao: Descricao, TipoAtivo: TipoAtivo, Marca: Marca, NumeroSerie: NumeroSerie, Modelo: Modelo, Valor: Valor, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude
+                    },
+                    success: function (result) {
+                        $('#novoAtivo').modal('hide');
 
-                    if (result.length > 0) {
-                        Swal.fire({
-                            title: 'Oops...',
-                            type: 'error',
-                            text: result,
-                            timer: 5000
-                        })
-                    }
-                    else {
-                        if (Codigo == 0) {
+                        if (result.length > 0) {
                             Swal.fire({
-                                title: 'Sucesso',
-                                type: 'success',
-                                text: 'Ativo Gravado com Sucesso',
+                                title: 'Oops...',
+                                type: 'error',
+                                text: result,
                                 timer: 5000
                             })
                         }
                         else {
-                            Swal.fire({
-                                title: 'Sucesso',
-                                type: 'success',
-                                text: 'Ativo Alterado com Sucesso',
-                                timer: 5000
-                            })
+                            if (Codigo == 0) {
+                                Swal.fire({
+                                    title: 'Sucesso',
+                                    type: 'success',
+                                    text: 'Ativo Gravado com Sucesso',
+                                    timer: 5000
+                                })
+                            }
+                            else {
+                                Swal.fire({
+                                    title: 'Sucesso',
+                                    type: 'success',
+                                    text: 'Ativo Alterado com Sucesso',
+                                    timer: 5000
+                                })
+                            }
                         }
+                        document.getElementById('btnConfirmar').disabled = false;
+                        ObterAtivos();
+                        $("#divLoading").hide();
+                    },
+                    error: function (XMLHttpRequest, txtStatus, errorThrown) {
+                        alert("Status: " + txtStatus); alert("Error: " + errorThrown);
+                        $("#divLoading").hide(400);
+                        document.getElementById('btnConfirmar').disabled = false;
                     }
-                    document.getElementById('btnConfirmar').disabled = false;
-                    ObterAtivos();
-                    $("#divLoading").hide();
-                },
-                error: function (XMLHttpRequest, txtStatus, errorThrown) {
-                    alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                    $("#divLoading").hide(400);
-                    document.getElementById('btnConfirmar').disabled = false;
-                }
-            });
-        }
-        else {
-            Mensagem("divAlerta", 'Por favor Envie a Imagem');
-            document.getElementById('btnConfirmar').disabled = false;
-            $("#divLoading").hide();
-        }
-    });
+                });
+            }
+            else {
+                Mensagem("divAlerta", 'Por favor Envie a Imagem');
+                document.getElementById('btnConfirmar').disabled = false;
+                $("#divLoading").hide();
+            }
+        });
+    }
+    else
+        document.getElementById('btnConfirmar').disabled = false;
+  
 };
 function ExcluirLogico(Codigo) {
     Swal.fire({
@@ -983,10 +991,12 @@ function ValidarPlaca() {
             if (result.length > 0) {
                 LockFields();
                 Mensagem("divAlertaPlaca", 'Placa Informada Ja Cadastrada');
-
+                document.getElementById('validaPlaca').value = "1";
             }
-            else
+            else {
                 UnlockFields();
+                document.getElementById('validaPlaca').value = "0";
+            }
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);

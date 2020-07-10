@@ -1,0 +1,5 @@
+Web deployment task failed. (Conectado ao computador de destino ("natan18-001-site1.htempurl.com") usando o processo especificado ("Serviço de Gerenciamento da Web"), mas não foi possível verificar o certificado do servidor. Se você confiar no servidor, conecte-se novamente e dê permissão aos certificados não confiáveis.  Saiba mais em: http://go.microsoft.com/fwlink/?LinkId=221672#ERROR_CERTIFICATE_VALIDATION_FAILED.)
+
+Conectado ao computador de destino ("natan18-001-site1.htempurl.com") usando o processo especificado ("Serviço de Gerenciamento da Web"), mas não foi possível verificar o certificado do servidor. Se você confiar no servidor, conecte-se novamente e dê permissão aos certificados não confiáveis.  Saiba mais em: http://go.microsoft.com/fwlink/?LinkId=221672#ERROR_CERTIFICATE_VALIDATION_FAILED.
+A conexão subjacente estava fechada: Não foi possível estabelecer relação de confiança para o canal seguro de SSL/TLS.
+O certificado remoto é inválido, de acordo com o procedimento de validação.

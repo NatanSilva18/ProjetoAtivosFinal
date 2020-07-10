@@ -533,7 +533,7 @@ function RemoverItem(Codigo, rec = "", desc = "") {
 document.querySelector('.custom-file-input').addEventListener('change', function (e) {
     var fileName = document.getElementById("fuArquivo").files[0].name;
     var nextSibling = e.target.nextElementSibling;
-    nextSibling.innerText = fileName;
+    nextSibling.innerText = fileName.substring(0,8);
 });
 
 function VerificaGravaRec() {
@@ -910,8 +910,11 @@ function ConfirmarCampos(dados = null) {
         }
 
         $("#tbbConfirmarItensAprov").show();
-        $("#ConfirmarDocsAprov").show();
-        $("#tbbConfirmarDocsAprov").show();
+        if (dados.docs != null && dados.docs != undefined && dados.docs.length > 0) {
+            $("#ConfirmarDocsAprov").show();
+            $("#tbbConfirmarDocsAprov").show();
+        }
+
 
 
         for (var i = 0; dados.docs != null && dados.docs != undefined && i < dados.docs.length; i++) {  //montar documentos ativos...
@@ -1015,6 +1018,8 @@ function ConfirmarCampos(dados = null) {
             $("#InfoAprovGerente").append(htm);
         }
     }
+    $("#divLoading").hide(300);
+
 };
 
 function funcaoTable(NameTable) {
@@ -1175,6 +1180,8 @@ function Receber(dados) {   //preencher combo receber ativos...
         cbbTransfAtivos.add(opt, cbbTransfAtivos.options[i]);
     }
     $('#cbbAtivosRec').selectpicker('refresh');
+    $("#divLoading").hide(300);
+
 };
 
 function ObterTransferencias() {
@@ -1231,7 +1238,6 @@ function GravarAprovacao() {        //gravar aprovação origem...
     $.ajax({
         type: 'POST',
         url: '/Transferencia/Aprovar',
-        async: false,
         data: { Transf: Transf, Obs: Obs },
         success: function (result) {
             if (result == "") {
@@ -1243,6 +1249,8 @@ function GravarAprovacao() {        //gravar aprovação origem...
                     text: 'Transferência Aprovada!',
                     timer: 5000
                 })
+                ObterTransferencias();
+                $("#txtObsAprov").val("");
             }
             else {
                 Swal.fire({
@@ -1251,18 +1259,22 @@ function GravarAprovacao() {        //gravar aprovação origem...
                     text: 'Erro ao Gravar',
                     timer: 5000
                 })
+                ObterTransferencias();
+
             }
 
             $("#divLoading").hide(300);
+            ObterTransferencias();
 
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
             $("#divLoading").hide(300);
+            ObterTransferencias();
+
         }
     });
 
-    ObterTransferencias();
 };
 
 
@@ -1273,7 +1285,7 @@ function MostraTransf(transf, rec = 0) {
     $("#tbbConfirmarDocsAprov").hide();
 
 
-    $("#divLoading").show(300);
+    $("#divLoading").show();
 
     //$("#HcdTransfAprov").val(transf);
 
@@ -1291,10 +1303,6 @@ function MostraTransf(transf, rec = 0) {
                 else
                     ConfirmarCampos(result);
             }
-
-
-            $("#divLoading").hide(300);
-
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
@@ -1463,5 +1471,5 @@ function BuscarSalas(Codigo) {
 document.getElementById('fuArquivoRec').addEventListener('change', function (e) {
     var fileName = document.getElementById("fuArquivoRec").files[0].name;
     var nextSibling = e.target.nextElementSibling;
-    nextSibling.innerText = fileName;
+    nextSibling.innerText = fileName.substring(0, 8);
 });

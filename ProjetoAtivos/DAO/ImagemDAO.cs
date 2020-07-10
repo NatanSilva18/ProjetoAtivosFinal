@@ -84,7 +84,7 @@ namespace ProjetoAtivos.DAO
             b.getComandoSQL().Parameters.AddWithValue("@codigo", Codigo);
 
             
-            DataTable dt = b.ExecutaSelect();
+            DataTable dt = b.ExecutaSelect(true);
 
             if (dt.Rows.Count > 0)
                 return TableToList(dt);
