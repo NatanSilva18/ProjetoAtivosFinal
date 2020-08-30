@@ -19,7 +19,7 @@ namespace ProjetoAtivos.Control
                     imagens.Add(new Imagem(0, i, 0));
                 }
 
-                Ativo Ativo = new Ativo(Codigo, Placa, Descricao, Estado, Observacao, Tag, Marca, Modelo, NumeroSerie, true, Valor, TipoAtivo, "", Sala, "");
+                Ativo Ativo = new Ativo(Codigo, Placa, Descricao, Estado, Observacao, Tag, Marca, Modelo, NumeroSerie, true, Valor, TipoAtivo, "",0, Sala, "");
 
                 return Ativo.Gravar(imagens, Localiza);
         }
@@ -67,6 +67,7 @@ namespace ProjetoAtivos.Control
         {
             return new Ativo().SomaAtivos();
         }
+   
         
     }
 }

@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ProjetoAtivos.Control;
+using ProjetoAtivos.Filter;
 
 namespace ProjetoAtivos.Controllers
 {
+    [FiltroSession]
     public class UsuarioController : Controller
     {
         UsuarioControl ctlUsuario = new UsuarioControl();

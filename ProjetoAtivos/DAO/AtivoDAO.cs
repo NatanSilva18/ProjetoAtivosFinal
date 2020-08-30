@@ -35,6 +35,7 @@ namespace ProjetoAtivos.DAO
                                           Convert.ToDouble(row["ati_valor"]),
                                           Convert.ToInt32(row["tpa_codigo"]),
                                           row["tpa_descricao"].ToString(),
+                                          Convert.ToDouble(row["tpa_valor"]),
                                           Convert.ToInt32(row["sal_codigo"]),
                                           row["sal_descricao"].ToString()
 
@@ -53,9 +54,31 @@ namespace ProjetoAtivos.DAO
                     Dados.Add(new
                     {
                         Codigo = Convert.ToInt32(dt.Rows[i]["ati_codigo"]),
-                        Latitude = dt.Rows[i]["loca_latitude"].ToString(),
-                        Longitude = dt.Rows[i]["loca_longitude"].ToString(),
-                        Imagem = Encoding.UTF8.GetString((byte[])dt.Rows[i]["img_imagem"]),
+                        Latitude = DBNull.Value.Equals(dt.Rows[i]["loca_latitude"]) ? "": dt.Rows[i]["loca_latitude"].ToString(),
+                        Longitude = DBNull.Value.Equals(dt.Rows[i]["loca_longitude"]) ? "" : dt.Rows[i]["loca_longitude"].ToString(),
+                        Imagem = DBNull.Value.Equals(dt.Rows[i]["img_imagem"])  ? "": Encoding.UTF8.GetString((byte[])dt.Rows[i]["img_imagem"]),
+                        Placa = Convert.ToInt32(dt.Rows[i]["ati_placa"]),
+                        Descricao = dt.Rows[i]["ati_descricao"].ToString(),
+                        Estado = dt.Rows[i]["ati_estado"].ToString(),
+                        Razao = dt.Rows[i]["fil_razao"].ToString(),
+                        StAtivo = Convert.ToBoolean(dt.Rows[i]["ati_stativo"])
+                    });
+                }
+            }
+
+            return Dados == null ? null : Dados;
+        }
+        internal List<object> TableToListSemFt(DataTable dt)
+        {
+            List<object> Dados = new List<object>();
+
+            if (dt.Rows.Count > 0)
+            {
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    Dados.Add(new
+                    {
+                        Codigo = Convert.ToInt32(dt.Rows[i]["ati_codigo"]),
                         Placa = Convert.ToInt32(dt.Rows[i]["ati_placa"]),
                         Descricao = dt.Rows[i]["ati_descricao"].ToString(),
                         Estado = dt.Rows[i]["ati_estado"].ToString(),
@@ -70,6 +93,7 @@ namespace ProjetoAtivos.DAO
         internal int Gravar(Ativo Ativo, List<Imagem> Imagens, Localizacao Localizacao)
         {
             int Codigo = 0;
+            int j = 0;
             Boolean OK = false;
             b.getComandoSQL().Parameters.Clear();
 
@@ -109,29 +133,54 @@ namespace ProjetoAtivos.DAO
             if (OK)
             {
 
-                if(Ativo.GetCodigo()!=0)
+                if(Ativo.GetCodigo() != 0)    //n pode excluir e gravar dnv ... pq se n altera a localizacao  ... tem q fazer update 
                 {
                     Codigo = Ativo.GetCodigo();
                     Ativo.Imagens = new ImagemDAO().BuscarImagens(Ativo.GetCodigo());
 
-                    for (int i = 0; OK && i < Ativo.Imagens.Count; i++)
+                    if(Ativo.Imagens != null)
                     {
-                        OK = Ativo.Imagens[i].Excluir();
+                        for (j = 0; OK && j < Ativo.Imagens.Count; j++)
+                        {
+                            OK = Ativo.Imagens[j].Excluir();
+                        }
+
+
+                        for (j =0; OK && j < Imagens.Count; j++)
+                        {
+                            Ativo.SetCodigo(Codigo);
+                            Imagens[j].SetAtivo(Ativo);
+                            ImagemDAO ImagemDAO = new ImagemDAO();
+
+                            OK = ImagemDAO.Gravar(Imagens[j], Localizacao);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; OK && i < Imagens.Count; i++)
+                        {
+                            Ativo.SetCodigo(Codigo);
+                            Imagens[i].SetAtivo(Ativo);
+                            ImagemDAO ImagemDAO = new ImagemDAO();
+
+                            OK = ImagemDAO.Gravar(Imagens[i], Localizacao);
+                        }
                     }
 
                 }
-
-
-                for (int i = 0; OK && i < Imagens.Count; i++)
+                else //gravar
                 {
+                    for (int i = 0; OK && i < Imagens.Count; i++)
+                    {
+                        Ativo.SetCodigo(Codigo);
+                        Imagens[i].SetAtivo(Ativo);
+                        ImagemDAO ImagemDAO = new ImagemDAO();
 
-                    Ativo.SetCodigo(Codigo);
-                    Imagens[i].SetAtivo(Ativo);
-                    ImagemDAO ImagemDAO = new ImagemDAO();
-
-                    OK = ImagemDAO.Gravar(Imagens[i], Localizacao);
-
+                        OK = ImagemDAO.Gravar(Imagens[i], Localizacao);
+                    }
                 }
+
+              
 
 
                 b.FinalizaTransacao(OK);
@@ -145,7 +194,7 @@ namespace ProjetoAtivos.DAO
             b.getComandoSQL().Parameters.Clear();
 
             b.getComandoSQL().CommandText = @"select a.ati_codigo, a.ati_placa, a.ati_descricao, a.ati_estado, a.ati_observacao, a.ati_tag, a.ati_marca,           
-                                                a.ati_modelo, a.ati_numeroserie, a.ati_stativo, a.ati_valor, tp.tpa_codigo, tp.tpa_descricao, s.sal_codigo,                 s.sal_descricao 
+                                                a.ati_modelo, a.ati_numeroserie, a.ati_stativo, a.ati_valor, tp.tpa_codigo, tp.tpa_descricao, tp.tpa_valor, s.sal_codigo,                 s.sal_descricao 
                                               from Ativos a
                                               inner join Tipo_Ativo tp on tp.tpa_codigo = a.tpa_codigo
                                               inner join Sala s on s.sal_codigo = a.sal_codigo
@@ -167,14 +216,11 @@ namespace ProjetoAtivos.DAO
         {
             b.getComandoSQL().Parameters.Clear();
 
-            b.getComandoSQL().CommandText = @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo
+            b.getComandoSQL().CommandText = @"select a.ati_codigo, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo
                                               from Ativos a 
-                                              inner join imagem i on a.ati_codigo = i.ati_codigo
-                                              inner join localizacao l on l.img_codigo = i.img_codigo
                                               inner join Sala s on s.sal_codigo = a.sal_codigo
                                               inner join Filial f on s.fil_codigo = f.fil_codigo
-                                              where i.img_codigo = (select min(img_codigo) from imagem where ati_codigo = a.ati_codigo)
-                                              and a.ati_placa = @placa order by a.ati_placa;";
+                                              where a.ati_placa = @placa order by a.ati_placa;";
 
             b.getComandoSQL().Parameters.AddWithValue("@placa", Placa);
 
@@ -182,7 +228,7 @@ namespace ProjetoAtivos.DAO
             DataTable dt = b.ExecutaSelect();
 
             if (dt.Rows.Count > 0)
-                return TableToListCompleta(dt);
+                return TableToListSemFt(dt);
             else
                 return null;
 
@@ -193,7 +239,7 @@ namespace ProjetoAtivos.DAO
             b.getComandoSQL().Parameters.Clear();
 
             b.getComandoSQL().CommandText = @"select a.ati_codigo, a.ati_placa, a.ati_descricao, a.ati_estado, a.ati_observacao, a.ati_tag, a.ati_marca,                                                                
-                                                a.ati_modelo, a.ati_numeroserie, a.ati_stativo, a.ati_valor, tp.tpa_codigo, tp.tpa_descricao, s.sal_codigo, s.sal_descricao 
+                                                a.ati_modelo, a.ati_numeroserie, a.ati_stativo, a.ati_valor, tp.tpa_codigo, tp.tpa_descricao, tp.tpa_valor, s.sal_codigo, s.sal_descricao 
                                               from Ativos a
                                               inner join Tipo_Ativo tp on tp.tpa_codigo = a.tpa_codigo
                                               inner join Sala s on s.sal_codigo = a.sal_codigo
@@ -238,54 +284,128 @@ namespace ProjetoAtivos.DAO
 
         public List<object> ObterAtivos(string Chave, string Filtro, int Ativo, int Regiao, int Filial)
         {
+            string Txt = "";
             b.getComandoSQL().Parameters.Clear();
 
-            if (Filial != 0)
-            {
-                b.getComandoSQL().CommandText = @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo
-                                              from Ativos a 
-                                              inner join imagem i on a.ati_codigo = i.ati_codigo
-                                              inner join localizacao l on l.img_codigo = i.img_codigo
-                                              inner join Sala s on s.sal_codigo = a.sal_codigo
-                                              inner join Filial f on s.fil_codigo = f.fil_codigo
-                                              where i.img_codigo = (select min(img_codigo) from imagem where ati_codigo = a.ati_codigo)
-											  and a.ati_stativo = @ativo and ati_descricao like @chave
-                                              and f.fil_codigo = @filial order by ati_descricao;";
 
-                b.getComandoSQL().Parameters.AddWithValue("@filial", Filial);
-            }
-            else
+
+            if(Chave == null)
             {
-                if (Regiao != 0)
+                if(Filial > 0)
                 {
                     b.getComandoSQL().CommandText = @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo
-                                              from Ativos a 
-                                              inner join imagem i on a.ati_codigo = i.ati_codigo
-                                              inner join localizacao l on l.img_codigo = i.img_codigo
-                                              inner join Sala s on s.sal_codigo = a.sal_codigo
-                                              inner join Filial f on s.fil_codigo = f.fil_codigo
-                                              where i.img_codigo = (select min(img_codigo) from imagem where ati_codigo = a.ati_codigo)
-											  and a.ati_stativo = @ativo and ati_descricao like @chave
-                                              and f.reg_codigo = @regiao order by ati_descricao;";
+                   from Ativos a 
+                   LEFT join imagem i on a.ati_codigo = i.ati_codigo
+                   LEFT join localizacao l on l.img_codigo = i.img_codigo
+                   inner join Sala s on s.sal_codigo = a.sal_codigo
+                   inner join Filial f on s.fil_codigo = f.fil_codigo
+                   inner join Regional r on r.reg_codigo = f.reg_codigo
+                   where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and f.fil_codigo = @filialONE
+                   group by a.ati_codigo
+                        union
+                   select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                   f.fil_razao, a.ati_stativo
+                   from Ativos a 
+                   RIGHT join imagem i on a.ati_codigo = i.ati_codigo
+                   RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                   inner join Sala s on s.sal_codigo = a.sal_codigo
+                   inner join Filial f on s.fil_codigo = f.fil_codigo
+                   inner join Regional r on r.reg_codigo = f.reg_codigo
+                   where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and f.fil_codigo = @filialTWO
+                   group by a.ati_codigo;";
 
-                    b.getComandoSQL().Parameters.AddWithValue("@regiao", Regiao);
+                    b.getComandoSQL().Parameters.AddWithValue("@filialONE", Filial);
+                    b.getComandoSQL().Parameters.AddWithValue("@filialTWO", Filial);
                 }
                 else
                 {
                     b.getComandoSQL().CommandText = @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo
-                                              from Ativos a 
-                                              inner join imagem i on a.ati_codigo = i.ati_codigo
-                                              inner join localizacao l on l.img_codigo = i.img_codigo
-                                              inner join Sala s on s.sal_codigo = a.sal_codigo
-                                              inner join Filial f on s.fil_codigo = f.fil_codigo
-                                              where i.img_codigo = (select min(img_codigo) from imagem where ati_codigo = a.ati_codigo)
-											  and a.ati_stativo = @ativo and ati_descricao like @chave
-                                               order by ati_descricao;";
+                   from Ativos a 
+                   LEFT join imagem i on a.ati_codigo = i.ati_codigo
+                   LEFT join localizacao l on l.img_codigo = i.img_codigo
+                   inner join Sala s on s.sal_codigo = a.sal_codigo
+                   inner join Filial f on s.fil_codigo = f.fil_codigo
+                   inner join Regional r on r.reg_codigo = f.reg_codigo
+                   where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE
+                   group by a.ati_codigo
+                        union
+                   select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                   f.fil_razao, a.ati_stativo
+                   from Ativos a 
+                   RIGHT join imagem i on a.ati_codigo = i.ati_codigo
+                   RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                   inner join Sala s on s.sal_codigo = a.sal_codigo
+                   inner join Filial f on s.fil_codigo = f.fil_codigo
+                   inner join Regional r on r.reg_codigo = f.reg_codigo
+                   where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO
+                   group by a.ati_codigo;";
+                }
+               
+            }
+            else
+            {
+                if(Filtro == "Nome")
+                {
+                    if(Filial > 0)
+                    {
+                        b.getComandoSQL().CommandText = @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo
+                           from Ativos a 
+                           LEFT join imagem i on a.ati_codigo = i.ati_codigo
+                           LEFT join localizacao l on l.img_codigo = i.img_codigo
+                           inner join Sala s on s.sal_codigo = a.sal_codigo
+                           inner join Filial f on s.fil_codigo = f.fil_codigo
+                           inner join Regional r on r.reg_codigo = f.reg_codigo
+                           where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and a.ati_descricao like @nomeONE and f.fil_codigo = @filialONE
+                           group by a.ati_codigo
+                                union
+                           select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                           f.fil_razao, a.ati_stativo
+                           from Ativos a 
+                           RIGHT join imagem i on a.ati_codigo = i.ati_codigo
+                           RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                           inner join Sala s on s.sal_codigo = a.sal_codigo
+                           inner join Filial f on s.fil_codigo = f.fil_codigo
+                           inner join Regional r on r.reg_codigo = f.reg_codigo
+                           where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and a.ati_descricao like @nomeTWO and f.fil_codigo = @filialTWO
+                           group by a.ati_codigo";
+
+                        b.getComandoSQL().Parameters.AddWithValue("@filialONE", Filial);
+                        b.getComandoSQL().Parameters.AddWithValue("@filialTWO", Filial);
+                    }
+                    else
+                    {
+                        b.getComandoSQL().CommandText = @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo
+                           from Ativos a 
+                           LEFT join imagem i on a.ati_codigo = i.ati_codigo
+                           LEFT join localizacao l on l.img_codigo = i.img_codigo
+                           inner join Sala s on s.sal_codigo = a.sal_codigo
+                           inner join Filial f on s.fil_codigo = f.fil_codigo
+                           inner join Regional r on r.reg_codigo = f.reg_codigo
+                           where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and a.ati_descricao like @nomeONE
+                           group by a.ati_codigo
+                                union
+                           select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                           f.fil_razao, a.ati_stativo
+                           from Ativos a 
+                           RIGHT join imagem i on a.ati_codigo = i.ati_codigo
+                           RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                           inner join Sala s on s.sal_codigo = a.sal_codigo
+                           inner join Filial f on s.fil_codigo = f.fil_codigo
+                           inner join Regional r on r.reg_codigo = f.reg_codigo
+                           where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and a.ati_descricao like @nomeTWO
+                           group by a.ati_codigo";
+                    }
+
+                    b.getComandoSQL().Parameters.AddWithValue("@nomeONE", "%" + Chave + "%");
+                    b.getComandoSQL().Parameters.AddWithValue("@nomeTWO", "%" + Chave + "%");
+
                 }
             }
 
-            b.getComandoSQL().Parameters.AddWithValue("@chave", "%"+Chave+"%");
-            b.getComandoSQL().Parameters.AddWithValue("@ativo", Ativo);
+            b.getComandoSQL().Parameters.AddWithValue("@ativoONE", Ativo);
+            b.getComandoSQL().Parameters.AddWithValue("@ativoTWO", Ativo);
+            b.getComandoSQL().Parameters.AddWithValue("@regionalONE", Regiao);
+            b.getComandoSQL().Parameters.AddWithValue("@regionalTWO", Regiao);
 
             DataTable dt = b.ExecutaSelect();
 
@@ -321,7 +441,7 @@ namespace ProjetoAtivos.DAO
         {
             b.getComandoSQL().Parameters.Clear();
 
-            b.getComandoSQL().CommandText = @"select a.ati_codigo, a.ati_placa, a.ati_descricao, a.ati_estado, a.ati_observacao, a.ati_tag, a.ati_marca, a.ati_modelo,                                         a.ati_numeroserie, a.ati_stativo, a.ati_valor, tp.tpa_codigo, tp.tpa_descricao, s.sal_codigo, s.sal_descricao from Ativos a
+            b.getComandoSQL().CommandText = @"select a.ati_codigo, a.ati_placa, a.ati_descricao, a.ati_estado, a.ati_observacao, a.ati_tag, a.ati_marca, a.ati_modelo,                                         a.ati_numeroserie, a.ati_stativo, a.ati_valor, tp.tpa_codigo, tp.tpa_descricao, tp.tpa_valor, s.sal_codigo, s.sal_descricao from Ativos a
                                               inner join Tipo_Ativo tp on tp.tpa_codigo = a.tpa_codigo
                                               inner join Sala s on s.sal_codigo = a.sal_codigo
                                               where a.ati_codigo = @codigo and a.ati_stativo = 1;";
@@ -382,7 +502,7 @@ namespace ProjetoAtivos.DAO
             Dados = new
             {
                 Quantidade = BuscarCountImagem(),
-                QuantidadeTotal = BuscarCountTotal()
+                QuantidadeTotal = BuscarCountTotal() - BuscarCountImagem()
             };
 
             return Dados == null ? null : Dados;

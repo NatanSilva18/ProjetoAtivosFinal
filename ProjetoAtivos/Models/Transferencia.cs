@@ -274,7 +274,7 @@ namespace ProjetoAtivos.Models
                     this.FilialOrigem = new FilialDAO().BuscarFilialEmail(this.FilialOrigem.GetCodigo());
                     this.FilialDestino = new FilialDAO().BuscarFilialEmail(this.FilialDestino.GetCodigo());
 
-                    string dest = FilialOrigem.GetResponsavel().GetEmail();
+                    string dest = FilialOrigem.GetRegional().GetPessoa().GetEmail();
                     string dest2 = FilialDestino.GetRegional().GetPessoa().GetEmail();
 
 
@@ -325,8 +325,8 @@ namespace ProjetoAtivos.Models
                 t.FilialOrigem = new FilialDAO().BuscarFilialEmail(t.FilialOrigem.GetCodigo());
                 t.FilialDestino = new FilialDAO().BuscarFilialEmail(t.FilialDestino.GetCodigo());
 
-                string dest = t.FilialOrigem.GetResponsavel().GetEmail();
-                string dest2 = t.FilialDestino.GetResponsavel().GetEmail();
+                string dest = t.FilialOrigem.GetRegional().GetPessoa().GetEmail();
+                string dest2 = t.FilialDestino.GetRegional().GetPessoa().GetEmail();
 
                 var result = EnviarEmail("m2ntech.20@gmail.com", "ParebemSystem", dest, "Pare bem Ativos - Aprovação Origem", "Ativo Aprovado com Sucesso, Seguirá para se aprovado no Destino...");
                 var result2 = EnviarEmail("m2ntech.20@gmail.com", "ParebemSystem", dest, "Pare bem Ativos - Aprovação Origem", "Ativo Aprovado com Sucesso, Seguirá para se aprovado no Destino...");
@@ -346,7 +346,7 @@ namespace ProjetoAtivos.Models
                 this.FilialOrigem = new FilialDAO().BuscarFilialEmail(this.FilialOrigem.GetCodigo());
                 this.FilialDestino = new FilialDAO().BuscarFilialEmail(this.FilialDestino.GetCodigo());
 
-                string dest = FilialOrigem.GetResponsavel().GetEmail();
+                string dest = FilialOrigem.GetRegional().GetPessoa().GetEmail();
                 string dest2 = FilialDestino.GetRegional().GetPessoa().GetEmail();
 
 

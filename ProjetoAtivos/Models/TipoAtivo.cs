@@ -8,18 +8,21 @@ namespace ProjetoAtivos.Models
     {
         private int Codigo;
         private string Descricao;
+        private double Valor;
         private Boolean StAtivo;
 
         public TipoAtivo()
         {
             this.Codigo = 0;
             this.Descricao = "";
+            this.Valor = 0; 
             this.StAtivo = true;
         }
-        public TipoAtivo(int Codigo, string Descricao, Boolean StAtivo)
+        public TipoAtivo(int Codigo, string Descricao, double Valor, Boolean StAtivo)
         {
             this.Codigo = Codigo;
             this.Descricao = Descricao;
+            this.Valor = Valor;
             this.StAtivo = StAtivo;
         }
         public int GetCodigo()
@@ -38,6 +41,14 @@ namespace ProjetoAtivos.Models
         {
             this.Descricao = Descricao;
         }
+        public double GetValor()
+        {
+            return this.Valor;
+        }
+        public void SetValor(double Valor)
+        {
+            this.Valor = Valor;
+        }
         public Boolean GetStAtivo()
         {
             return this.StAtivo;
@@ -46,7 +57,6 @@ namespace ProjetoAtivos.Models
         {
             this.StAtivo = StAtivo;
         }
-
         public Boolean Gravar()
         {
             if (this.Descricao != "")

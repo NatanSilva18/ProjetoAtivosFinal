@@ -26,6 +26,7 @@ namespace ProjetoAtivos.DAO
                                               row["fil_razao"].ToString(),
                                               row["fil_cnpj"].ToString(),
                                               Convert.ToBoolean(row["fil_stativo"]),
+                                               Convert.ToInt32(row["end_codigo"]),
                                               row["end_logradouro"].ToString(),
                                               Convert.ToInt32(row["end_numero"]),
                                               row["end_referencia"].ToString(),
@@ -94,22 +95,23 @@ namespace ProjetoAtivos.DAO
             }
             else
             {
-                Endereco end = Filial.GetEndereco();
                 EnderecoDAO ctlEndereco = new EnderecoDAO();
-                int Codigo = ctlEndereco.Gravar(end);
+                
+
+                int Codigo = ctlEndereco.Gravar(Filial.GetEndereco());
 
                 if (Codigo > 0)
                 {
                     b.getComandoSQL().Parameters.Clear();
 
-                    b.getComandoSQL().CommandText = @"update Filial set fil_razao = @razao, fil_cnpj = @cnpj, fil_stativo = @ativo, pes_codigo = @codigoPes where fil_codigo = @codigo;";
+                    b.getComandoSQL().CommandText = @"update Filial set fil_razao = @razao, fil_cnpj = @cnpj, fil_stativo = @ativo, pes_codigo = @codigoPes, reg_codigo = @regional where fil_codigo = @codigo;";
 
                     b.getComandoSQL().Parameters.AddWithValue("@razao", Filial.GetRazao());
                     b.getComandoSQL().Parameters.AddWithValue("@cnpj", Filial.GetCnpj());
                     b.getComandoSQL().Parameters.AddWithValue("@ativo", Filial.GetStativo());
                     b.getComandoSQL().Parameters.AddWithValue("@codigo", Filial.GetCodigo());
                     b.getComandoSQL().Parameters.AddWithValue("@codigoPes", Filial.GetResponsavel().GetCodigo());
-
+                    b.getComandoSQL().Parameters.AddWithValue("@regional", Filial.GetRegional().GetCodigo());
 
                     OK = b.ExecutaComando(true) == 1;
 
@@ -146,7 +148,7 @@ namespace ProjetoAtivos.DAO
         {
             b.getComandoSQL().Parameters.Clear();
 
-            b.getComandoSQL().CommandText = @"select f.fil_codigo, f.fil_razao, f.fil_cnpj, f.fil_stativo, e.end_logradouro, e.end_numero, e.end_referencia, e.end_bairro,  e.end_cep,                                          e.end_cidade, e.end_estado, p.pes_codigo, p.pes_nome, r.reg_codigo, r.reg_descricao, r.reg_stativo
+            b.getComandoSQL().CommandText = @"select f.fil_codigo, f.fil_razao, f.fil_cnpj, f.fil_stativo,e.end_codigo, e.end_logradouro, e.end_numero, e.end_referencia, e.end_bairro,  e.end_cep,                                          e.end_cidade, e.end_estado, p.pes_codigo, p.pes_nome, r.reg_codigo, r.reg_descricao, r.reg_stativo
                                               from Filial f 
                                               inner join Endereco e on f.end_codigo = e.end_codigo
                                               inner join Pessoa p on f.pes_codigo = p.pes_codigo
@@ -166,7 +168,7 @@ namespace ProjetoAtivos.DAO
         {
             b.getComandoSQL().Parameters.Clear();
 
-            b.getComandoSQL().CommandText = @"select f.fil_codigo, f.fil_razao, f.fil_cnpj, f.fil_stativo, e.end_logradouro, e.end_numero, e.end_referencia, e.end_bairro,  e.end_cep,                                          e.end_cidade, e.end_estado, p.pes_codigo, p.pes_nome, r.reg_codigo, r.reg_descricao, r.reg_stativo
+            b.getComandoSQL().CommandText = @"select f.fil_codigo, f.fil_razao, f.fil_cnpj, f.fil_stativo,e.end_codigo, e.end_logradouro, e.end_numero, e.end_referencia, e.end_bairro,  e.end_cep,                                          e.end_cidade, e.end_estado, p.pes_codigo, p.pes_nome, r.reg_codigo, r.reg_descricao, r.reg_stativo
                                               from Filial f 
                                               inner join Endereco e on f.end_codigo = e.end_codigo
                                               inner join Pessoa p on f.pes_codigo = p.pes_codigo
@@ -186,7 +188,7 @@ namespace ProjetoAtivos.DAO
         {
             b.getComandoSQL().Parameters.Clear();
 
-            b.getComandoSQL().CommandText = @"select f.fil_codigo, f.fil_razao, f.fil_cnpj, f.fil_stativo, e.end_logradouro, e.end_numero, e.end_referencia, e.end_bairro,  e.end_cep,                                          
+            b.getComandoSQL().CommandText = @"select f.fil_codigo, f.fil_razao, f.fil_cnpj, f.fil_stativo, e.end_codigo, e.end_logradouro, e.end_numero, e.end_referencia, e.end_bairro,  e.end_cep,              
                                                 e.end_cidade, e.end_estado, p.pes_codigo, p.pes_nome, r.reg_codigo, 
                                                 r.reg_descricao, r.reg_stativo, p.pes_email, pr.pes_email as emailReg, pr.pes_nome as gerente
                                               from Filial f 
@@ -233,7 +235,7 @@ namespace ProjetoAtivos.DAO
         {
             b.getComandoSQL().Parameters.Clear();
 
-            b.getComandoSQL().CommandText = @"select f.fil_codigo, f.fil_razao, f.fil_cnpj, f.fil_stativo, e.end_logradouro, e.end_numero, e.end_referencia,  e.end_bairro,  e.end_cep,                                          e.end_cidade, e.end_estado, p.pes_codigo, p.pes_nome, r.reg_codigo, r.reg_descricao
+            b.getComandoSQL().CommandText = @"select f.fil_codigo, f.fil_razao, f.fil_cnpj, f.fil_stativo,e.end_codigo, e.end_logradouro, e.end_numero, e.end_referencia,  e.end_bairro,  e.end_cep,                                          e.end_cidade, e.end_estado, p.pes_codigo, p.pes_nome, r.reg_codigo, r.reg_descricao
                                               from Filial f 
                                               inner join Endereco e on f.end_codigo = e.end_codigo
                                               inner join Pessoa p on f.pes_codigo = p.pes_codigo
@@ -257,7 +259,7 @@ namespace ProjetoAtivos.DAO
             {
                 if (Chave == null)
                 {
-                    b.getComandoSQL().CommandText = @"select f.fil_codigo, f.fil_razao, f.fil_cnpj, f.fil_stativo, e.end_logradouro, e.end_numero, e.end_referencia, e.end_bairro,  e.end_cep,                                      e.end_cidade, e.end_estado, p.pes_codigo, p.pes_nome, r.reg_codigo, r.reg_descricao, r.reg_stativo
+                    b.getComandoSQL().CommandText = @"select f.fil_codigo, f.fil_razao, f.fil_cnpj, f.fil_stativo, e.end_codigo, e.end_logradouro, e.end_numero, e.end_referencia, e.end_bairro,  e.end_cep,                                      e.end_cidade, e.end_estado, p.pes_codigo, p.pes_nome, r.reg_codigo, r.reg_descricao, r.reg_stativo
                                                       from Filial f 
                                                       inner join Endereco e on f.end_codigo = e.end_codigo
                                                       inner join Pessoa p on f.pes_codigo = p.pes_codigo
@@ -267,7 +269,7 @@ namespace ProjetoAtivos.DAO
                 }
                 else
                 {
-                    b.getComandoSQL().CommandText = @"select f.fil_codigo, f.fil_razao, f.fil_cnpj, f.fil_stativo, e.end_logradouro, e.end_numero, e.end_referencia, e.end_bairro, e.end_cep,                                        e.end_cidade, e.end_estado, p.pes_codigo, p.pes_nome, r.reg_codigo, r.reg_descricao, r.reg_stativo
+                    b.getComandoSQL().CommandText = @"select f.fil_codigo, f.fil_razao, f.fil_cnpj, f.fil_stativo, e.end_codigo, e.end_logradouro, e.end_numero, e.end_referencia, e.end_bairro, e.end_cep,                                        e.end_cidade, e.end_estado, p.pes_codigo, p.pes_nome, r.reg_codigo, r.reg_descricao, r.reg_stativo
                                                       from Filial f 
                                                       inner join Endereco e on f.end_codigo = e.end_codigo
                                                       inner join Pessoa p on f.pes_codigo = p.pes_codigo

@@ -16,9 +16,9 @@ namespace ProjetoAtivos.Controllers
             return View();
         }
 
-        public JsonResult Gravar(int Codigo, string Descricao, Boolean StAtivo)
+        public JsonResult Gravar(int Codigo, string Descricao, double Valor, Boolean StAtivo)
         {
-            if (ctlTipoAtivo.Gravar(Codigo, Descricao, StAtivo))
+            if (ctlTipoAtivo.Gravar(Codigo, Descricao, Valor, StAtivo))
                 return Json("");
             else
                 return Json("Erro ao Gravar o Registro!");
@@ -37,6 +37,7 @@ namespace ProjetoAtivos.Controllers
                     {
                         Codigo = L.GetCodigo(),
                         Descricao = L.GetDescricao(),
+                        Valor = L.GetValor(),
                         StAtivo = L.GetStAtivo()
                     });
                 }
@@ -67,6 +68,7 @@ namespace ProjetoAtivos.Controllers
             {
                 Codigo = L.GetCodigo(),
                 Descricao = L.GetDescricao(),
+                Valor = L.GetValor(),
                 StAtivo = L.GetStAtivo(),
 
             });

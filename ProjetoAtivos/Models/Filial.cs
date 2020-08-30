@@ -44,23 +44,23 @@ namespace ProjetoAtivos.Models
             this.Responsavel = new Pessoa(Responsavel);
             this.Regional = new Regional(Regional);
         }
-        public Filial(int Codigo, string Razao, string Cnpj, Boolean StAtivo, string EndLogradouro, int EndNumero, string EndReferencia, string EndBairro, string EndCep, string EndCidade, string EndEstado, int Responsavel, int Regional)
+        public Filial(int Codigo, string Razao, string Cnpj, Boolean StAtivo,int Endereco, string EndLogradouro, int EndNumero, string EndReferencia, string EndBairro, string EndCep, string EndCidade, string EndEstado, int Responsavel, int Regional)
         {
             this.Codigo = Codigo;
             this.Razao = Razao;
             this.Cnpj = Cnpj;
             this.StAtivo = StAtivo;
-            this.Endereco = new Endereco(0, EndLogradouro, EndNumero, EndReferencia, EndBairro, EndCep, EndCidade, EndEstado);
+            this.Endereco = new Endereco(Endereco, EndLogradouro, EndNumero, EndReferencia, EndBairro, EndCep, EndCidade, EndEstado);
             this.Responsavel = new Pessoa(Responsavel);
             this.Regional = new Regional(Regional);
         }
-        public Filial(int Codigo, string Razao, string Cnpj, Boolean StAtivo, string EndLogradouro, int EndNumero, string EndReferencia, string EndBairro, string EndCep, string EndCidade, string EndEstado, int Responsavel, string RespNome, int Regional, string RegDescicao, Boolean RegAtivo)
+        public Filial(int Codigo, string Razao, string Cnpj, Boolean StAtivo, int Endereco, string EndLogradouro, int EndNumero, string EndReferencia, string EndBairro, string EndCep, string EndCidade, string EndEstado, int Responsavel, string RespNome, int Regional, string RegDescicao, Boolean RegAtivo)
         {
             this.Codigo = Codigo;
             this.Razao = Razao;
             this.Cnpj = Cnpj;
             this.StAtivo = StAtivo;
-            this.Endereco = new Endereco(0, EndLogradouro, EndNumero, "", EndBairro, EndCep, EndCidade, EndEstado);
+            this.Endereco = new Endereco(Endereco, EndLogradouro, EndNumero, "", EndBairro, EndCep, EndCidade, EndEstado);
             this.Responsavel = new Pessoa(Responsavel, RespNome);
             this.Regional = new Regional(Regional, RegDescicao, RegAtivo, 0);
         }

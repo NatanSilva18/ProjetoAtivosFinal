@@ -118,7 +118,7 @@ function Nivel(Nivel) {
         return '<span class="badge badge-success">Administrador</span>';
     else
         return '<span class="badge badge-info">Comum</span>';
-}
+};
 function PreencherTabela(dados) {
     var txt = '<thead>\
             <tr class="thead-light">\
@@ -269,6 +269,8 @@ function Gravar() {
     var TipoUsuario = $("#cbbTipoUser").val();
     var CodigoPessoa = $("#cbbPessoas").val();
     var Operacao = $("#txtOperacao").val();
+    var ConfSenha = document.getElementById('txtConfSenha');
+    if (Senha == ConfSenha.value) {
         $.ajax({
             type: 'POST',
             url: '/Usuario/Gravar',
@@ -310,6 +312,12 @@ function Gravar() {
                 $("#divLoading").hide(400);
             }
         });
+    }
+    else {
+        ConfSenha.setCustomValidity("Senhas Não Conferem!");
+        return false;
+    }
+       
 };
 
 function ExibirSenha(Campo, NameIcon) {

@@ -23,6 +23,7 @@ namespace ProjetoAtivos.DAO
                          select new TipoAtivo(
                               Convert.ToInt32(row["tpa_codigo"]),
                                               row["tpa_descricao"].ToString(),
+                                              Convert.ToDouble(row["tpa_valor"]),
                                               Convert.ToBoolean(row["tpa_stativo"])
                          )).ToList();
             return dados;
@@ -36,6 +37,7 @@ namespace ProjetoAtivos.DAO
                          select new TipoAtivo(
                               Convert.ToInt32(row["tpa_codigo"]),
                                               row["tpa_descricao"].ToString(),
+                                              Convert.ToDouble(row["tpa_valor"]),
                                               Convert.ToBoolean(row["tpa_stativo"])
                          )).ToList();
 
@@ -48,19 +50,18 @@ namespace ProjetoAtivos.DAO
 
             if (tipoAtivo.GetCodigo() == 0)
             {
-                b.getComandoSQL().CommandText = @"insert into Tipo_Ativo (tpa_descricao, tpa_stativo) values(@descricao, @ativo);";
+                b.getComandoSQL().CommandText = @"insert into Tipo_Ativo (tpa_descricao,tpa_valor, tpa_stativo) values(@descricao,@valor, @ativo);";
 
             }
             else
             {
-                b.getComandoSQL().CommandText = @"update Tipo_Ativo set tpa_descricao = @descricao, tpa_stativo = @ativo where tpa_codigo = @codigo;";
+                b.getComandoSQL().CommandText = @"update Tipo_Ativo set tpa_descricao = @descricao, tpa_valor = @valor, tpa_stativo = @ativo where tpa_codigo = @codigo;";
                 b.getComandoSQL().Parameters.AddWithValue("@codigo", tipoAtivo.GetCodigo());
             }
 
             b.getComandoSQL().Parameters.AddWithValue("@descricao", tipoAtivo.GetDescricao());
             b.getComandoSQL().Parameters.AddWithValue("@ativo", tipoAtivo.GetStAtivo());
-
-
+            b.getComandoSQL().Parameters.AddWithValue("@valor", tipoAtivo.GetValor());
 
 
             return b.ExecutaComando() == 1;
@@ -89,7 +90,7 @@ namespace ProjetoAtivos.DAO
         {
             b.getComandoSQL().Parameters.Clear();
 
-            b.getComandoSQL().CommandText = @"select tpa_codigo, tpa_descricao, tpa_stativo from Tipo_Ativo where tpa_codigo = @codigo and tpa_stativo = 1;";
+            b.getComandoSQL().CommandText = @"select tpa_codigo, tpa_descricao, tpa_valor, tpa_stativo from Tipo_Ativo where tpa_codigo = @codigo and tpa_stativo = 1;";
             b.getComandoSQL().Parameters.AddWithValue("@codigo", Codigo);
 
             DataTable dt = b.ExecutaSelect();
@@ -104,7 +105,7 @@ namespace ProjetoAtivos.DAO
         {
             b.getComandoSQL().Parameters.Clear();
 
-            b.getComandoSQL().CommandText = @"select tpa_codigo, tpa_descricao, tpa_stativo from Tipo_Ativo where tpa_descricao =  @descricao and tpa_stativo = 1;";
+            b.getComandoSQL().CommandText = @"select tpa_codigo, tpa_descricao, tpa_valor, tpa_stativo from Tipo_Ativo where tpa_descricao =  @descricao and tpa_stativo = 1;";
             b.getComandoSQL().Parameters.AddWithValue("@descricao", Descricao);
 
             DataTable dt = b.ExecutaSelect();
@@ -124,12 +125,12 @@ namespace ProjetoAtivos.DAO
             {
                 if (Chave == null)
                 {
-                    b.getComandoSQL().CommandText = @"select tpa_codigo, tpa_descricao, tpa_stativo from Tipo_Ativo where tpa_stativo = @ativo order by tpa_descricao;";
+                    b.getComandoSQL().CommandText = @"select tpa_codigo, tpa_descricao, tpa_valor, tpa_stativo from Tipo_Ativo where tpa_stativo = @ativo order by tpa_descricao;";
 
                 }
                 else
                 {
-                    b.getComandoSQL().CommandText = @"select tpa_codigo, tpa_descricao, tpa_stativo from Tipo_Ativo where tpa_stativo = @ativo and tpa_descricao like @descricao order by tpa_descricao;";
+                    b.getComandoSQL().CommandText = @"select tpa_codigo, tpa_descricao, tpa_valor, tpa_stativo from Tipo_Ativo where tpa_stativo = @ativo and tpa_descricao like @descricao order by tpa_descricao;";
                     b.getComandoSQL().Parameters.AddWithValue("@descricao", "%" + Chave + "%");
                 }
             }

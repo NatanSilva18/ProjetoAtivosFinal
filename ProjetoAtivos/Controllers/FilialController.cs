@@ -15,11 +15,11 @@ namespace ProjetoAtivos.Controllers
         {
             return View();
         }
-        public JsonResult Gravar(int Codigo, string Razao, string Cnpj, Boolean StAtivo, string EndLogradouro, int EndNumero, string EndReferencia, string EndBairro, string EndCep, string EndCidade, string EndEstado, int Responsavel, int Regional, int Operacao)
+        public JsonResult Gravar(int Codigo, string Razao, string Cnpj, Boolean StAtivo, int Endereco, string EndLogradouro, int EndNumero, string EndReferencia, string EndBairro, string EndCep, string EndCidade, string EndEstado, int Responsavel, int Regional, int Operacao)
         {
             int Retorno = 0;
 
-            Retorno = ctlFilial.Gravar(Codigo, Razao, Cnpj, StAtivo, EndLogradouro, EndNumero, EndReferencia, EndBairro, EndCep, EndCidade, EndEstado, Responsavel, Regional);
+            Retorno = ctlFilial.Gravar(Codigo, Razao, Cnpj, StAtivo, Endereco, EndLogradouro, EndNumero, EndReferencia, EndBairro, EndCep, EndCidade, EndEstado, Responsavel, Regional);
 
             if (Retorno == 10)
                 return Json("");
@@ -71,7 +71,8 @@ namespace ProjetoAtivos.Controllers
                 Referencia = L.GetEndereco().GetReferencia(),
                 Bairro = L.GetEndereco().GetBairro(),
                 Cep = L.GetEndereco().GetCep(),
-                Cidade = L.GetEndereco().GetCidade()
+                Cidade = L.GetEndereco().GetCidade(),
+                Endereco = L.GetEndereco().GetCodigo()
             });
 
             return Dado == null ? Json("") : Json(Dado);

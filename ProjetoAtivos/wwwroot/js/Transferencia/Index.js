@@ -24,18 +24,6 @@ function CarregarFiliais() {
                 if (result != null && result.length > 0) {
                     for (var i = 0; i < result.length; i++) {
 
-                        /*var opt = document.createElement("option");
-                        opt.value = result[i].codigo;
-                        opt.text = result[i].razao;
-
-                        var opt2 = document.createElement("option");
-                        opt2.value = result[i].codigo;
-                        opt2.text = result[i].razao;
-
-                        cbbFilialOrigem.add(opt2, cbbFilialOrigem.options[i + 1]);
-                        cbbFilialDestino.add(opt, cbbFilialDestino.options[i + 1]);*/
-
-
                         $('#cbbFilialOrigem').append('<option value="' + result[i].codigo + '">' + result[i].razao + '</option>');
                         $('#cbbFilialOrigemPesquisa').append('<option value="' + result[i].codigo + '">' + result[i].razao + '</option>');
                         $('#cbbFilialDestinoPesquisa').append('<option value="' + result[i].codigo + '">' + result[i].razao + '</option>');
@@ -237,7 +225,7 @@ function BuscarAtivos(Combo) {
 
                             var opt = document.createElement("option");
                             opt.value = result[i].codigo;
-                            opt.text = result[i].descricao;
+                            opt.text = result[i].placa+'-'+ result[i].descricao;
                             cbbAtivos.add(opt, cbbAtivos.options[i + 1]);
                             //$('#cbbAtivos').append('<option value="' + result[i].codigo + '">' + result[i].descricao + '</option>');
 
@@ -332,7 +320,7 @@ function LimparTransferencia() {
     document.getElementById('documentos').classList.remove('active');
     document.getElementById('confirmar').classList.remove('active');
 
-    $('#nav-OrigemDestino').tab('show')
+    $('#nav-OrigemDestino').tab('show');
     document.getElementById('nav-ativos').classList.remove('show');
     document.getElementById('nav-documentos').classList.remove('show');
     document.getElementById('nav-confirmar').classList.remove('show');
@@ -381,13 +369,8 @@ function MontarTableConfirmar(result, Imagem, aprov = false) {
 }
 
 function AdicionarAtivos(rec = '') {
-        if (rec == 'Rec')
-            document.getElementById('btnSalvarFotosReceber').innerHTML = '<div class="spinner-border text-primary" role="status"><span class="sr-only" > Loading...</span></div>';
 
-
-    document.getElementById('btnSalvarFotos').innerHTML = '<div class="spinner-border text-primary" role="status"><span class="sr-only" > Loading...</span></div>';
     var Imagem = SalvarFotos(rec);
-    $("#divLoading").show(300);
 
     if (Imagem != "") {
         var Codigo = $('#cbbAtivos' + rec).val();
@@ -396,7 +379,7 @@ function AdicionarAtivos(rec = '') {
         var Linhas = Tabela.getElementsByTagName('tr');
 
         $("#tbbItensTransferencia" + rec).show(300)
-        $("#divLoading").show(300);
+        $("#divLoading").show();
         $.ajax({
             type: 'POST',
             url: '/Ativo/BuscarAtivo',
@@ -432,6 +415,8 @@ function AdicionarAtivos(rec = '') {
 
                     $("#tableItensTransferencia" + rec).html(txt);
                     $("#tableConfirmarItens" + rec).html(MontarTableConfirmar(result, Imagem));
+                    $("#divLoading").hide(300);
+
                 }
                 else {
                     var Validar = document.getElementById("" + result.codigo);
@@ -454,31 +439,40 @@ function AdicionarAtivos(rec = '') {
                     }
 
                     $("#tableItensTransferencia" + rec + " tbody").append(txt);
+                    $("#divLoading").hide(300);
 
                 }
 
                 if (rec == '') {
                     SegundaEtapa();
                     document.getElementById('btnSalvarFotos').innerHTML = 'Adicionar';
+                    $("#divLoading").hide(300);
+
                 }
                 else {
                     $("#cbbAtivosRec option[value='" + result.codigo + "']").remove();
                     $('#cbbAtivosRec').selectpicker('refresh');
                     VerificaGravaRec();
                     document.getElementById('btnSalvarFotosReceber').innerHTML = 'Adicionar';
-
+                    $("#divLoading").hide(300);
                 }
 
             },
             error: function (XMLHttpRequest, txtStatus, errorThrown) {
                 alert("Status: " + txtStatus); alert("Error: " + errorThrown);
+                $("#divLoading").hide(300);
             }
         });
-        $("#divLoading").hide(300);
         document.getElementById("fuArquivo" + rec).value = "";
         document.getElementById("labelFoto" + rec).innerHTML = 'Selecione uma Foto';
         $('#cbbAtivos' + rec).selectpicker('val', '');
-
+    }
+    else {
+        if (rec == 'Rec')
+            document.getElementById('btnSalvarFotosReceber').innerHTML = 'Adicionar';
+        else {
+            document.getElementById('btnSalvarFotos').innerHTML = 'Adicionar';
+        }
     }
 };
 
@@ -546,57 +540,66 @@ function VerificaGravaRec() {
 }
 
 function SalvarFotos(rec = "") {
+
     var arquivos = document.getElementById("fuArquivo" + rec);
     var txr2 = "";
-
-    var formData = new FormData();
-    formData.append("id", "1");
-    formData.append("nome", "foto");
-
-    for (var i = 0; i < arquivos.files.length; i++) {
-        if (arquivos.files[i].size > 0) {
-            formData.append("arquivo" + i, arquivos.files[i]);
+    if (arquivos.files.length > 0) {
+        if (rec == 'Rec')
+            document.getElementById('btnSalvarFotosReceber').innerHTML = '<div class="spinner-border text-primary" role="status"><span class="sr-only" > Loading...</span></div>';
+        else {
+            document.getElementById('btnSalvarFotos').innerHTML = '<div class="spinner-border text-primary" role="status"><span class="sr-only" > Loading...</span></div>';
         }
+        $("#divLoading").show(400);
+
+        var formData = new FormData();
+        formData.append("id", "1");
+        formData.append("nome", "foto");
+
+        for (var i = 0; i < arquivos.files.length; i++) {
+            if (arquivos.files[i].size > 0) {
+                formData.append("arquivo" + i, arquivos.files[i]);
+            }
+        }
+
+        var qtd = parseInt($("#qtdAtivos" + rec).val())
+        $("#qtdAtivos" + rec).val(qtd + 1);
+
+        $.ajax({
+            type: 'POST',
+            url: '/Ativo/ReceberDados',
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            async: false,
+            success: function (response) {
+                $.each(response, function () {
+                    if (this.id >= 0) {
+                        txr2 = 'data:image/jpg;base64,' + this.dados;
+                    }
+                    if (this.id == -1) {
+                        Mensagem("divAlerta" + rec, this.dados);
+                    }
+
+                    if (this.id == -2) {
+                        Mensagem("divAlerta" + rec, this.dados);
+                    }
+
+                    if (rec == '') {
+                        document.getElementById('btnSalvarFotos').innerHTML = 'Adicionar';
+                    }
+                    else {
+                        document.getElementById('btnSalvarFotosReceber').innerHTML = 'Adicionar';
+                    }
+                    $("#divLoading").hide();
+                });
+            },
+            error: function (error) {
+                alert(error);
+                $("#divLoading").hide(2000);
+            }
+        });
     }
-
-    var qtd = parseInt($("#qtdAtivos" + rec).val())
-    $("#qtdAtivos" + rec).val(qtd + 1);
-
-    $.ajax({
-        type: 'POST',
-        url: '/Ativo/ReceberDados',
-        data: formData,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        async: false,
-        success: function (response) {
-            $.each(response, function () {
-                if (this.id >= 0) {
-                    txr2 = 'data:image/jpg;base64,' + this.dados;
-                }
-                if (this.id == -1) {
-                    Mensagem("divAlerta" + rec, this.dados);
-                }
-
-                if (this.id == -2) {
-                    Mensagem("divAlerta" + rec, this.dados);
-                }
-
-                if (rec == '') {
-                    document.getElementById('btnSalvarFotos').innerHTML = 'Adicionar';
-                }
-                else {
-                    document.getElementById('btnSalvarFotosReceber').innerHTML = 'Adicionar';
-                }
-                $("#divLoading").hide(300);
-            });
-        },
-        error: function (error) {
-            alert(error);
-        }
-    });
-
     SegundaEtapa();
     return txr2;
 };
@@ -878,7 +881,7 @@ function Gravar() {     //gravar transferencia
 
 
 function ConfirmarCampos(dados = null) {
-    $("#tbbConfirmarItens").show();
+    $("#tbbConfirmarItens").show(1000);
 
     var Origem;
     var ResponsavelOrigem;
@@ -1018,8 +1021,6 @@ function ConfirmarCampos(dados = null) {
             $("#InfoAprovGerente").append(htm);
         }
     }
-    $("#divLoading").hide(300);
-
 };
 
 function funcaoTable(NameTable) {
@@ -1167,7 +1168,9 @@ function alterar(cod) {
 }
 
 function Receber(dados) {   //preencher combo receber ativos...
+
     LimparCombo('cbbAtivosRec');
+    LimparCombo('cbbSalaDestino');
     $("#ReceberAtivoDestino").show(300);
     BuscarSalasReceber(dados.codigoFilialDestino);
 
@@ -1176,11 +1179,11 @@ function Receber(dados) {   //preencher combo receber ativos...
 
         var opt = document.createElement("option");
         opt.value = dados.ativos[i].codigo;
-        opt.text = dados.ativos[i].descricao;
+        opt.text =dados.ativos[i].placa+'-'+ dados.ativos[i].descricao;
         cbbTransfAtivos.add(opt, cbbTransfAtivos.options[i]);
     }
     $('#cbbAtivosRec').selectpicker('refresh');
-    $("#divLoading").hide(300);
+    $('#cbbSalaDestino').selectpicker('refresh');
 
 };
 
@@ -1283,9 +1286,7 @@ function MostraTransf(transf, rec = 0) {
     $("#confirmarDocsAprov").html('');
     $("#tbbConfirmarItensAprov").hide();
     $("#tbbConfirmarDocsAprov").hide();
-
-
-    $("#divLoading").show();
+    $("#divLoading").show(400);
 
     //$("#HcdTransfAprov").val(transf);
 
@@ -1299,14 +1300,17 @@ function MostraTransf(transf, rec = 0) {
 
                 if (rec != 0) {
                     Receber(result);
+                    $("#divLoading").hide(1400);
                 }
-                else
+                else {
                     ConfirmarCampos(result);
+                    $("#divLoading").hide(1400);
+                }
             }
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(1400);
         }
     });
 }

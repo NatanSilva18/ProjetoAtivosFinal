@@ -5,6 +5,66 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\img\0-0-134162700_1GG.jpg" />
+    <Content Remove="wwwroot\img\0-0-City-Life-4K-Wallpaper-3840x2160.jpg" />
+    <Content Remove="wwwroot\img\0-0-e3d863bd3807cddb0e4b6ac88c2fffb0.jpg" />
+    <Content Remove="wwwroot\img\0-0-f28b42b1d605db2e44cd4cb110d6eec9.jpg" />
+    <Content Remove="wwwroot\img\0-0-imagem1.jpg" />
+    <Content Remove="wwwroot\img\0-0-LHB645N_111017_d1_v1.jpg" />
+    <Content Remove="wwwroot\img\0-0-Manarola-Night-4K-Wallpaper-3840x2160.jpg" />
+    <Content Remove="wwwroot\img\0-0-manut.png" />
+    <Content Remove="wwwroot\img\0-0-Manutencao.png" />
+    <Content Remove="wwwroot\img\0-0-mu6500-design-medium.jpg" />
+    <Content Remove="wwwroot\img\0-0-sofa-4-lugares-canto-com-chaise-retratil-miro-velosuede-216m-15211739.jpg" />
+    <Content Remove="wwwroot\img\0-0-star-black.png" />
+    <Content Remove="wwwroot\img\0-0-star-primary.png" />
+    <Content Remove="wwwroot\img\0-0-star-warning.png" />
+    <Content Remove="wwwroot\img\0-0-WIN_20200505_21_39_26_Pro.jpg" />
+    <Content Remove="wwwroot\img\0-0-WIN_20200505_21_39_34_Pro.jpg" />
+    <Content Remove="wwwroot\img\0-1-Manutencao.png" />
+    <Content Remove="wwwroot\img\0-1-whts.png" />
+    <Content Remove="wwwroot\img\1-0-0-0-e3d863bd3807cddb0e4b6ac88c2fffb0.jpg" />
+    <Content Remove="wwwroot\img\1-0-11c25cd0-3d2f-48b5-a8fb-31fb0984015a.jfif" />
+    <Content Remove="wwwroot\img\1-0-234fd4400a.png" />
+    <Content Remove="wwwroot\img\1-0-77-779199_homework-homework-icon-png-transparent-png.png" />
+    <Content Remove="wwwroot\img\1-0-8855834_stock-vector-technology-circuit-diagram-network-background.jpg" />
+    <Content Remove="wwwroot\img\1-0-aniversario %2819%29.jpg" />
+    <Content Remove="wwwroot\img\1-0-back-top.png" />
+    <Content Remove="wwwroot\img\1-0-bg-pattern.jpg" />
+    <Content Remove="wwwroot\img\1-0-bg-patternOld.png" />
+    <Content Remove="wwwroot\img\1-0-City-Life-4K-Wallpaper-3840x2160.jpg" />
+    <Content Remove="wwwroot\img\1-0-concursoDesenho.jpg" />
+    <Content Remove="wwwroot\img\1-0-e3d863bd3807cddb0e4b6ac88c2fffb0.jpg" />
+    <Content Remove="wwwroot\img\1-0-imagem1.jpg" />
+    <Content Remove="wwwroot\img\1-0-Manarola-Night-4K-Wallpaper-3840x2160.jpg" />
+    <Content Remove="wwwroot\img\1-0-manut.png" />
+    <Content Remove="wwwroot\img\1-0-Manutencao.png" />
+    <Content Remove="wwwroot\img\1-0-Sem título.png" />
+    <Content Remove="wwwroot\img\1-0-star-black.png" />
+    <Content Remove="wwwroot\img\1-0-star-primary.png" />
+    <Content Remove="wwwroot\img\1-0-star-warning.png" />
+    <Content Remove="wwwroot\img\1-0-whts.png" />
+    <Content Remove="wwwroot\img\10-0-star-warning.png" />
+    <Content Remove="wwwroot\img\13-0-star-black.png" />
+    <Content Remove="wwwroot\img\13-0-star-primary.png" />
+    <Content Remove="wwwroot\img\13-0-star-success.png" />
+    <Content Remove="wwwroot\img\13-0-star-warning.png" />
+    <Content Remove="wwwroot\img\17-0-star-warning.png" />
+    <Content Remove="wwwroot\img\22-0-e3d863bd3807cddb0e4b6ac88c2fffb0.jpg" />
+    <Content Remove="wwwroot\img\22-0-Manutencao.png" />
+    <Content Remove="wwwroot\img\23-0-manut.png" />
+    <Content Remove="wwwroot\img\27-0-mu6500-design-medium.jpg" />
+    <Content Remove="wwwroot\img\3253-0-imagem1.jpg" />
+    <Content Remove="wwwroot\img\33-0-City-Life-4K-Wallpaper-3840x2160.jpg" />
+    <Content Remove="wwwroot\img\33-0-imagem1.jpg" />
+    <Content Remove="wwwroot\img\33-0-Manarola-Night-4K-Wallpaper-3840x2160.jpg" />
+    <Content Remove="wwwroot\img\3417-0-City-Life-4K-Wallpaper-3840x2160.jpg" />
+    <Content Remove="wwwroot\img\4414-0-Sem título.png" />
+    <Content Remove="wwwroot\img\6-0-Manarola-Night-4K-Wallpaper-3840x2160.jpg" />
+    <Content Remove="wwwroot\img\8-0-imagem1.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
 	<Folder Include="wwwroot\Docs\" />
   </ItemGroup>
 

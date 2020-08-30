@@ -31,6 +31,8 @@ function CarregarRegionais() {
             }
         });
     }
+    $('#cbbRegional').selectpicker('refresh');
+
 };
 
 function CarregarPessoas() {
@@ -62,6 +64,7 @@ function CarregarPessoas() {
             }
         });
     }
+    $('#cbbGerente').selectpicker('refresh');
 
 };
 
@@ -88,7 +91,7 @@ function LimparCampos() {
     $("#txtCidade").val("");
     $("#txtCep").val("");
     $("#cbbEstado").val("");
-
+    $("#txtEndereco").val(0);
     document.getElementById("staticBackdropLabel").innerHTML = "Cadastro de Filiais";
 
 };
@@ -109,7 +112,7 @@ function GerarRelatorio() {
 function GerarExcel() {
     var htmls = "";
     var uri = 'data:application/vnd.ms-excel;base64,';
-    var template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>';
+    var template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>';
     var base64 = function (s) {
         return window.btoa(unescape(encodeURIComponent(s)))
     };
@@ -291,7 +294,7 @@ function Gravar() {
     var EndBairro = $("#txtBairro").val();
     var EndCidade = $("#txtCidade").val();
     var EndEstado = $("#cbbEstado").val();
-
+    var Endereco = $("#txtEndereco").val();
 
 
     var StAtivo = $('#cbAtivo').is(':checked');
@@ -301,7 +304,7 @@ function Gravar() {
         type: 'POST',
         url: '/Filial/Gravar',
         data: {
-            Codigo: Codigo, Razao: Razao, Cnpj: Cnpj, StAtivo: StAtivo, EndReferencia: EndReferencia, EndLogradouro: EndLogradouro, EndNumero: EndNumero, EndCep: EndCep, EndBairro: EndBairro,
+            Codigo: Codigo, Razao: Razao, Cnpj: Cnpj, StAtivo: StAtivo, Endereco: Endereco, EndReferencia: EndReferencia, EndLogradouro: EndLogradouro, EndNumero: EndNumero, EndCep: EndCep, EndBairro: EndBairro,
             EndCidade: EndCidade, EndEstado: EndEstado, Responsavel: Responsavel, Regional: Regional, Operacao:Operacao
         },
         success: function (result) {
@@ -336,6 +339,7 @@ function Gravar() {
                 $("#divLoading").hide(400);
             }
             ObterFiliais();
+            LimparCampos();
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
@@ -416,8 +420,8 @@ function Alterar(Codigo) {
 
                 $("#txtId").val(result.codigo);
                 $("#txtOperacao").val(1);
-                $("#cbbRegional").val(result.regCodigo);
-                $("#cbbGerente").val(result.respCodigo);
+                $('#cbbRegional').selectpicker('val', result.regCodigo);
+                $('#cbbGerente').selectpicker('val', result.respCodigo);
                 $("#txtFilial").val(result.razao);
                 $("#txtCnpj").val(result.cnpj);
                 $("#txtLogradouro").val(result.logradouro);
@@ -425,7 +429,8 @@ function Alterar(Codigo) {
                 $("#txtBairro").val(result.bairro);
                 $("#txtCep").val(result.cep);
                 $("#txtCidade").val(result.cidade);
-                $("#cbbEstado").val(result.estado);
+                $('#cbbEstado').selectpicker('val', result.estado);
+                $("#txtEndereco").val(result.endereco);
             }
 
         },

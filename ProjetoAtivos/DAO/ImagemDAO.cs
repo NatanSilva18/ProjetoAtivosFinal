@@ -94,8 +94,6 @@ namespace ProjetoAtivos.DAO
 
         internal Boolean Excluir(int Codigo)
         {
-            
-
             if (new LocalizacaoDAO().Excluir(Codigo))
             {
                 b.getComandoSQL().Parameters.Clear();
@@ -107,7 +105,17 @@ namespace ProjetoAtivos.DAO
 
             return false;
         }
+        internal Boolean Alterar(Imagem Imagem)
+        {
+            byte[] Img = Encoding.UTF8.GetBytes(Imagem.GetFoto());
 
+            b.getComandoSQL().Parameters.Clear();
+            b.getComandoSQL().CommandText = @"update imagem set img_imagem = @imagem where img_codigo = @codigo";
+            b.getComandoSQL().Parameters.AddWithValue("@codigo", Imagem.GetCodigo());
+            b.getComandoSQL().Parameters.AddWithValue("@imagem", Img);
+
+            return b.ExecutaComando(true) == 1;
+        }
         internal bool Gravar(Imagem Imagem, int transf = 0)
         {
             int Codigo = 0;

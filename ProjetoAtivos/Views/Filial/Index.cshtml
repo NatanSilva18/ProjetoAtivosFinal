@@ -98,8 +98,8 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
                                             </div>
-                                            <select id="cbbRegional" name="cbbRegional" class="form-control" required>
-                                                <option value="" disabled selected></option>
+                                            <select id="cbbRegional" name="cbbRegional" class="form-control selectpicker" data-live-search="true" required>
+                                                <option value="" selected>Regional</option>
                                             </select>
                                         </div>
                                     </div>
@@ -111,8 +111,8 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-user"></i></div>
                                             </div>
-                                            <select id="cbbGerente" name="cbbGerente" class="form-control" required>
-                                                <option value="" disabled selected></option>
+                                            <select id="cbbGerente" name="cbbGerente" class="form-control selectpicker" data-live-search="true" required>
+                                                <option value="" selected>Responsavel</option>
                                             </select>
                                         </div>
                                     </div>
@@ -148,6 +148,7 @@
                             <h6>Endereço</h6>
                             <hr />
                             <div class="row">
+                                <input type="hidden" id="txtEndereco" name="txtEndereco" value="0"/>
                                 <div class="col-lg-5">
                                     <div class="form-group">
                                         <label for="txtLogradouro">Logradouro *</label>
@@ -155,7 +156,7 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-map-marker"></i></div>
                                             </div>
-                                            <input class="form-control" type="text" name="txtLogradouro" id="txtLogradouro" required autocomplete="off" maxlength="30" />
+                                            <input class="form-control" type="text" name="txtLogradouro" id="txtLogradouro"  autocomplete="off" maxlength="30" />
                                         </div>
 
                                     </div>
@@ -167,7 +168,7 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-map-marker"></i></div>
                                             </div>
-                                            <input class="form-control" type="number" name="txtNumero" id="txtNumero" required autocomplete="off" min="0" />
+                                            <input class="form-control" type="number" name="txtNumero" id="txtNumero"  autocomplete="off" min="0" />
                                         </div>
 
                                     </div>
@@ -179,7 +180,7 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-map-marker"></i></div>
                                             </div>
-                                            <input class="form-control" type="text" name="txtBairro" id="txtBairro" required autocomplete="off" maxlength="30" />
+                                            <input class="form-control" type="text" name="txtBairro" id="txtBairro"  autocomplete="off" maxlength="30" />
                                         </div>
 
                                     </div>
@@ -194,7 +195,7 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-map-marker"></i></div>
                                             </div>
-                                            <input class="form-control" type="text" name="txtCidade" id="txtCidade" required autocomplete="off" maxlength="30" />
+                                            <input class="form-control" type="text" name="txtCidade" id="txtCidade"  autocomplete="off" maxlength="30" />
                                         </div>
 
                                     </div>
@@ -206,7 +207,7 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-map-marker"></i></div>
                                             </div>
-                                            <input class="form-control" type="text" name="txtCep" id="txtCep" required autocomplete="off" maxlength="30" />
+                                            <input class="form-control" type="text" name="txtCep" id="txtCep"  autocomplete="off" maxlength="10" />
                                         </div>
 
                                     </div>
@@ -218,11 +219,35 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-map"></i></div>
                                             </div>
-                                            <select id="cbbEstado" name="cbbEstado" class="form-control" required>
-                                                <option value="" disabled selected></option>
-                                                <option value="São Paulo">São Paulo</option>
+                                            <select id="cbbEstado" name="cbbEstado" class="form-control selectpicker" data-live-search="true" >
+                                                <option value="" disabled selected>Selecione</option>
+                                                <option value="Acre">Acre</option>
+                                                <option value="Alagoas">Alagoas</option>
+                                                <option value="Amapá">Amapá</option>
+                                                <option value="Amazonas">Amazonas</option>
+                                                <option value="Bahia">Bahia</option>
+                                                <option value="Ceará">Ceará</option>
+                                                <option value="Distrito Federal">Distrito Federal</option>
+                                                <option value="Espírito Santo">Espírito Santo</option>
+                                                <option value="Goiás">Goiás</option>
+                                                <option value="Maranhão">Maranhão</option>
+                                                <option value="Mato Grosso">Mato Grosso</option>
+                                                <option value="Mato Grosso do Sul">Mato Grosso do Sul</option>
+                                                <option value="Minas Gerais">Minas Gerais</option>
+                                                <option value="Pará ">Pará </option>
+                                                <option value="Paraíba">Paraíba</option>
+                                                <option value="Paraná">Paraná</option>
+                                                <option value="Pernambuco">Pernambuco</option>
+                                                <option value="Piauí">Piauí</option>
                                                 <option value="Rio de Janeiro">Rio de Janeiro</option>
-
+                                                <option value="Rio Grande do Norte">Rio Grande do Norte</option>
+                                                <option value="Rio Grande do Sul">Rio Grande do Sul</option>
+                                                <option value="Rondônia">Rondônia</option>
+                                                <option value="Roraima">Roraima</option>
+                                                <option value="Santa Catarina">Santa Catarina</option>
+                                                <option value="São Paulo">São Paulo</option>
+                                                <option value="Sergipe">Sergipe </option>
+                                                <option value="Tocantins">Tocantins</option>
                                             </select>
                                         </div>
                                     </div>

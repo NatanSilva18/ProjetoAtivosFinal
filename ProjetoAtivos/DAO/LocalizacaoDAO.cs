@@ -58,15 +58,36 @@ namespace ProjetoAtivos.DAO
             else
                 return null;
         }
-
-        internal Boolean Excluir(int CodigoImagem)
+        internal int BuscarImagensLocalizacao(int CodigoImagem)
         {
             b.getComandoSQL().Parameters.Clear();
 
-            b.getComandoSQL().CommandText = @"delete from localizacao where img_codigo = @codigo;";
+            b.getComandoSQL().CommandText = @"select * from localizacao where img_codigo = @codigo;";
             b.getComandoSQL().Parameters.AddWithValue("@codigo", CodigoImagem);
 
-            return b.ExecutaComando(true) == 1;
+            DataTable dt = b.ExecutaSelect(true);
+
+            if (dt.Rows.Count > 0 && dt != null)
+                return dt.Rows.Count;
+            else
+                return 0;
+        }
+        internal Boolean Excluir(int CodigoImagem)
+        {
+            int Count = BuscarImagensLocalizacao(CodigoImagem);
+
+            if (Count > 0)
+            {
+                b.getComandoSQL().Parameters.Clear();
+
+                b.getComandoSQL().CommandText = @"delete from localizacao where img_codigo = @codigo;";
+                b.getComandoSQL().Parameters.AddWithValue("@codigo", CodigoImagem);
+
+                return b.ExecutaComando(true) == 1;
+            }
+            else
+                return true;
+           
         }
     }
 }

@@ -406,10 +406,9 @@ INSERT INTO itens_ativos
                         DataTable dt = b.ExecutaSelect(true);
                         if (dt.Rows.Count > 0)
                             CodigoImagem = Convert.ToInt32(dt.Rows[0]["Codigo"]);
-                        else
-                            OK = false;
+                      
 
-                        if (OK)
+                        if (CodigoImagem != 0)
                         {
                             b.getComandoSQL().Parameters.Clear();       //muda a localização
 
@@ -424,6 +423,7 @@ INSERT INTO itens_ativos
 
                             OK = b.ExecutaComando(true) == 1;
                         }
+     
                         //gravar a localizacao
                     }
                 }

@@ -133,7 +133,7 @@ function GraficoImagem(dados) {
     var myChart = new Chart(ctx, {
         type: 'pie',
         data: {
-            labels: ['C/Imagem','S/Imagem'],
+            labels: ['C/Imagem - ' + dados.quantidade, 'S/Imagem - ' + dados.quantidadeTotal],
             datasets: [{
                 data: [dados.quantidade, dados.quantidadeTotal],
                 backgroundColor: [
@@ -166,12 +166,12 @@ function GraficoImagem(dados) {
 function GraficoSomaAtivos(dados) {
     var ctx = document.getElementById('somaAtivos').getContext('2d');
     var myChart = new Chart(ctx, {
-        type: 'horizontalBar',
+        type: 'bar',
         data: {
             labels: ['Soma Ativos'],
             datasets: [{
                 label: 'Relação',
-                data: [dados.valorTotal],
+                data: [dados.valorTotal.toFixed(2)],
                 backgroundColor: [
                     'rgba(255, 127, 0, 0.2)',
                     'rgba(79, 47, 79, 0.2)'
@@ -180,7 +180,9 @@ function GraficoSomaAtivos(dados) {
                     'rgba(255, 127, 0, 1)',
                     'rgba(79, 47, 79, 1)'
                 ],
-                borderWidth: 2
+                borderWidth: 2,
+                minBarLength: 2,
+                maxBarThickness: 50,
             }]
         },
         options: {

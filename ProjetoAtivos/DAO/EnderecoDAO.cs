@@ -76,6 +76,19 @@ namespace ProjetoAtivos.DAO
                     return -10;
             }
         }
+        public Endereco BuscarEndereco(int Codigo)
+        {
+            b.getComandoSQL().Parameters.Clear();
+            b.getComandoSQL().CommandText = @"select * from endereco where end_codigo = @codigo";
+
+            b.getComandoSQL().Parameters.AddWithValue("@codigo", Codigo);
+
+            DataTable dt = b.ExecutaSelect();
+            if (dt != null && dt.Rows.Count > 0)
+                return TableToList(dt).FirstOrDefault();
+            else
+                return null;
+        }
         internal List<Endereco> ObterEnderecos()
         {
             b.getComandoSQL().Parameters.Clear();

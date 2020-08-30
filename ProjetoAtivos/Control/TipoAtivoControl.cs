@@ -7,9 +7,9 @@ namespace ProjetoAtivos.Control
     public class TipoAtivoControl
     {
 
-        public Boolean Gravar(int Codigo, string Descricao, Boolean StAtivo)
+        public Boolean Gravar(int Codigo, string Descricao, double Valor, Boolean StAtivo)
         {
-            return new TipoAtivo(Codigo, Descricao, StAtivo).Gravar();
+            return new TipoAtivo(Codigo, Descricao, Valor, StAtivo).Gravar();
         }
 
         public List<TipoAtivo> ObterTiposAtivos(string Chave, string Filtro, int Ativo)

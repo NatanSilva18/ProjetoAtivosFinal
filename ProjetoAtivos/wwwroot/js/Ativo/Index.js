@@ -41,6 +41,8 @@ function CarregarTiposAtivo() {
             }
         });
     }
+    $('#cbbTpAtivo').selectpicker('refresh');
+
 };
 
 
@@ -141,6 +143,7 @@ function CarregarRegionais() {
             }
         });
     }
+    $('#cbbRegional').selectpicker('refresh');
 
 };
 
@@ -226,8 +229,9 @@ function CarregarFiliais(Combo) {
                 $("#divLoading").hide(300);
             }
         });
-       
     }
+    $('#cbbFilial').selectpicker('refresh');
+
 
 };
 function BuscarSalas(Combo) {
@@ -261,6 +265,8 @@ function BuscarSalas(Combo) {
         });
 
     }
+    $('#cbbSala').selectpicker('refresh');
+
 };
 
 function LimparTabela() {
@@ -324,7 +330,7 @@ function GerarRelatorio() {
 function GerarExcel() {
     var htmls = "";
     var uri = 'data:application/vnd.ms-excel;base64,';
-    var template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>';
+    var template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>';
     var base64 = function (s) {
         return window.btoa(unescape(encodeURIComponent(s)))
     };
@@ -344,7 +350,7 @@ function GerarExcel() {
 
 
     var link = document.createElement("a");
-    link.download = "export.xls";
+    link.download = "export.xlsx";
     link.href = uri + base64(format(template, ctx));
     link.click();
 };
@@ -373,7 +379,7 @@ function funcaoTable(NameTable) {
                     "sLast": "Último"
                 }
             },
-            "bFilter": false
+            "bFilter": true
         });
     }
     else {
@@ -397,7 +403,7 @@ function funcaoTable(NameTable) {
                     "sLast": "Último"
                 }
             },
-            "bFilter": false
+            "bFilter": true
         });
     }
 };
@@ -425,14 +431,20 @@ function PreencherTabela(dados) {
     $.each(dados, function () {
 
         if (this.stAtivo == 1) {
-            txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded float-left" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
-            txt += '<a role="button" class="btn btn-warning" href="javascript:UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
-            txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
-            txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>';
-
+            if (this.imagem != "") {
+                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded float-left" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
+                txt += '<a role="button" class="btn btn-warning" href="javascript:UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
+                txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
+                txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>';
+            }
+            else {
+                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="https://lh3.googleusercontent.com/proxy/eqbgNGBWfX_wlieh3EPz1P665xDJBc18r8y4sSbHMKYOaVTXSpOdycLDfEMEmYTBNXLwKOvCfaMC-m3CswLVnP5mYBSkJgeNsz0EoYBXPtpkGwWwtdA0uVmCUnc31vstkNrfHQrgnz06O-8bHQlj9eNQekFz0XcjWWsa77WEFFjfzIdoAF75yRlINPQ" class="rounded float-left" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
+                txt += '<a role="button" class="btn btn-warning" href="javascript:UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
+                txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
+            }
         }
         else {
-            txt += '<tr class="galeria" ondblclick="Ativar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded float-left" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
+            txt += '<tr class="galeria" ondblclick="Ativar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="' + ValidaImagem(this.imagem) + '" class="rounded float-left" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
             txt += '<a role="button" class="btn btn-success" href="javascript:Ativar(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>';
         }
         txt += '</td></tr>';
@@ -490,7 +502,7 @@ function ObterAtivos() {
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
             $("#divLoading").hide(300);
-            document.getElementById('btnPesquisar').disabled = true;
+            document.getElementById('btnPesquisar').disabled = false;
 
         }
     });
@@ -562,7 +574,9 @@ function Gravar() {
                             }
                         }
                         document.getElementById('btnConfirmar').disabled = false;
-                        ObterAtivos();
+                        if ($("#cbbRegiaoPesq").val() != "")
+                            ObterAtivos();
+
                         $("#divLoading").hide();
                     },
                     error: function (XMLHttpRequest, txtStatus, errorThrown) {
@@ -711,8 +725,6 @@ function Alterar(Codigo) {
 
                 $("#txtId").val(result.codigo);
                 $("#txtOperacao").val(1);
-                $("#cbbRegional").val(result.regional);
-                $("#cbbSala").val(result.sala);
                 $("#txtPlaca").val(result.placa);
                 $("#txtTag").val(result.tag);
                 $("#cbbEstado").val(result.estado);
@@ -724,7 +736,8 @@ function Alterar(Codigo) {
                 $("#txtModelo").val(result.modelo);
                 $("#txtValor").val(result.valor);
 
-                MostraImagens(result.imagens);
+                if (result.imagens != null)
+                    MostraImagens(result.imagens);
 
             }
 
@@ -779,7 +792,7 @@ function Mapa(latitude, longitude) {
         var marker = new google.maps.Marker(configMarker);
 
     });
-}
+};
 document.querySelector('.custom-file-input').addEventListener('change', function (e) {
     var fileName = document.getElementById("fuArquivo").files[0].name;
     var nextSibling = e.target.nextElementSibling;
@@ -833,6 +846,8 @@ function SalvarFotos() {
 
     var arquivos = document.getElementById("fuArquivo");
     if (arquivos.files.length > 0) {
+        $("#divLoading").show(0);
+
         document.getElementById('btnSalvarFotos').innerHTML = '<div class="spinner-border text-primary" role="status"><span class="sr-only" > Loading...</span></div>';
         var txr2;
         var formData = new FormData();
@@ -895,18 +910,20 @@ function SalvarFotos() {
                     }
 
                     document.getElementById('btnSalvarFotos').innerHTML = 'Adicionar';
+                    $("#divLoading").hide(2000);
 
                 });
             },
             error: function (error) {
                 alert(error);
+                $("#divLoading").hide(2000);
             }
         });
     }
     else {
         Mensagem("divAlerta", 'Selecione um arquivo!');
-
     }
+    $("#divLoading").hide(2000);
 
 };
 function ExcluirFoto(Codigo) {   
@@ -936,14 +953,11 @@ function ExcluirFoto(Codigo) {
             novo += bases[bases.length - 1];
 
         $("#minhaImagemHidden").val(novo);
-
     }
     var Imagem = document.getElementById('imagem');
 
     if (Imagem.childElementCount == 0)
         $("#modalFotos").hide();
-
-
 };
 function Mensagem(div, msg) {
     $("#" + div).html(msg);
@@ -957,11 +971,10 @@ function UnlockFields() {
     document.getElementById('cbbEstado').disabled = false;
     document.getElementById('txtObservacao').disabled = false;
     document.getElementById('txtDescricao').disabled = false;
-    document.getElementById('cbbTpAtivo').disabled = false;
+  //  document.getElementById('cbbTpAtivo').disabled = false;
     document.getElementById('txtMarca').disabled = false;
     document.getElementById('txtNumSerie').disabled = false;
     document.getElementById('txtModelo').disabled = false;
-    document.getElementById('txtValor').disabled = false;
     document.getElementById('fuArquivo').disabled = false;
 
 };
@@ -971,7 +984,7 @@ function LockFields() {
     document.getElementById('cbbEstado').disabled = true;
     document.getElementById('txtObservacao').disabled = true;
     document.getElementById('txtDescricao').disabled = true;
-    document.getElementById('cbbTpAtivo').disabled = true;
+    //document.getElementById('cbbTpAtivo').disabled = true;
     document.getElementById('txtMarca').disabled = true;
     document.getElementById('txtNumSerie').disabled = true;
     document.getElementById('txtModelo').disabled = true;
@@ -1003,4 +1016,25 @@ function ValidarPlaca() {
             $("#divLoading").hide(300);
         }
     });
-}
+};
+
+function PreencherValor(Combo) {
+    var Codigo = Combo.value;
+
+    $.ajax({
+        type: 'POST',
+        url: '/TipoAtivo/BuscarTipoAtivo',
+        data: { Codigo: Codigo },
+        async: false,
+        success: function (result) {
+            if (result != null) {
+                $("#txtValor").val(result.valor);
+            }
+            
+        },
+        error: function (XMLHttpRequest, txtStatus, errorThrown) {
+            alert("Status: " + txtStatus); alert("Error: " + errorThrown);
+            $("#divLoading").hide(300);
+        }
+    });
+};

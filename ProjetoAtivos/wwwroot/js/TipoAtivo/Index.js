@@ -123,6 +123,7 @@ function PreencherTabela(dados) {
             <tr class="thead-light">\
                 <th scope="col">#ID</th>\
                 <th scope="col">Descricao</th>\
+                <th scope="col">Valor</th>\
                 <th scope="col">Status</th>\
                 <th scope="col" width="10%"></th>\
             </tr>\
@@ -131,13 +132,13 @@ function PreencherTabela(dados) {
     $.each(dados, function () {
 
         if (this.stAtivo == 1) {
-            txt += '<tr ondblclick="Alterar(' + this.codigo + ');"><th scope="row">' + this.codigo + '</th><td>' + this.descricao + '</td><td>'  + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
+            txt += '<tr ondblclick="Alterar(' + this.codigo + ');"><th scope="row">' + this.codigo + '</th><td>' + this.descricao + '</td><td>R$ ' + this.valor.toFixed(2) +'</td><td>'  + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
             txt += '<a role="button" class="btn btn-warning" href="javascript:Alterar(' + this.codigo + ');" title="Editar TipoAtivo"><i class="fas fa-edit"></i></a>'
             txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir TipoAtivo"><i class="fas fa-trash"></i></a>';
 
         }
         else {
-            txt += '<tr ondblclick="Ativar(' + this.codigo + ');"><td>' + this.codigo + '</td><td>' + this.descricao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
+            txt += '<tr ondblclick="Ativar(' + this.codigo + ');"><td>' + this.codigo + '</td><td>' + this.descricao + '</td><td>R$ ' + this.valor.toFixed(2) +'</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
             txt += '<a role="button" class="btn btn-success" href="javascript:Ativar(' + this.codigo + ');" title="Ativar TipoAtivo"><i class="fas fa-check"></i></a>';
         }
         txt += '</td></tr>';
@@ -198,6 +199,7 @@ function Gravar() {
 
     var Codigo = $("#txtId").val();
     var Descricao = $("#txtDescricao").val();
+    var Valor = $("#txtValor").val();
     var StAtivo = $('#cbAtivo').is(':checked');
     var Operacao = $("#txtOperacao").val();
 
@@ -205,7 +207,7 @@ function Gravar() {
         type: 'POST',
         url: '/TipoAtivo/Gravar',
         data: {
-            Codigo: Codigo, Descricao: Descricao, StAtivo: StAtivo, Operacao: Operacao
+            Codigo: Codigo, Descricao: Descricao, Valor: Valor, StAtivo: StAtivo, Operacao: Operacao
         },
         success: function (result) {
             $('#novaTipoAtivo').modal('hide');
@@ -321,6 +323,8 @@ function Alterar(Codigo) {
                 $("#txtId").val(result.codigo);
                 $("#txtOperacao").val(1);
                 $("#txtDescricao").val(result.descricao);
+                $("#txtValor").val(result.valor);
+
             }
 
         },

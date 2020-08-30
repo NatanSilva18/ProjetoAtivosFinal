@@ -70,7 +70,7 @@ namespace ProjetoAtivos.Controllers
             {
                 if (Request.Form.Files.Count > 0)
                 {
-                    var extensoesPermitidas = new[] { ".jpg", ".gif", ".png", "jpeg", "tiff", "svg" };
+                    var extensoesPermitidas = new[] { ".jpg", ".gif", ".png", ".jpeg", ".tiff", ".svg", ".jfif" };
                     for (int i = 0; i < Request.Form.Files.Count; i++)
                     {
                         //Recepcionando cada arquivo
@@ -135,7 +135,6 @@ namespace ProjetoAtivos.Controllers
                 }
             }
         }
-
         public JsonResult ObterAtivos(string Chave, string Filtro, int Ativo, int Regiao, int Filial)
         {
 
@@ -143,17 +142,15 @@ namespace ProjetoAtivos.Controllers
 
             return Dados == null ? Json("") : Json(Dados);
         }
-
+        [FiltroSession]
         public JsonResult ObterAtivosPlaca(int Placa)
         {
-
             List<object> Dados = ctlAtivo.ObterAtivosPlaca(Placa);
 
             return Dados == null ? Json("") : Json(Dados);
         }
         public JsonResult BuscarAtivos(int Local)
         {
-
             var Lista = ctlAtivo.BuscarAtivos(Local);
             List<object> Dados = new List<object>();
 
@@ -164,14 +161,14 @@ namespace ProjetoAtivos.Controllers
                     Dados.Add(new
                     {
                         Codigo = L.GetCodigo(),
-                        Descricao = L.GetDescricao()
+                        Descricao = L.GetDescricao(),
+                        Placa = L.GetPlaca()
                     });
                 }
             }
 
             return Dados == null ? Json("") : Json(Dados);
         }
-
 
         public JsonResult ExcluirLogico(int Codigo)
         {
@@ -193,16 +190,21 @@ namespace ProjetoAtivos.Controllers
         {
             object Dado = new object();
             var L = ctlAtivo.BuscarAtivo(Codigo);
+            object[] imagens = null;
 
-            
+
             if (L != null)
             {
-                object[] imagens = new object[L.Imagens.Count];
-
-                for (int i = 0; i < L.Imagens.Count; i++)
+                if(L.Imagens != null)
                 {
-                    imagens[i] = (new { Foto = L.Imagens[i].GetFoto() });
+                    imagens = new object[L.Imagens.Count];
+
+                    for (int i = 0; i < L.Imagens.Count; i++)
+                    {
+                        imagens[i] = (new { Foto = L.Imagens[i].GetFoto() });
+                    }
                 }
+         
 
                 Dado = (new
                 {

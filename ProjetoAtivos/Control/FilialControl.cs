@@ -6,9 +6,9 @@ namespace ProjetoAtivos.Control
 {
     public class FilialControl
     {
-        public int Gravar(int Codigo, string Razao, string Cnpj, Boolean StAtivo, string EndLogradouro, int EndNumero, string EndReferencia, string EndBairro, string EndCep, string EndCidade, string EndEstado, int Responsavel, int Regional)
+        public int Gravar(int Codigo, string Razao, string Cnpj, Boolean StAtivo, int Endereco, string EndLogradouro, int EndNumero, string EndReferencia, string EndBairro, string EndCep, string EndCidade, string EndEstado, int Responsavel, int Regional)
         {
-            Filial Filial = new Filial(Codigo, Razao, Cnpj, StAtivo, EndLogradouro, EndNumero, EndReferencia, EndBairro, EndCep, EndCidade, EndEstado, Responsavel, Regional);
+            Filial Filial = new Filial(Codigo, Razao, Cnpj, StAtivo, Endereco, EndLogradouro, EndNumero, EndReferencia, EndBairro, EndCep, EndCidade, EndEstado, Responsavel, Regional);
             Filial Valida = new Filial();
             if (Codigo == 0)
             {

@@ -41,7 +41,6 @@
             </div>
         </form>
     </div>
-
 </div>
 
 @*Tabela Usuarios*@
@@ -62,7 +61,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Cadastrar Produtos</h5>
+                <h5 class="modal-title" id="staticBackdropLabel">Cadastrar Usuário</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -81,8 +80,8 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-users"></i></div>
                                             </div>
-                                            <select id="cbbPessoas" name="cbbPessoas" class="form-control selectpicker" data-live-search="true" title="Não Selecionado">
-                                                <option value="0" selected>Pessoas</option>
+                                            <select id="cbbPessoas" name="cbbPessoas " data-live-search="true" class="form-control selectpicker" required="required">
+                                                <option value="" selected>Pessoa</option>
                                             </select>
                                         </div>
                                     </div>
@@ -97,7 +96,7 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-at"></i></div>
                                             </div>
-                                            <input class="form-control" type="email" name="txtEmail" id="txtEmail" required autocomplete="off" maxlength="30" />
+                                            <input class="form-control" type="email" name="txtEmail" id="txtEmail" required autocomplete="off" maxlength="50" />
                                         </div>
                                     </div>
                                 </div>
@@ -110,7 +109,7 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-lock"></i></div>
                                             </div>
-                                            <input class="form-control" type="password" name="txtSenha" id="txtSenha" required autocomplete="off" maxlength="30" />
+                                            <input class="form-control" type="password" name="txtSenha" id="txtSenha" required autocomplete="off" maxlength="30" minlength="6"/>
                                             <div class="input-group-text" style="background-color: #FFF"><a role="button" href="javascript: ExibirSenha('txtSenha', 'iconSenha');"><i id="iconSenha" class="fas fa-eye"></i></a></div>
                                         </div>
                                     </div>
@@ -122,7 +121,7 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-lock"></i></div>
                                             </div>
-                                            <input class="form-control" type="password" name="txtConfSenha" id="txtConfSenha" required autocomplete="off" maxlength="30" />
+                                            <input class="form-control" type="password" name="txtConfSenha" id="txtConfSenha" required autocomplete="off" maxlength="30" minlength="6"/>
                                             <div class="input-group-text" style="background-color: #FFF"><a role="button" href="javascript: ExibirSenha('txtConfSenha', 'iconConfiSenha');"><i id="iconConfiSenha" class="fas fa-eye"></i></a></div>
                                         </div>
                                     </div>
@@ -131,15 +130,15 @@
                             <div class="row">
                                 <div class="col-6">
                                     <div class="form-group">
-                                        <label for="cbbTipoUser">Tipo Usuario *</label>
+                                        <label for="cbbTipoUser">Tipo Usuário *</label>
                                         <div class="input-group">
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-level-up-alt"></i></div>
                                             </div>
-                                            <select id="cbbTipoUser" name="cbbTipoUser" class="form-control" required>
-                                                <option disabled selected></option>
-                                                <option value="1">Administrador</option>
-                                                <option value="2">Comum</option>
+                                            <select id="cbbTipoUser" name="cbbTipoUser" class="form-control selectpicker" data-live-search="true" required>
+                                                <option value="" disabled selected>Selecione</option>
+                                                <option value="1">Gerente</option>
+                                                <option value="2">Supervisor</option>
                                             </select>
                                         </div>
 

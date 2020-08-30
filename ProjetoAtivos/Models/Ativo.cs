@@ -56,7 +56,7 @@ namespace ProjetoAtivos.Models
             this.Sala = new Sala();
         }
 
-        public Ativo(int Codigo, Int32 Placa, string Descricao, string Estado, string Observacao, string Tag, string Marca, string Modelo, string NumeroSerie, Boolean StAtivo, double Valor, int TipoAtivo, string DescTpAtivo, int Sala, string DescSala)
+        public Ativo(int Codigo, Int32 Placa, string Descricao, string Estado, string Observacao, string Tag, string Marca, string Modelo, string NumeroSerie, Boolean StAtivo, double Valor, int TipoAtivo, string DescTpAtivo, double ValorApr, int Sala, string DescSala)
         {
             this.Imagens = new List<Imagem>();
             this.Codigo = Codigo;
@@ -70,7 +70,7 @@ namespace ProjetoAtivos.Models
             this.NumeroSerie = NumeroSerie;
             this.StAtivo = StAtivo;
             this.Valor = Valor;
-            this.TipoAtivo = new TipoAtivo(TipoAtivo, DescTpAtivo, true);
+            this.TipoAtivo = new TipoAtivo(TipoAtivo, DescTpAtivo, ValorApr, true);
             this.Sala = new Sala(Sala, DescSala, true, 0);
         }
 

@@ -73,9 +73,13 @@ namespace ProjetoAtivos.Models
                 return null;
         }
 
-        public bool Excluir()
+        public Boolean Excluir()
         {
             return new ImagemDAO().Excluir(Codigo);
+        }
+        public bool Alterar()
+        {
+            return new ImagemDAO().Alterar(this);
         }
 
         public bool Gravar(int transf = 0)
