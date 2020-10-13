@@ -115,7 +115,7 @@
         }
         public string GetEstado()
         {
-            return this.Bairro;
+            return this.Estado;
         }
         public void SetEstado(string Estado)
         {

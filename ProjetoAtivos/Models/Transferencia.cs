@@ -399,6 +399,10 @@ namespace ProjetoAtivos.Models
                 msg.Dispose();
             }
         }
+        public object StatusTransferencias()
+        {
+            return new TransferenciaDAO().StatusTransferencias();
+        }
 
     }
 }

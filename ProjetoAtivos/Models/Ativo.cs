@@ -20,6 +20,7 @@ namespace ProjetoAtivos.Models
         private double Valor;
         private TipoAtivo TipoAtivo;
         private Sala Sala;
+        private NotaFiscal Nota;
 
         public Ativo()
         {
@@ -37,6 +38,7 @@ namespace ProjetoAtivos.Models
             this.Valor = 0;
             this.TipoAtivo = new TipoAtivo();
             this.Sala = new Sala();
+            this.Nota = new NotaFiscal();
         }
         public Ativo(int Codigo)
         {
@@ -54,9 +56,10 @@ namespace ProjetoAtivos.Models
             this.Valor = 0;
             this.TipoAtivo = new TipoAtivo();
             this.Sala = new Sala();
+            this.Nota = new NotaFiscal();
         }
 
-        public Ativo(int Codigo, Int32 Placa, string Descricao, string Estado, string Observacao, string Tag, string Marca, string Modelo, string NumeroSerie, Boolean StAtivo, double Valor, int TipoAtivo, string DescTpAtivo, double ValorApr, int Sala, string DescSala)
+        public Ativo(int Codigo, Int32 Placa, string Descricao, string Estado, string Observacao, string Tag, string Marca, string Modelo, string NumeroSerie, Boolean StAtivo, double Valor, int TipoAtivo, string DescTpAtivo, double ValorApr, int Sala, string DescSala, int Nota)
         {
             this.Imagens = new List<Imagem>();
             this.Codigo = Codigo;
@@ -72,6 +75,7 @@ namespace ProjetoAtivos.Models
             this.Valor = Valor;
             this.TipoAtivo = new TipoAtivo(TipoAtivo, DescTpAtivo, ValorApr, true);
             this.Sala = new Sala(Sala, DescSala, true, 0);
+            this.Nota = new NotaFiscal(Nota);
         }
 
 
@@ -179,7 +183,14 @@ namespace ProjetoAtivos.Models
         {
             this.Sala = Sala;
         }
-
+        public NotaFiscal GetNota()
+        {
+            return this.Nota;
+        }
+        public void SetNota(NotaFiscal Nota)
+        {
+            this.Nota = Nota;
+        }
         public int Gravar(List<Imagem> Imagem, Localizacao Localizacao)
         {
             if (Imagem != null && Localizacao != null)
@@ -243,6 +254,14 @@ namespace ProjetoAtivos.Models
         {
             return new AtivoDAO().SomaAtivos();
         }
-        
+        public List<object> ObterValores(int Regional, int Filial)
+        {
+            return new AtivoDAO().ObterValores(Regional, Filial);
+        }
+        public List<object> ObterRelatorioImagem(int Regional, int Filial) {
+            return new AtivoDAO().ObterRelatorioImagem(Regional, Filial);
+
+        }
+
     }
 }

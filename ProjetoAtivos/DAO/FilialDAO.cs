@@ -104,7 +104,7 @@ namespace ProjetoAtivos.DAO
                 {
                     b.getComandoSQL().Parameters.Clear();
 
-                    b.getComandoSQL().CommandText = @"update Filial set fil_razao = @razao, fil_cnpj = @cnpj, fil_stativo = @ativo, pes_codigo = @codigoPes, reg_codigo = @regional where fil_codigo = @codigo;";
+                    b.getComandoSQL().CommandText = @"update Filial set fil_razao = @razao, fil_cnpj = @cnpj, fil_stativo = @ativo, pes_codigo = @codigoPes, reg_codigo = @regional, end_codigo = @endereco where fil_codigo = @codigo;";
 
                     b.getComandoSQL().Parameters.AddWithValue("@razao", Filial.GetRazao());
                     b.getComandoSQL().Parameters.AddWithValue("@cnpj", Filial.GetCnpj());
@@ -112,6 +112,7 @@ namespace ProjetoAtivos.DAO
                     b.getComandoSQL().Parameters.AddWithValue("@codigo", Filial.GetCodigo());
                     b.getComandoSQL().Parameters.AddWithValue("@codigoPes", Filial.GetResponsavel().GetCodigo());
                     b.getComandoSQL().Parameters.AddWithValue("@regional", Filial.GetRegional().GetCodigo());
+                    b.getComandoSQL().Parameters.AddWithValue("@endereco", Codigo);
 
                     OK = b.ExecutaComando(true) == 1;
 
@@ -288,6 +289,24 @@ namespace ProjetoAtivos.DAO
                 return TableToListCompleta(dt);
             else
                 return null;
+        }
+        internal int ValidarEnderecoFilial(int Codigo)
+        {
+            b.getComandoSQL().Parameters.Clear();
+
+            b.getComandoSQL().CommandText = @"select fil_codigo, fil_razao, fil_cnpj, fil_stativo, end_codigo
+              from filial
+              where end_codigo = @codigo;";
+
+
+            b.getComandoSQL().Parameters.AddWithValue("@codigo", Codigo);
+
+            DataTable dt = b.ExecutaSelect();
+
+            if (dt.Rows.Count > 0)
+                return dt.Rows.Count;
+            else
+                return 0;
         }
     }
 }

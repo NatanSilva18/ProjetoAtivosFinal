@@ -10,7 +10,9 @@
 }
 
 @*Pesquisar Ativos*@
-<h2>Cadastro de Ativos</h2>
+<div class="d-sm-flex align-items-center justify-content-between mb-2">
+    <h1 class="h3 mb-0 text-gray-800">Cadastro de Ativos</h1>
+</div>
 <hr />
 
 <div class="card mb-4 shadow p-3 mb-5 bg-white rounded">
@@ -72,7 +74,7 @@
                             <input class="form-check-input" type="radio" name="rdFiltro" id="rdFiltro1" value="Nome" checked>
                             <label class="form-check-label" for="rdFiltro1">Nome</label>
                         </div>
-                     
+
                     </div>
                     <div class="col-lg-7 col-md-7 col-xl-7">
                         <label><b><i class="fas fa-flag"></i> Status:</b></label>
@@ -139,7 +141,7 @@
                                     <div class="row">
                                         <div class="col-lg-4">
                                             <div class="form-group">
-                                                <label for="cbbRegional">Regional *</label>
+                                                <label for="cbbRegional">Regional <label style="color:red">*</label></label>
                                                 <div class="input-group">
                                                     <div class="input-group-append">
                                                         <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
@@ -152,7 +154,7 @@
                                         </div>
                                         <div class="col-lg-4" id="linhaFilial" style="display:none">
                                             <div class="form-group">
-                                                <label for="cbbFilial">Filial *</label>
+                                                <label for="cbbFilial">Filial <label style="color:red">*</label></label>
                                                 <div class="input-group">
                                                     <div class="input-group-append">
                                                         <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
@@ -165,7 +167,7 @@
                                         </div>
                                         <div class="col-lg-4" id="sala" style="display:none">
                                             <div class="form-group">
-                                                <label for="cbbSala">Local *</label>
+                                                <label for="cbbSala">Local <label style="color:red">*</label></label>
                                                 <div class="input-group">
                                                     <div class="input-group-append">
                                                         <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
@@ -183,10 +185,69 @@
                                 <div id="divAlertaPlaca" class="alert alert-danger col-lg-6" role="alert" style="display:none"></div>
 
                             </div>
+                            <div class="collapse mb-2" id="notafiscal">
+                                <input type="hidden" name="txtIdNotaFiscal" id="txtIdNotaFiscal" value="0" />
+
+                                <div class="card card-body">
+                                    <div class="d-sm-flex align-items-center justify-content-between mb-0">
+                                        <h1 class="h6 mb-0 text-gray-800">Dados Fiscais</h1>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <label for="txtNumeroNota">Nº Nota <label style="color:red">*</label></label>
+                                                <div class="input-group">
+                                                    <div class="input-group-append">
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
+                                                    </div>
+                                                    <input class="form-control" type="number" name="txtNumeroNota" id="txtNumeroNota" autocomplete="off" maxlength="30" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <label for="txtValorNota">Valor <label style="color:red">*</label></label>
+                                                <div class="input-group">
+                                                    <div class="input-group-append">
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-dollar-sign"></i></div>
+                                                    </div>
+                                                    <input class="form-control money" type="text" name="txtValorNota" id="txtValorNota" autocomplete="off" maxlength="30" />
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <label for="txtDataEmissao">Data Emissão <label style="color:red">*</label></label>
+                                                <div class="input-group">
+                                                    <div class="input-group-append">
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-dollar-sign"></i></div>
+                                                    </div>
+                                                    <input class="form-control" type="date" name="txtDataEmissao" id="txtDataEmissao" autocomplete="off" maxlength="30" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <label for="txtFornecedor">Fornecedor <label style="color:red">*</label></label>
+                                                <div class="input-group">
+                                                    <div class="input-group-append">
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-dollar-sign"></i></div>
+                                                    </div>
+                                                    <input class="form-control" type="text" name="txtFornecedor" id="txtFornecedor" autocomplete="off" maxlength="30" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="txtPlaca">Placa *</label>
+                                        <label for="txtPlaca">Placa <label style="color:red">*</label></label>
                                         <div class="input-group">
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
@@ -211,7 +272,7 @@
                                 </div>
                                 <div class="col-lg-2">
                                     <div class="form-group">
-                                        <label for="cbbEstado">Estado *</label>
+                                        <label for="cbbEstado">Estado <label style="color:red">*</label></label>
                                         <div class="input-group">
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-map"></i></div>
@@ -227,7 +288,7 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="cbbTpAtivo">Tipo Ativo *</label>
+                                        <label for="cbbTpAtivo">Tipo Ativo <label style="color:red">*</label></label>
                                         <div class="input-group">
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
@@ -235,6 +296,9 @@
                                             <select id="cbbTpAtivo" name="cbbTpAtivo" class="form-control selectpicker" data-live-search="true" required onchange="PreencherValor(this);">
                                                 <option value="" selected>Tipo Ativo</option>
                                             </select>
+                                            <div class="input-group-append" id="btnAddPpoe">
+                                                <div class="input-group-text" style="background-color: #FFF"><a role="button" href="javascript: ModalTipoAtivo();LimparCampoTipoAtivo();"><i class="fas fa-plus" data-toggle="tooltip" data-placement="top" title="Clique Aqui, Para Adicionar um Novo Tipo Ativo"></i></a></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -255,7 +319,7 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="txtDescricao">Descricao *</label>
+                                        <label for="txtDescricao">Descricao <label style="color:red">*</label></label>
                                         <div class="input-group">
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
@@ -267,7 +331,7 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="txtValor">Valor *</label>
+                                        <label for="txtValor">Valor <label style="color:red">*</label></label>
                                         <div class="input-group">
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-dollar-sign"></i></div>
@@ -282,7 +346,7 @@
                             <div class="row">
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="txtMarca">Marca *</label>
+                                        <label for="txtMarca">Marca <label style="color:red">*</label></label>
                                         <div class="input-group">
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
@@ -294,7 +358,7 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="txtNumSerie">Numero de Serie *</label>
+                                        <label for="txtNumSerie">Numero de Serie <label style="color:red">*</label></label>
                                         <div class="input-group">
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
@@ -306,7 +370,7 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="txtModelo">Modelo *</label>
+                                        <label for="txtModelo">Modelo <label style="color:red">*</label></label>
                                         <div class="input-group">
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
@@ -358,6 +422,7 @@
                             <div class="d-inline">
                                 <button type="submit" name="btnConfirmar" id="btnConfirmar" class="btn btn-success"><i class="fas fa-check"></i> Confirmar</button>
                                 <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-ban"></i> Cancelar</button>
+                                <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#notafiscal" aria-expanded="false" aria-controls="notafiscal" onclick="javascript: VerificaConteudoNotaFiscal();"><i class="fas fa-info"></i> Nota Fiscal</button>
                             </div>
                         </div>
                     </form>
@@ -388,6 +453,75 @@
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-outline-info btn-md" data-dismiss="modal">Fechar <i class="fas fa-times ml-1"></i></button>
             </div>
+        </div>
+    </div>
+</div>
+
+@*Nova TipoAtivo*@
+<div id="novaTipoAtivo" class="modal fade bd-example-modal-lg" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="novoTipoAtivoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Cadastrar TiposAtivo</h5>
+                <button type="button" class="close" onclick="javascript: CancelarTipoAtivo();" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <form name="formTipoAtivo" id="formTipoAtivo" action="javascript:GravarTipoAtivo();" method="post">
+                        <div class="form-group">
+                            <input type="hidden" name="txtIdTpAtivo" id="txtIdTpAtivo" value="0" />
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <div class="form-group">
+                                        <label for="txtDescricaoTpAtivo">Descrição TipoAtivo *</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-info"></i></div>
+                                            </div>
+                                            <input class="form-control" type="text" name="txtDescricaoTpAtivo" id="txtDescricaoTpAtivo" required autocomplete="off" maxlength="30" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label for="txtValorTpAtivo">Valor Aproximado *</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-dollar-sign"></i></div>
+                                            </div>
+                                            <input class="form-control" type="number" name="txtValorTpAtivo" id="txtValorTpAtivo" required autocomplete="off" maxlength="30" min="0" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="form-group form-check">
+                                        <input type="checkbox" class="form-check-input" id="cbAtivo" checked>
+                                        <label class="form-check-label" for="cbAtivo">Ativo</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-8">
+                                    (*) - Campos Obrigatórios
+                                </div>
+                            </div><br />
+
+                            <div class="d-inline">
+                                <button type="submit" name="btnConfirmarTipoAtivo" id="btnConfirmarTipoAtivo" class="btn btn-success"><i class="fas fa-check"></i> Confirmar</button>
+                                <button type="button" class="btn btn-danger" onclick="CancelarTipoAtivo();"><i class="fas fa-ban"></i> Cancelar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

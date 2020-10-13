@@ -51,47 +51,31 @@ function CarregarRegionaisPesq() {
 
     var cbbRegional = document.getElementById("cbbRegiaoPesq");
 
-    var regiao = parseInt($("#regional").val());
-    var filial = parseInt($("#filial").val());
+    if (cbbRegional != null) {
+        var Chave = "";
+        var Filtro = "Descricao";
+        var Ativo = 1;
 
-    if (regiao == 0 && filial == 0) {
-
-        if (cbbRegional != null) {
-            var Chave = "";
-            var Filtro = "Descricao";
-            var Ativo = 1;
-
-            $.ajax({
-                type: 'POST',
-                url: '/Regional/ObterRegionais',
-                async: false,
-                data: { Chave: Chave, Filtro: Filtro, Ativo: Ativo },
-                success: function (result) {
-                    if (result != null && result.length > 0) {
-                        for (var i = 0; i < result.length; i++) {
-
-                            /*var opt = document.createElement("option");
-                            opt.value = result[i].codigo;
-                            opt.text = result[i].descricao;
-                            cbbRegional.add(opt, cbbRegional.options[i + 1]);*/
-                            $('#cbbRegiaoPesq').append('<option value="' + result[i].codigo + '">' + result[i].descricao + '</option>');
-
-                        }
-                        $("#regiaoPesq").show();
+        $.ajax({
+            type: 'POST',
+            url: '/Regional/ObterRegionais',
+            async: false,
+            data: { Chave: Chave, Filtro: Filtro, Ativo: Ativo },
+            success: function (result) {
+                if (result != null && result.length > 0) {
+                    for (var i = 0; i < result.length; i++) {
+                        $('#cbbRegiaoPesq').append('<option value="' + result[i].codigo + '">' + result[i].descricao + '</option>');
                     }
-                },
-                error: function (XMLHttpRequest, txtStatus, errorThrown) {
-                    alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                    $("#divLoading").hide(300);
                 }
-            });
-        }
+            },
+            error: function (XMLHttpRequest, txtStatus, errorThrown) {
+                alert("Status: " + txtStatus); alert("Error: " + errorThrown);
+                $("#divLoading").hide(300);
+            }
+        });
     }
-    else {
-        CarregarFiliaisPesq(regiao);
-    }
-    $('#cbbRegiaoPesq').selectpicker('refresh');
 
+    $('#cbbRegiaoPesq').selectpicker('refresh');
 }
 
 
@@ -148,7 +132,6 @@ function CarregarRegionais() {
 };
 
 function CarregarFiliaisPesq(regiao) {
-    document.getElementById("cbbFilial").required = true;
 
     LimparCombo("cbbFilialPesq");
 
@@ -185,11 +168,11 @@ function CarregarFiliaisPesq(regiao) {
         LimparCombo("cbbFilialPesq");
     }
     $('#cbbFilialPesq').selectpicker('refresh');
-
 };
 
 
 function CarregarFiliais(Combo) {
+    document.getElementById("cbbFilial").required = true;
 
     var filial = parseInt($("#filial").val());
 
@@ -235,6 +218,7 @@ function CarregarFiliais(Combo) {
 
 };
 function BuscarSalas(Combo) {
+    document.getElementById("cbbSala").required = true;
 
 
     var Codigo = Combo.value;
@@ -307,9 +291,6 @@ function LimparCampos() {
     document.getElementById("staticBackdropLabel").innerHTML = "Cadastro de Ativos";
 
     document.getElementById("fuArquivo").required = true;
-    document.getElementById("cbbRegional").required = true;
-    document.getElementById("cbbFilial").required = true;
-    document.getElementById("cbbSala").required = true;
 
     //ver pra limpar a foto
 };
@@ -379,7 +360,16 @@ function funcaoTable(NameTable) {
                     "sLast": "Último"
                 }
             },
-            "bFilter": true
+            "bFilter": true,
+            columnDefs: [
+                {
+                    targets: 0,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).css('border-radius', '4px');
+                        $(td).css('border-left', '4px solid green');
+                    }
+                }
+            ]
         });
     }
     else {
@@ -403,7 +393,16 @@ function funcaoTable(NameTable) {
                     "sLast": "Último"
                 }
             },
-            "bFilter": true
+            "bFilter": true,
+            columnDefs: [
+                {
+                    targets: 0,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).css('border-radius', '4px');
+                        $(td).css('border-left', '4px solid green');
+                    }
+                }
+            ]
         });
     }
 };
@@ -432,20 +431,28 @@ function PreencherTabela(dados) {
 
         if (this.stAtivo == 1) {
             if (this.imagem != "") {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded float-left" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
+                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
                 txt += '<a role="button" class="btn btn-warning" href="javascript:UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
                 txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
                 txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>';
             }
             else {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="https://lh3.googleusercontent.com/proxy/eqbgNGBWfX_wlieh3EPz1P665xDJBc18r8y4sSbHMKYOaVTXSpOdycLDfEMEmYTBNXLwKOvCfaMC-m3CswLVnP5mYBSkJgeNsz0EoYBXPtpkGwWwtdA0uVmCUnc31vstkNrfHQrgnz06O-8bHQlj9eNQekFz0XcjWWsa77WEFFjfzIdoAF75yRlINPQ" class="rounded float-left" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
+                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
                 txt += '<a role="button" class="btn btn-warning" href="javascript:UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
                 txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
             }
         }
         else {
-            txt += '<tr class="galeria" ondblclick="Ativar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="' + ValidaImagem(this.imagem) + '" class="rounded float-left" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
-            txt += '<a role="button" class="btn btn-success" href="javascript:Ativar(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>';
+            if (this.imagem != "") {
+                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
+                txt += '<a role="button" class="btn btn-success" href="javascript:Ativar(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>';
+                txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>';
+            }
+            else {
+                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
+                txt += '<a role="button" class="btn btn-success" href="javascript:Ativar(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>';
+
+            }
         }
         txt += '</td></tr>';
         i++;
@@ -507,8 +514,26 @@ function ObterAtivos() {
         }
     });
 };
+function VerificaConteudoNotaFiscal() {
+    var NotaFiscal = document.getElementById('notafiscal').className;
+    if (NotaFiscal.indexOf('collapse show') != -1) {// diferente de -1 é encontrado
+       document.getElementById("txtNumeroNota").required = false;
+        document.getElementById("txtValorNota").required = false;
+        document.getElementById("txtDataEmissao").required = false;
+        document.getElementById("txtFornecedor").required = false;
 
-
+        document.getElementById('txtNumeroNota').value = "";
+        document.getElementById('txtValorNota').value = "";
+        document.getElementById('txtDataEmissao').value = "";
+        document.getElementById('txtFornecedor').value = "";
+    }
+    else {
+        document.getElementById("txtNumeroNota").required = true;
+        document.getElementById("txtValorNota").required = true;
+        document.getElementById("txtDataEmissao").required = true;
+        document.getElementById("txtFornecedor").required = true;
+    }
+}
 function Gravar() {
     $("#divLoading").show();
     document.getElementById('btnConfirmar').disabled = true;
@@ -533,6 +558,12 @@ function Gravar() {
             var Modelo = $('#txtModelo').val();
             var Valor = $('#txtValor').val();
 
+            var CodigoNota = document.getElementById('txtIdNotaFiscal').value;
+            var NumeroNota = document.getElementById('txtNumeroNota').value;
+            var ValorNota = document.getElementById('txtValorNota').value;
+            var DataEmissao = document.getElementById('txtDataEmissao').value;
+            var Fornecedor = document.getElementById('txtFornecedor').value;
+
             var VerificaImagem = $('#minhaImagemHidden').val();
 
             if (VerificaImagem != "") {
@@ -542,7 +573,8 @@ function Gravar() {
                     url: '/Ativo/Gravar',
                     data: {
                         Codigo: Codigo, Regional: Regional, Filial: Filial, Sala: Sala, Placa: Placa, Tag: Tag, Estado: Estado, Observacao: Observacao,
-                        Descricao: Descricao, TipoAtivo: TipoAtivo, Marca: Marca, NumeroSerie: NumeroSerie, Modelo: Modelo, Valor: Valor, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude
+                        Descricao: Descricao, TipoAtivo: TipoAtivo, Marca: Marca, NumeroSerie: NumeroSerie, Modelo: Modelo, Valor: Valor, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude,
+                        CodigoNota: CodigoNota, NumeroNota: NumeroNota, ValorNota: ValorNota, DataEmissao: DataEmissao, Fornecedor: Fornecedor
                     },
                     success: function (result) {
                         $('#novoAtivo').modal('hide');
@@ -724,6 +756,7 @@ function Alterar(Codigo) {
                 $('#novoAtivo').modal('show');
 
                 $("#txtId").val(result.codigo);
+                $("#txtIdNotaFiscal").val(result.notaFiscal);
                 $("#txtOperacao").val(1);
                 $("#txtPlaca").val(result.placa);
                 $("#txtTag").val(result.tag);
@@ -1035,6 +1068,76 @@ function PreencherValor(Combo) {
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
             $("#divLoading").hide(300);
+        }
+    });
+};
+
+function ModalTipoAtivo() {
+    $('#novoAtivo').modal('hide');
+    $('#novaTipoAtivo').modal('show');
+}
+function CancelarTipoAtivo() {
+    $('#novaTipoAtivo').modal('hide');
+    $('#novoAtivo').modal('show');
+}
+function LimparCampoTipoAtivo() {
+    $("#txtIdTpAtivo").val("0");
+    $("#txtDescricaoTpAtivo").val("");
+    $("#txtValorTpAtivo").val("");
+}
+function GravarTipoAtivo() {
+    $("#divLoading").show();
+
+    var Codigo = $("#txtIdTpAtivo").val();
+    var Descricao = $("#txtDescricaoTpAtivo").val();
+    var Valor = $("#txtValorTpAtivo").val();
+    var StAtivo = $('#cbAtivo').is(':checked');
+
+    $.ajax({
+        type: 'POST',
+        url: '/TipoAtivo/Gravar',
+        data: {
+            Codigo: Codigo, Descricao: Descricao, Valor: Valor, StAtivo: StAtivo
+        },
+        success: function (result) {
+            $('#novaTipoAtivo').modal('hide');
+
+            if (result.length > 0) {
+                Swal.fire({
+                    title: 'Oops',
+                    text: result,
+                    type: 'error',
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    confirmButtonColor: '#3085d6',
+                }).then((result) => {
+                    if (result.value) {
+                        $('#novoAtivo').modal('show');
+                    }
+                })
+            }
+            else {
+                Swal.fire({
+                    title: 'Sucesso',
+                    type: 'success',
+                    text: 'Registro Gravado com Sucesso',
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    confirmButtonColor: '#3085d6',
+                }).then((result) => {
+                    if (result.value) {
+                        $('#novoAtivo').modal('show');
+                        LimparCombo("cbbTpAtivo");
+                        CarregarTiposAtivo();
+                    }
+                })
+
+                $("#divLoading").hide(400);
+            }
+        },
+        error: function (XMLHttpRequest, txtStatus, errorThrown) {
+            alert("Status: " + txtStatus); alert("Error: " + errorThrown);
+            $("#divLoading").hide(400);
         }
     });
 };

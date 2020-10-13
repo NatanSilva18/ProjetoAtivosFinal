@@ -434,5 +434,28 @@ INSERT INTO itens_ativos
 
             return OK;
         }
+        public object StatusTransferencias()
+        {
+            object Dados = new object();
+
+            b.getComandoSQL().Parameters.Clear();
+
+            b.getComandoSQL().CommandText = @"select count(aprdes_codigo) as Aprovado, count(aprdes_codigo is null) as Aguardando from tranferencia;";
+
+            DataTable dt = b.ExecutaSelect();
+
+            if (dt.Rows.Count > 0)
+            {
+                Dados = new
+                {
+                    Aprovado = Convert.ToInt32(dt.Rows[0]["Aprovado"]),
+                    Aguardando = Convert.ToInt32(dt.Rows[0]["Aguardando"]) - Convert.ToInt32(dt.Rows[0]["Aprovado"])
+                };
+            }
+            else
+                Dados = null;
+
+            return Dados;
+        }
     }
 }

@@ -160,7 +160,8 @@ namespace ProjetoAtivos.DAO
             List<object> Dados = new List<object>();
             b.getComandoSQL().Parameters.Clear();
 
-            b.getComandoSQL().CommandText = @"select r.reg_descricao, count(*) as Cont from Regional r
+            b.getComandoSQL().CommandText = @"select r.reg_codigo, r.reg_descricao, count(*) as Cont, sum(a.ati_valor) as Valor
+                                              from Regional r
                                               inner join Filial f on f.reg_codigo = r.reg_codigo
                                               inner join Sala s on f.fil_codigo = s.fil_codigo
                                               inner join Ativos a on a.sal_codigo = s.sal_codigo
@@ -173,8 +174,10 @@ namespace ProjetoAtivos.DAO
             {
                 Dados.Add(new
                 {
+                    Codigo = Convert.ToInt32(dt.Rows[i]["reg_codigo"]),
                     Quantidade = Convert.ToInt32(dt.Rows[i]["Cont"]),
-                    Regional = dt.Rows[i]["reg_descricao"].ToString()
+                    Regional = dt.Rows[i]["reg_descricao"].ToString(),
+                    Soma = Convert.ToDouble(dt.Rows[i]["Valor"])
                 });
             }
 

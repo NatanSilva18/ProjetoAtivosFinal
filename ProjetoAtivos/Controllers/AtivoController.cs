@@ -116,9 +116,9 @@ namespace ProjetoAtivos.Controllers
 
             return Json(retorno);
         }
-        public JsonResult Gravar(int Codigo, int Regional, int Filial, int Sala, int Placa, string Tag, string Estado, string Observacao, string Descricao, int TipoAtivo, string Marca, string NumeroSerie, string Modelo, double Valor, string Imagem, string Latitude, string Longitude)
+        public JsonResult Gravar(int Codigo, int Regional, int Filial, int Sala, int Placa, string Tag, string Estado, string Observacao, string Descricao, int TipoAtivo, string Marca, string NumeroSerie, string Modelo, double Valor, string Imagem, string Latitude, string Longitude, int CodigoNota, string NumeroNota, double ValorNota, DateTime DataEmissao, string Fornecedor  )
         {
-            int Retorno = ctlAtivo.Gravar(Codigo, Regional, Filial, Sala, Placa, Tag, Estado, Observacao, Descricao, TipoAtivo, Marca, NumeroSerie, Modelo, Valor, Imagem, Latitude, Longitude);
+            int Retorno = ctlAtivo.Gravar(Codigo, Regional, Filial, Sala, Placa, Tag, Estado, Observacao, Descricao, TipoAtivo, Marca, NumeroSerie, Modelo, Valor, Imagem, Latitude, Longitude, CodigoNota, NumeroNota, ValorNota, DataEmissao, Fornecedor);
             if (Retorno == 1)
                 return Json("");
             else
@@ -221,7 +221,9 @@ namespace ProjetoAtivos.Controllers
                     Valor = L.GetValor(),
                     Tag = L.GetTag(),
                     StAtivo = L.GetStAtivo(),
+                    NotaFiscal = L.GetNota().GetCodigo(),
                     Imagens = imagens
+
                 });
             }
 
@@ -243,6 +245,18 @@ namespace ProjetoAtivos.Controllers
             }
 
             return Dado == null ? Json("") : Json(Dado);
+        }
+        public JsonResult ObterValores(int Regional, int Filial)
+        {
+            var Lista = ctlAtivo.ObterValores(Regional, Filial);
+           
+            return Lista == null ? Json("") : Json(Lista);
+        }
+        public JsonResult ObterRelatorioImagem(int Regional, int Filial)
+        {
+            var Lista = ctlAtivo.ObterRelatorioImagem(Regional, Filial);
+
+            return Lista == null ? Json("") : Json(Lista);
         }
     }
 

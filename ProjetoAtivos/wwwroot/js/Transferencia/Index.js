@@ -1,9 +1,6 @@
 ﻿$(document).ready(function () {
     CarregarFiliais();
     CarregarMotivos();
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-    })
 });
 
 function CarregarFiliais() {
@@ -1046,7 +1043,25 @@ function funcaoTable(NameTable) {
                     "sLast": "Último"
                 }
             },
-            "bFilter": false
+            "bFilter": true,
+            columnDefs: [
+                {
+                    targets: 0,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).css('border-radius', '4px');
+                        if (rowData[3] == '<span class="badge badge-primary">Novo</span>')
+                            $(td).css('border-left', '4px solid blue');
+                        else {
+                            if (rowData[3] == '<span class="badge badge-success">Aprovado Origem</span>') {
+                                $(td).css('border-left', '4px solid green');
+                            }
+                            else {
+                                $(td).css('border-left', '4px solid #138496');
+                            }
+                        }
+                    }
+                }
+            ]
         });
     }
     else {
@@ -1070,7 +1085,25 @@ function funcaoTable(NameTable) {
                     "sLast": "Último"
                 }
             },
-            "bFilter": false
+            "bFilter": true,
+            columnDefs: [
+                {
+                    targets: 0,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).css('border-radius', '4px');
+                        if (rowData[3] == '<span class="badge badge-primary">Novo</span>')
+                            $(td).css('border-left', '4px solid blue');
+                        else {
+                            if (rowData[3] == '<span class="badge badge-success">Aprovado Origem</span>') {
+                                $(td).css('border-left', '4px solid green');
+                            }
+                            else {
+                                $(td).css('border-left', '4px solid #138496');
+                            }
+                        }
+                    }
+                }
+            ]
         });
     }
 };

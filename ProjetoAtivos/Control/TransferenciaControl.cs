@@ -106,6 +106,10 @@ namespace ProjetoAtivos.Control
 
             return transf.Receber(loc);
         }
+        public object StatusTransferencias()
+        {
+            return new Transferencia().StatusTransferencias();
+        }
 
     }
 }

@@ -7,7 +7,7 @@ namespace ProjetoAtivos.Control
 {
     public class UsuarioControl
     {
-        public int Gravar(int Codigo, string Login, string Senha, int TipoUsuario, int Pessoa,  int Operacao)
+        public int Gravar(int Codigo, string Login, string Senha, int TipoUsuario, int Pessoa)
         {
             List<Usuario> Admin = new List<Usuario>();
             Usuario User = new Usuario();
@@ -15,7 +15,7 @@ namespace ProjetoAtivos.Control
             Boolean Ok = true;
 
 
-            if (Operacao == 0)   //gravacao
+            if (Codigo == 0)   //gravacao
             {
                 User = new Usuario().BuscarUsuario(Login);
                 if (User == null)
@@ -25,6 +25,8 @@ namespace ProjetoAtivos.Control
                     {
                         if (Usuario.Gravar())
                             return 1;
+                        else
+                            return -1;
                     }
                     else
                         return -30;
@@ -32,7 +34,13 @@ namespace ProjetoAtivos.Control
                 else
                     return -10;
             }
-            return -20;
+            else   //alteracao
+            {
+                if (Usuario.Gravar())
+                    return 1;
+                else
+                    return -1;
+            }
         }
         public List<Usuario> ObterUsuarios(string Chave, string Filtro)
         {

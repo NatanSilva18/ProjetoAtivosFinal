@@ -102,7 +102,6 @@ function LimparTabela() {
 
 function LimparCampos() {
     $("#txtId").val(0);
-    $("#txtOperacao").val(0);
     $("#txtEmail").val("");
     $("#txtSenha").val("");
     $("#txtConfSenha").val("");
@@ -159,8 +158,9 @@ function Alterar(Codigo) {
                 $("#txtEmail").val(result.email);
                 $("#txtSenha").val(result.senha);
                 $("#txtConfSenha").val(result.senha);
-                $("#cbbTipoUser").val(result.nivel);
-   
+
+                $('#cbbTipoUser').selectpicker('val', result.nivel);
+
                 $('#cbbPessoas').selectpicker('val', result.codigoPessoa);
             }
 
@@ -268,14 +268,13 @@ function Gravar() {
     var Senha = $("#txtSenha").val();
     var TipoUsuario = $("#cbbTipoUser").val();
     var CodigoPessoa = $("#cbbPessoas").val();
-    var Operacao = $("#txtOperacao").val();
     var ConfSenha = document.getElementById('txtConfSenha');
     if (Senha == ConfSenha.value) {
         $.ajax({
             type: 'POST',
             url: '/Usuario/Gravar',
             data: {
-                Codigo: Codigo, Login: Login, Senha: Senha, TipoUsuario: TipoUsuario, CodigoPessoa: CodigoPessoa, Operacao: Operacao
+                Codigo: Codigo, Login: Login, Senha: Senha, TipoUsuario: TipoUsuario, CodigoPessoa: CodigoPessoa
             },
             success: function (result) {
                 $('#novoUsu').modal('hide');

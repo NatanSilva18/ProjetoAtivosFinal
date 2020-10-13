@@ -35,33 +35,25 @@ namespace ProjetoAtivos.DAO
         }
         internal int Gravar(Endereco Endereco)
         {
+            int Quantidade = new FilialDAO().ValidarEnderecoFilial(Endereco.GetCodigo());
             int Codigo;
-            b.getComandoSQL().Parameters.Clear();
-
-            if (Endereco.GetCodigo() == 0)
+            if(Quantidade > 1)
             {
+                b.getComandoSQL().Parameters.Clear();
+
                 b.getComandoSQL().CommandText = @"insert into Endereco (end_referencia, end_logradouro, end_numero, end_bairro,
                                                   end_cep, end_cidade, end_estado, end_stativo) values(
                                                   @referencia, @logradouro, @numero, @bairro, @cep, @cidade, @estado, 1);
                                                   SELECT LAST_INSERT_ID();";
-            }
-            else
-            {
-                b.getComandoSQL().CommandText = @"update Endereco set end_referencia = @referencia, end_logradouro = @logradouro, end_numero = @numero,
-                                                  end_bairro = @bairro, end_cep = @cep, end_cidade = @cidade, end_estado = @estado
-                                                  where end_codigo = @codigo;";
-                b.getComandoSQL().Parameters.AddWithValue("@codigo", Endereco.GetCodigo());
-            }
 
-            b.getComandoSQL().Parameters.AddWithValue("@referencia", Endereco.GetReferencia());
-            b.getComandoSQL().Parameters.AddWithValue("@logradouro", Endereco.GetLogradouro());
-            b.getComandoSQL().Parameters.AddWithValue("@numero", Endereco.GetNumero());
-            b.getComandoSQL().Parameters.AddWithValue("@bairro", Endereco.GetBairro());
-            b.getComandoSQL().Parameters.AddWithValue("@cep", Endereco.GetCep());
-            b.getComandoSQL().Parameters.AddWithValue("@cidade", Endereco.GetCidade());
-            b.getComandoSQL().Parameters.AddWithValue("@estado", Endereco.GetEstado());
-            if (Endereco.GetCodigo() == 0)
-            {
+                b.getComandoSQL().Parameters.AddWithValue("@referencia", Endereco.GetReferencia());
+                b.getComandoSQL().Parameters.AddWithValue("@logradouro", Endereco.GetLogradouro());
+                b.getComandoSQL().Parameters.AddWithValue("@numero", Endereco.GetNumero());
+                b.getComandoSQL().Parameters.AddWithValue("@bairro", Endereco.GetBairro());
+                b.getComandoSQL().Parameters.AddWithValue("@cep", Endereco.GetCep());
+                b.getComandoSQL().Parameters.AddWithValue("@cidade", Endereco.GetCidade());
+                b.getComandoSQL().Parameters.AddWithValue("@estado", Endereco.GetEstado());
+
                 if (b.ExecutaComando(true, out Codigo) == 1)
                     return Codigo;
                 else
@@ -69,11 +61,45 @@ namespace ProjetoAtivos.DAO
             }
             else
             {
+                b.getComandoSQL().Parameters.Clear();
 
-                if (b.ExecutaComando(true) == 1)
-                    return 10;
+                if (Endereco.GetCodigo() == 0)
+                {
+                    b.getComandoSQL().CommandText = @"insert into Endereco (end_referencia, end_logradouro, end_numero, end_bairro,
+                                                  end_cep, end_cidade, end_estado, end_stativo) values(
+                                                  @referencia, @logradouro, @numero, @bairro, @cep, @cidade, @estado, 1);
+                                                  SELECT LAST_INSERT_ID();";
+                }
                 else
-                    return -10;
+                {
+                    b.getComandoSQL().CommandText = @"update Endereco set end_referencia = @referencia, end_logradouro = @logradouro, end_numero = @numero,
+                                                  end_bairro = @bairro, end_cep = @cep, end_cidade = @cidade, end_estado = @estado
+                                                  where end_codigo = @codigo;";
+                    b.getComandoSQL().Parameters.AddWithValue("@codigo", Endereco.GetCodigo());
+                }
+
+                b.getComandoSQL().Parameters.AddWithValue("@referencia", Endereco.GetReferencia());
+                b.getComandoSQL().Parameters.AddWithValue("@logradouro", Endereco.GetLogradouro());
+                b.getComandoSQL().Parameters.AddWithValue("@numero", Endereco.GetNumero());
+                b.getComandoSQL().Parameters.AddWithValue("@bairro", Endereco.GetBairro());
+                b.getComandoSQL().Parameters.AddWithValue("@cep", Endereco.GetCep());
+                b.getComandoSQL().Parameters.AddWithValue("@cidade", Endereco.GetCidade());
+                b.getComandoSQL().Parameters.AddWithValue("@estado", Endereco.GetEstado());
+
+                if (Endereco.GetCodigo() == 0)
+                {
+                    if (b.ExecutaComando(true, out Codigo) == 1)
+                        return Codigo;
+                    else
+                        return -10;
+                }
+                else
+                {
+                    if (b.ExecutaComando(true) == 1)
+                        return Endereco.GetCodigo();
+                    else
+                        return -10;
+                }
             }
         }
         public Endereco BuscarEndereco(int Codigo)
@@ -89,6 +115,7 @@ namespace ProjetoAtivos.DAO
             else
                 return null;
         }
+ 
         internal List<Endereco> ObterEnderecos()
         {
             b.getComandoSQL().Parameters.Clear();

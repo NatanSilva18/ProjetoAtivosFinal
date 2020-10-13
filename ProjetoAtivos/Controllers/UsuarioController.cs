@@ -17,30 +17,30 @@ namespace ProjetoAtivos.Controllers
         {
             return View();
         }
-        public JsonResult Gravar(int Codigo, string Login, string Senha, int TipoUsuario, int CodigoPessoa, int Operacao)
+        public JsonResult Gravar(int Codigo, string Login, string Senha, int TipoUsuario, int CodigoPessoa)
         {
             int Retorno;
-            Retorno = ctlUsuario.Gravar(Codigo, Login, Senha, TipoUsuario, CodigoPessoa, Operacao);
+            Retorno = ctlUsuario.Gravar(Codigo, Login, Senha, TipoUsuario, CodigoPessoa);
 
-            switch (Retorno)
+            if (Retorno == 1)
+                return Json("");
+            else
             {
-                case 1:
-                    return Json("");
-
-                case -10:
+                if(Retorno == -10)
                     return Json("Usuario Ja Cadastrado!");
-
-                case -20:
-                    return Json("Erro ao Gravar o Registro!");
-
-                case -30:
-                    return Json("Pessoa Ja Possui um Usuario Cadastrado!");
-
-                case -40:
-                    return Json("Não e Possivel Alterar o Ultimo Adminstrador");
+                else
+                {
+                    if(Retorno == -1)
+                        return Json("Erro ao Gravar o Registro!");
+                    else
+                    {
+                        if(Retorno == -30)
+                            return Json("Pessoa Ja Possui um Usuario Cadastrado!");
+                        else
+                            return Json("Não e Possivel Alterar o Ultimo Adminstrador");
+                    }
+                }
             }
-
-            return Json("Erro ao Gravar o Registro!");
         }
 
         public JsonResult ObterUsuarios(string Chave, string Filtro)
