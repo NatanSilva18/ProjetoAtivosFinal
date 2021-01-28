@@ -41,6 +41,35 @@ function funcaoTable(NameTable) {
     if ($.fn.dataTable.isDataTable(NameTable)) {
         $(NameTable).DataTable().destroy();
         $(NameTable).DataTable({
+            dom: 'Bfrtip',
+            lengthMenu: [
+                [10, 25, 50, -1],
+                ['10 Linhas', '25 Linhas', '50 Linhas', 'Todos']
+            ],
+            buttons: [
+                'pageLength',
+                {
+                    extend: 'print',
+                    text: 'Imprimir <i class="fa fa-print"></i>',
+                    titleAttr: 'Imprimir',
+                    footer: true
+                },
+                {
+                    text: 'Excel <i class="fa fa-file-excel"></i>',
+                    titleAttr: 'Excel',
+                    extend: 'excelHtml5',
+                    footer: true,
+                    exportOptions: { orthogonal: 'export' }
+                },
+                {
+
+                    text: 'Pdf <i class="fa fa-file-pdf"></i>',
+                    titleAttr: 'Pdf',
+                    extend: 'pdfHtml5',
+                    footer: true,
+                    exportOptions: { orthogonal: 'export' }
+                }
+            ],
             "language": {
                 "sEmptyTable": "Nenhum registro encontrado",
                 "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
@@ -60,11 +89,53 @@ function funcaoTable(NameTable) {
                     "sLast": "Último"
                 }
             },
-            "bFilter": false
+            "bFilter": false,
+            columnDefs: [
+                {
+                    targets: 0,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).css('border-radius', '4px');
+                        if (rowData[2] == '<span class="badge badge-success">Administrador</span>')
+                            $(td).css('border-left', '4px solid green');
+                        else
+                            $(td).css('border-left', '4px solid blue');
+
+                    }
+                }
+            ]
         });
     }
     else {
         $(NameTable).DataTable({
+            dom: 'Bfrtip',
+            lengthMenu: [
+                [10, 25, 50, -1],
+                ['10 Linhas', '25 Linhas', '50 Linhas', 'Todos']
+            ],
+            buttons: [
+                'pageLength',
+                {
+                    extend: 'print',
+                    text: 'Imprimir <i class="fa fa-print"></i>',
+                    titleAttr: 'Imprimir',
+                    footer: true
+                },
+                {
+                    text: 'Excel <i class="fa fa-file-excel"></i>',
+                    titleAttr: 'Excel',
+                    extend: 'excelHtml5',
+                    footer: true,
+                    exportOptions: { orthogonal: 'export' }
+                },
+                {
+
+                    text: 'Pdf <i class="fa fa-file-pdf"></i>',
+                    titleAttr: 'Pdf',
+                    extend: 'pdfHtml5',
+                    footer: true,
+                    exportOptions: { orthogonal: 'export' }
+                }
+            ],
             "language": {
                 "sEmptyTable": "Nenhum registro encontrado",
                 "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
@@ -84,7 +155,20 @@ function funcaoTable(NameTable) {
                     "sLast": "Último"
                 }
             },
-            "bFilter": false
+            "bFilter": false,
+            columnDefs: [
+                {
+                    targets: 0,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).css('border-radius', '4px');
+                        if (rowData[2] == '<span class="badge badge-success">Administrador</span>')
+                            $(td).css('border-left', '4px solid green');
+                        else
+                            $(td).css('border-left', '4px solid blue');
+
+                    }
+                }
+            ]
         });
     }
 };
@@ -105,10 +189,13 @@ function LimparCampos() {
     $("#txtEmail").val("");
     $("#txtSenha").val("");
     $("#txtConfSenha").val("");
-    $("#cbbNivel").val("");
     $("#txtCodigoPes").val(0);
     $("#txtNome").val("");
     $("#txtCpf").val("");
+    $('#cbbPessoas').selectpicker('val', '');
+    $('#cbbTipoUser').selectpicker('val', '');
+
+
     $("#divPessoa").show();
     $("#btnPesquisarPessoa").show();
 };
@@ -116,7 +203,7 @@ function Nivel(Nivel) {
     if (Nivel == 1)
         return '<span class="badge badge-success">Administrador</span>';
     else
-        return '<span class="badge badge-info">Comum</span>';
+        return '<span class="badge badge-primary">Comum</span>';
 };
 function PreencherTabela(dados) {
     var txt = '<thead>\
@@ -314,11 +401,19 @@ function Gravar() {
     }
     else {
         ConfSenha.setCustomValidity("Senhas Não Conferem!");
-        return false;
     }
        
 };
+function ValidarSenha() {
+    var Senha = $("#txtSenha").val();
+    var ConfSenha = document.getElementById('txtConfSenha');
 
+    if (Senha != ConfSenha.value)
+        ConfSenha.setCustomValidity("Senhas Não Conferem!");
+    else
+        ConfSenha.setCustomValidity('');
+
+};
 function ExibirSenha(Campo, NameIcon) {
     var element = document.getElementById('' + NameIcon);
 

@@ -42,7 +42,7 @@ namespace ProjetoAtivos.Controllers
 
             // Cria uma nova imagem a partir da imagem original
             Bitmap newBMP = new Bitmap(originalBMP, newWidth, newHeight);
-            newBMP.SetResolution(150, 150);
+            newBMP.SetResolution(1024, 1024);
             newBMP.Save(nomeArquivo, ImageFormat.Jpeg);
 
             // Converter imagem em base64 para gravar como string no banco de dados
@@ -97,7 +97,7 @@ namespace ProjetoAtivos.Controllers
                                 string base64 = "";
                                 var img = new MemoryStream();
                                 arquivo.CopyTo(img);
-                                Resize(img, 250, caminho, out base64);
+                                Resize(img, 1024, caminho, out base64);
                                 //ctlimg.Gravar(0, base64, DateTime.now(), CodigoAtivo);    //grava no banco
                                 retorno.Add(new { Id = i, Dados = base64 });
                             }
@@ -116,9 +116,9 @@ namespace ProjetoAtivos.Controllers
 
             return Json(retorno);
         }
-        public JsonResult Gravar(int Codigo, int Regional, int Filial, int Sala, int Placa, string Tag, string Estado, string Observacao, string Descricao, int TipoAtivo, string Marca, string NumeroSerie, string Modelo, double Valor, string Imagem, string Latitude, string Longitude, int CodigoNota, string NumeroNota, double ValorNota, DateTime DataEmissao, string Fornecedor  )
+        public JsonResult Gravar(int Codigo, int Regional, int Filial, int Sala, int Placa, string Tag, string Estado, string Observacao, string Descricao, int TipoAtivo, string Marca, string NumeroSerie, string Modelo, double Valor, string Imagem, string Latitude, string Longitude, int CodigoNota, string NumeroNota, double ValorNota, DateTime DataEmissao, string Fornecedor, string Cnpj )
         {
-            int Retorno = ctlAtivo.Gravar(Codigo, Regional, Filial, Sala, Placa, Tag, Estado, Observacao, Descricao, TipoAtivo, Marca, NumeroSerie, Modelo, Valor, Imagem, Latitude, Longitude, CodigoNota, NumeroNota, ValorNota, DataEmissao, Fornecedor);
+            int Retorno = ctlAtivo.Gravar(Codigo, Regional, Filial, Sala, Placa, Tag, Estado, Observacao, Descricao, TipoAtivo, Marca, NumeroSerie, Modelo, Valor, Imagem, Latitude, Longitude, CodigoNota, NumeroNota, ValorNota, DataEmissao, Fornecedor, Cnpj);
             if (Retorno == 1)
                 return Json("");
             else
@@ -201,7 +201,7 @@ namespace ProjetoAtivos.Controllers
 
                     for (int i = 0; i < L.Imagens.Count; i++)
                     {
-                        imagens[i] = (new { Foto = L.Imagens[i].GetFoto() });
+                        imagens[i] = (new { Foto = L.Imagens[i].GetFoto(), DataInsercao = L.Imagens[i].GetDataInsercao()});
                     }
                 }
          
@@ -221,7 +221,7 @@ namespace ProjetoAtivos.Controllers
                     Valor = L.GetValor(),
                     Tag = L.GetTag(),
                     StAtivo = L.GetStAtivo(),
-                    NotaFiscal = L.GetNota().GetCodigo(),
+                    NotaFiscal = L.GetNota(),
                     Imagens = imagens
 
                 });
@@ -255,6 +255,13 @@ namespace ProjetoAtivos.Controllers
         public JsonResult ObterRelatorioImagem(int Regional, int Filial)
         {
             var Lista = ctlAtivo.ObterRelatorioImagem(Regional, Filial);
+
+            return Lista == null ? Json("") : Json(Lista);
+        }
+
+        public JsonResult ObterImagens(int Codigo)
+        {
+            var Lista = ctlAtivo.ObterImagens(Codigo);
 
             return Lista == null ? Json("") : Json(Lista);
         }

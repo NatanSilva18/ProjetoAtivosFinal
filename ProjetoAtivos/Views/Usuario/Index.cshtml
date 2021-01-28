@@ -4,6 +4,15 @@
 }
 @section scripts{
     <script type="text/javascript" src="~/js/Usuario/Index.js?@DateTime.Now"></script>
+
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.print.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.colVis.min.js"></script>
 }
 <h2>Cadastro de Usuarios</h2>
 <hr />
@@ -108,7 +117,7 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-lock"></i></div>
                                             </div>
-                                            <input class="form-control" type="password" name="txtSenha" id="txtSenha" required autocomplete="off" maxlength="30" minlength="6"/>
+                                            <input class="form-control" type="password" name="txtSenha" id="txtSenha" required autocomplete="off" maxlength="30" minlength="6" />
                                             <div class="input-group-text" style="background-color: #FFF"><a role="button" href="javascript: ExibirSenha('txtSenha', 'iconSenha');"><i id="iconSenha" class="fas fa-eye"></i></a></div>
                                         </div>
                                     </div>
@@ -120,7 +129,7 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-lock"></i></div>
                                             </div>
-                                            <input class="form-control" type="password" name="txtConfSenha" id="txtConfSenha" required autocomplete="off" maxlength="30" minlength="6"/>
+                                            <input class="form-control" type="password" name="txtConfSenha" id="txtConfSenha" required autocomplete="off" maxlength="30" minlength="6" onchange="ValidarSenha();" />
                                             <div class="input-group-text" style="background-color: #FFF"><a role="button" href="javascript: ExibirSenha('txtConfSenha', 'iconConfiSenha');"><i id="iconConfiSenha" class="fas fa-eye"></i></a></div>
                                         </div>
                                     </div>

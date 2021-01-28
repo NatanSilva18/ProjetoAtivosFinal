@@ -29,6 +29,8 @@ function CarregarFiliais() {
                 $("#divLoading").hide(300);
             }
         });
+        $('#cbbFilial').selectpicker('refresh');
+
     }
 
 };
@@ -96,6 +98,35 @@ function funcaoTable(NameTable) {
     if ($.fn.dataTable.isDataTable(NameTable)) {
         $(NameTable).DataTable().destroy();
         $(NameTable).DataTable({
+            dom: 'Bfrtip',
+            lengthMenu: [
+                [10, 25, 50, -1],
+                ['10 Linhas', '25 Linhas', '50 Linhas', 'Todos']
+            ],
+            buttons: [
+                'pageLength',
+                {
+                    extend: 'print',
+                    text: 'Imprimir <i class="fa fa-print"></i>',
+                    titleAttr: 'Imprimir',
+                    footer: true
+                },
+                {
+                    text: 'Excel <i class="fa fa-file-excel"></i>',
+                    titleAttr: 'Excel',
+                    extend: 'excelHtml5',
+                    footer: true,
+                    exportOptions: { orthogonal: 'export' }
+                },
+                {
+
+                    text: 'Pdf <i class="fa fa-file-pdf"></i>',
+                    titleAttr: 'Pdf',
+                    extend: 'pdfHtml5',
+                    footer: true,
+                    exportOptions: { orthogonal: 'export' }
+                }
+            ],
             "language": {
                 "sEmptyTable": "Nenhum registro encontrado",
                 "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
@@ -115,11 +146,53 @@ function funcaoTable(NameTable) {
                     "sLast": "Último"
                 }
             },
-            "bFilter": false
+            "bFilter": false,
+            columnDefs: [
+                {
+                    targets: 0,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).css('border-radius', '4px');
+                        if (rowData[3] == '<span class="badge badge-danger">Inativo</span>')
+                            $(td).css('border-left', '4px solid red');
+                        else
+                            $(td).css('border-left', '4px solid green');
+
+                    }
+                }
+            ]
         });
     }
     else {
         $(NameTable).DataTable({
+            dom: 'Bfrtip',
+            lengthMenu: [
+                [10, 25, 50, -1],
+                ['10 Linhas', '25 Linhas', '50 Linhas', 'Todos']
+            ],
+            buttons: [
+                'pageLength',
+                {
+                    extend: 'print',
+                    text: 'Imprimir <i class="fa fa-print"></i>',
+                    titleAttr: 'Imprimir',
+                    footer: true
+                },
+                {
+                    text: 'Excel <i class="fa fa-file-excel"></i>',
+                    titleAttr: 'Excel',
+                    extend: 'excelHtml5',
+                    footer: true,
+                    exportOptions: { orthogonal: 'export' }
+                },
+                {
+
+                    text: 'Pdf <i class="fa fa-file-pdf"></i>',
+                    titleAttr: 'Pdf',
+                    extend: 'pdfHtml5',
+                    footer: true,
+                    exportOptions: { orthogonal: 'export' }
+                }
+            ],
             "language": {
                 "sEmptyTable": "Nenhum registro encontrado",
                 "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
@@ -139,7 +212,20 @@ function funcaoTable(NameTable) {
                     "sLast": "Último"
                 }
             },
-            "bFilter": false
+            "bFilter": false,
+            columnDefs: [
+                {
+                    targets: 0,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).css('border-radius', '4px');
+                        if (rowData[3] == '<span class="badge badge-danger">Inativo</span>')
+                            $(td).css('border-left', '4px solid red');
+                        else
+                            $(td).css('border-left', '4px solid green');
+
+                    }
+                }
+            ]
         });
     }
 };
@@ -358,7 +444,7 @@ function Alterar(Codigo) {
 
                 $("#txtId").val(result.codigo);
                 $("#txtDescricao").val(result.descricao);
-                $("#cbbFilial").val(result.filCodigo);
+                $('#cbbFilial').selectpicker('val', result.filCodigo);
             }
 
         },

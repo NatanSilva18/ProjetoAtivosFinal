@@ -926,8 +926,8 @@ function ConfirmarCampos(dados = null) {
     var txt = '';
 
     txt += '\
-        <h6> Origem</h6>\
-            <div class="row">\
+        <h6 style="color:blue;"> Origem</h6>\
+            <div class="row" style="border-radius: 4px; border-left: 4px solid blue;">\
                 <div class="col-lg-6">\
                     <div class="form-group">\
                         <label>Filial de Origem:<b>'+ Origem + '</b></label>\
@@ -940,8 +940,8 @@ function ConfirmarCampos(dados = null) {
                 </div>\
             </div>\
             <hr />\
-            <h6>Destino</h6>\
-            <div class="row">\
+            <h6 style="color:green">Destino</h6>\
+            <div class="row" style="border-radius: 4px; border-left: 4px solid green;">\
                 <div class="col-lg-6">\
                     <div class="form-group">\
                         <label>Filial de Destino:<b>'+ Destino + '</b></label>\
@@ -962,8 +962,8 @@ function ConfirmarCampos(dados = null) {
 
         if (dados.aprovGerente != 0) {
             var htm = ' <hr />\
-                <h6> Aprovação Gerente</h6>\
-            <div class="row">\
+                <h6 style="color:blue"> Aprovação Gerente</h6>\
+            <div class="row" style="border-radius: 4px; border-left: 4px solid blue;">\
                         <div class="col-lg-6" >\
                                 <div class="form-group">\
                                     <label>Data Aprovação:<b> '+ Data(dados.dtAprovGerente) + '</b></label>\
@@ -975,7 +975,7 @@ function ConfirmarCampos(dados = null) {
                                 </div>\
                         </div>\
                   </div>\
-                <div class="row">\
+                <div class="row" style="border-radius: 4px; border-left: 4px solid blue;">\
                         <div class="col-lg-6" >\
                                 <div class="form-group">\
                                     <label>Observação da Aprovação:<b> '+ dados.obsAprovGerente + '</b></label>\
@@ -994,8 +994,8 @@ function ConfirmarCampos(dados = null) {
 
 
             var htm = ' <br><hr />\
-                <h6>Recebimento</h6>\
-            <div class="row">\
+                <h6 style="color:green">Recebimento</h6>\
+            <div class="row" style="border-radius: 4px; border-left: 4px solid green;">\
                         <div class="col-lg-6" >\
                                 <div class="form-group">\
                                     <label>Data Aprovação:<b> '+ Data(dados.dtAprovDestino) + '</b></label>\
@@ -1007,7 +1007,7 @@ function ConfirmarCampos(dados = null) {
                                 </div>\
                         </div>\
                   </div>\
-                <div class="row">\
+                <div class="row" style="border-radius: 4px; border-left: 4px solid green;">\
                         <div class="col-lg-6" >\
                                 <div class="form-group">\
                                     <label>Observação da Aprovação:<b> '+ dados.obsAprovDestino + '</b></label>\
@@ -1024,6 +1024,36 @@ function funcaoTable(NameTable) {
     if ($.fn.dataTable.isDataTable(NameTable)) {
         $(NameTable).DataTable().destroy();
         $(NameTable).DataTable({
+            dom: 'Bfrtip',
+            lengthMenu: [
+                [10, 25, 50, -1],
+                ['10 Linhas', '25 Linhas', '50 Linhas', 'Todos']
+            ],
+            buttons: [
+                'pageLength',
+                {
+                    extend: 'print',
+                    text: 'Imprimir <i class="fa fa-print"></i>',
+                    titleAttr: 'Imprimir',
+                    footer: true
+                },
+                {
+                    text: 'Excel <i class="fa fa-file-excel"></i>',
+                    titleAttr: 'Excel',
+                    extend: 'excelHtml5',
+                    footer: true,
+                    exportOptions: { orthogonal: 'export' }
+                },
+                {
+
+                    text: 'Pdf <i class="fa fa-file-pdf"></i>',
+                    titleAttr: 'Pdf',
+                    extend: 'pdfHtml5',
+                    footer: true,
+                    exportOptions: { orthogonal: 'export' }
+                }
+            ],
+            'order': [[4, 'desc']],
             "language": {
                 "sEmptyTable": "Nenhum registro encontrado",
                 "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
@@ -1043,6 +1073,14 @@ function funcaoTable(NameTable) {
                     "sLast": "Último"
                 }
             },
+            "columns": [
+                null,
+                null,
+                null,
+                null,
+                { "type": "date-eu" },
+                null
+            ],
             "bFilter": true,
             columnDefs: [
                 {
@@ -1066,6 +1104,36 @@ function funcaoTable(NameTable) {
     }
     else {
         $(NameTable).DataTable({
+            dom: 'Bfrtip',
+            lengthMenu: [
+                [10, 25, 50, -1],
+                ['10 Linhas', '25 Linhas', '50 Linhas', 'Todos']
+            ],
+            buttons: [
+                'pageLength',
+                {
+                    extend: 'print',
+                    text: 'Imprimir <i class="fa fa-print"></i>',
+                    titleAttr: 'Imprimir',
+                    footer: true
+                },
+                {
+                    text: 'Excel <i class="fa fa-file-excel"></i>',
+                    titleAttr: 'Excel',
+                    extend: 'excelHtml5',
+                    footer: true,
+                    exportOptions: { orthogonal: 'export' }
+                },
+                {
+
+                    text: 'Pdf <i class="fa fa-file-pdf"></i>',
+                    titleAttr: 'Pdf',
+                    extend: 'pdfHtml5',
+                    footer: true,
+                    exportOptions: { orthogonal: 'export' }
+                }
+            ],
+            'order': [[4, 'desc']],
             "language": {
                 "sEmptyTable": "Nenhum registro encontrado",
                 "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
@@ -1085,6 +1153,14 @@ function funcaoTable(NameTable) {
                     "sLast": "Último"
                 }
             },
+            "columns": [
+                null,
+                null,
+                null,
+                null,
+                { "type": "date-eu" },
+                null
+            ],
             "bFilter": true,
             columnDefs: [
                 {
@@ -1116,10 +1192,19 @@ function Rolagem() {
 };
 
 function Data(data) {
-    if (data != '01/01/1900 00:00:00' && data != '1/1/1900 12:00:00 AM')
-        return data.replace(/(\d*)-(\d*)-(\d*).*/, '$3-$2-$1').replace('-', '/').replace('-', '/').substring(0, 10);
-    else
-        return ' ';
+    if (data != null && data != "") {
+        var partes = data.split('-');
+        var dia;
+        if (partes.length > 2) {
+            dia = '' + partes[2][0];
+            dia += '' + partes[2][1];
+            var dtFormatada = '' + dia + '/' + partes[1] + '/' + partes[0];
+            return dtFormatada;
+        }
+        return data;
+
+    }
+    return 'Data Invalida';
 };
 
 function StatusTransf(DataRecebimento, DataAprovacao) {

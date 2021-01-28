@@ -25,6 +25,13 @@ namespace ProjetoAtivos.Models
             this.DataInsercao = DateTime.Now;
             this.Ativo = new Ativo(CodigoAtivo);
         }
+        public Imagem(int Codigo, string Foto, int CodigoAtivo, DateTime DataInsercao)
+        {
+            this.Codigo = Codigo;
+            this.Foto = Foto;
+            this.DataInsercao = DataInsercao;
+            this.Ativo = new Ativo(CodigoAtivo);
+        }
         public Imagem(int Codigo)
         {
             this.Codigo = Codigo;

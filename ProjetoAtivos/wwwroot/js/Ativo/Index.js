@@ -2,6 +2,8 @@
     CarregarRegionais();
     CarregarTiposAtivo();
     CarregarRegionaisPesq();
+    $('.money').mask('000.000.000.000.000,00', { reverse: true });
+
 });
 function LimparCombo(Name) {
     var select = document.getElementById(Name);
@@ -260,25 +262,27 @@ function LimparTabela() {
     $("#tbbAtivo").hide(0);
     $("#tableAtivo tr").remove();
     $("#txtPesquisar").val("");
+    $('#cbbRegiaoPesq').selectpicker('val', '');
+    $('#cbbFilialPesq').selectpicker('val', '0');
     var Radio = document.getElementsByName("rdAtivo"); Radio[0].checked = true;
 };
 
 function LimparCampos() {
-    $("#txtId").val(0);
+    $("#txtId").val("0");
     $("#txtPlaca").val("");
     $("#txtTag").val("");
     $("#cbbEstado").val("");
     $("#txtObservacao").val("");
     $("#txtDescricao").val("");
-    $("#cbbTpAtivo").val("");
     $("#txtMarca").val("");
     $("#txtNumSerie").val("");
-    $("#txtValor").val("");
+    //$("#txtValor").val("");
     $("#txtModelo").val("");
     $("#txtQtd").val("0");
     $("#validaPlaca").val("0");
+    $('#cbbTpAtivo').selectpicker('val', '');
 
-    
+
     $("#modalFotos").hide();
 
     $("#imagem").html("");
@@ -292,7 +296,11 @@ function LimparCampos() {
 
     document.getElementById("fuArquivo").required = true;
 
-    //ver pra limpar a foto
+    $("#txtFornecedor").val("");
+    $("#txtDataEmissao").val("");
+    $("#txtValorNota").val("");
+    $("#txtCnpj").val("");
+    $("#txtNumeroNota").val("");
 };
 function Rolagem() {
     var $anchor = $(this);
@@ -341,6 +349,35 @@ function funcaoTable(NameTable) {
     if ($.fn.dataTable.isDataTable(NameTable)) {
         $(NameTable).DataTable().destroy();
         $(NameTable).DataTable({
+            dom: 'Bfrtip',
+            lengthMenu: [
+                [10, 25, 50, -1],
+                ['10 Linhas', '25 Linhas', '50 Linhas', 'Todos']
+            ],
+            buttons: [
+                'pageLength',
+                {
+                    extend: 'print',
+                    text: 'Imprimir <i class="fa fa-print"></i>',
+                    titleAttr: 'Imprimir',
+                    footer: true
+                },
+                {
+                    text: 'Excel <i class="fa fa-file-excel"></i>',
+                    titleAttr: 'Excel',
+                    extend: 'excelHtml5',
+                    footer: true,
+                    exportOptions: { orthogonal: 'export' }
+                },
+                {
+
+                    text: 'Pdf <i class="fa fa-file-pdf"></i>',
+                    titleAttr: 'Pdf',
+                    extend: 'pdfHtml5',
+                    footer: true,
+                    exportOptions: { orthogonal: 'export' }
+                }
+            ],
             "language": {
                 "sEmptyTable": "Nenhum registro encontrado",
                 "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
@@ -366,7 +403,11 @@ function funcaoTable(NameTable) {
                     targets: 0,
                     createdCell: function (td, cellData, rowData, row, col) {
                         $(td).css('border-radius', '4px');
-                        $(td).css('border-left', '4px solid green');
+                        if (rowData[7] == 1)
+                            $(td).css('border-left', '4px solid green');
+                        else
+                            $(td).css('border-left', '4px solid red');
+
                     }
                 }
             ]
@@ -374,6 +415,35 @@ function funcaoTable(NameTable) {
     }
     else {
         $(NameTable).DataTable({
+            dom: 'Bfrtip',
+            lengthMenu: [
+                [10, 25, 50, -1],
+                ['10 Linhas', '25 Linhas', '50 Linhas', 'Todos']
+            ],
+            buttons: [
+                'pageLength',
+                {
+                    extend: 'print',
+                    text: 'Imprimir <i class="fa fa-print"></i>',
+                    titleAttr: 'Imprimir',
+                    footer: true
+                },
+                {
+                    text: 'Excel <i class="fa fa-file-excel"></i>',
+                    titleAttr: 'Excel',
+                    extend: 'excelHtml5',
+                    footer: true,
+                    exportOptions: { orthogonal: 'export' }
+                },
+                {
+
+                    text: 'Pdf <i class="fa fa-file-pdf"></i>',
+                    titleAttr: 'Pdf',
+                    extend: 'pdfHtml5',
+                    footer: true,
+                    exportOptions: { orthogonal: 'export' }
+                }
+            ],
             "language": {
                 "sEmptyTable": "Nenhum registro encontrado",
                 "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
@@ -399,7 +469,10 @@ function funcaoTable(NameTable) {
                     targets: 0,
                     createdCell: function (td, cellData, rowData, row, col) {
                         $(td).css('border-radius', '4px');
-                        $(td).css('border-left', '4px solid green');
+                        if (rowData[7] == 1)
+                            $(td).css('border-left', '4px solid green');
+                        else
+                            $(td).css('border-left', '4px solid red');
                     }
                 }
             ]
@@ -414,42 +487,50 @@ function Status(Ativo) {
 };
 function PreencherTabela(dados) {
     var i = 0;
+    var ValorAtivo = 0;
+
     $("#tbbAtivo").show(300);
     var txt = '<thead>\
             <tr class="thead-light">\
                 <th scope="col" width="5T%">Ativo</th>\
                 <th scope="col">Placa</th>\
                 <th scope="col">Descrição</th>\
+                <th scope="col">Valor</th>\
                 <th scope="col">Estado</th>\
                 <th scope="col">Filial</th>\
                 <th scope="col">Status</th>\
+                <th scope="col" style="display:none;"></th>\
                 <th scope="col"></th>\
             </tr>\
         </thead >\
         <tbody>';
     $.each(dados, function () {
+        if (this.notaFiscal == "") 
+            ValorAtivo = this.valorAtivo;
+        else
+            ValorAtivo = this.valorNota;
 
         if (this.stAtivo == 1) {
             if (this.imagem != "") {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
+                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td onclick="javascript:ObterImagens(' + this.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo+'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
                 txt += '<a role="button" class="btn btn-warning" href="javascript:UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
                 txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
                 txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>';
             }
             else {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
+                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
                 txt += '<a role="button" class="btn btn-warning" href="javascript:UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
                 txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
             }
         }
         else {
             if (this.imagem != "") {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
+                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td onclick="javascript:ObterImagens(' + this.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
                 txt += '<a role="button" class="btn btn-success" href="javascript:Ativar(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>';
                 txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>';
             }
             else {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td ><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td align="right" class="form-group">'
+                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
                 txt += '<a role="button" class="btn btn-success" href="javascript:Ativar(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>';
 
             }
@@ -516,7 +597,7 @@ function ObterAtivos() {
 };
 function VerificaConteudoNotaFiscal() {
     var NotaFiscal = document.getElementById('notafiscal').className;
-    if (NotaFiscal.indexOf('collapse show') != -1) {// diferente de -1 é encontrado
+    if (NotaFiscal.indexOf('show') != -1) {// diferente de -1 é encontrado
        document.getElementById("txtNumeroNota").required = false;
         document.getElementById("txtValorNota").required = false;
         document.getElementById("txtDataEmissao").required = false;
@@ -527,11 +608,21 @@ function VerificaConteudoNotaFiscal() {
         document.getElementById('txtDataEmissao').value = "";
         document.getElementById('txtFornecedor').value = "";
     }
-    else {
+    else {//nota on
         document.getElementById("txtNumeroNota").required = true;
         document.getElementById("txtValorNota").required = true;
         document.getElementById("txtDataEmissao").required = true;
         document.getElementById("txtFornecedor").required = true;
+    }
+};
+function AvaliarValorAtivo() {
+
+    var NotaFiscal = document.getElementById('notafiscal').className;
+    if (NotaFiscal.indexOf('show') != -1) {// nota aberta
+        document.getElementById('').value = 0; //valor nota
+    }
+    else {      //nota fechada
+        document.getElementById('').value = 0; //valor tipo ativo
     }
 }
 function Gravar() {
@@ -556,14 +647,14 @@ function Gravar() {
             var Marca = $('#txtMarca').val();
             var NumeroSerie = $('#txtNumSerie').val();
             var Modelo = $('#txtModelo').val();
-            var Valor = $('#txtValor').val();
+            var Valor = document.getElementById('txtValorNota').value.replace(',', '.');
 
             var CodigoNota = document.getElementById('txtIdNotaFiscal').value;
             var NumeroNota = document.getElementById('txtNumeroNota').value;
-            var ValorNota = document.getElementById('txtValorNota').value;
+            var ValorNota = document.getElementById('txtValorNota').value.replace(',','.');
             var DataEmissao = document.getElementById('txtDataEmissao').value;
             var Fornecedor = document.getElementById('txtFornecedor').value;
-
+            var Cnpj = document.getElementById('txtCnpj').value;
             var VerificaImagem = $('#minhaImagemHidden').val();
 
             if (VerificaImagem != "") {
@@ -574,7 +665,7 @@ function Gravar() {
                     data: {
                         Codigo: Codigo, Regional: Regional, Filial: Filial, Sala: Sala, Placa: Placa, Tag: Tag, Estado: Estado, Observacao: Observacao,
                         Descricao: Descricao, TipoAtivo: TipoAtivo, Marca: Marca, NumeroSerie: NumeroSerie, Modelo: Modelo, Valor: Valor, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude,
-                        CodigoNota: CodigoNota, NumeroNota: NumeroNota, ValorNota: ValorNota, DataEmissao: DataEmissao, Fornecedor: Fornecedor
+                        CodigoNota: CodigoNota, NumeroNota: NumeroNota, ValorNota: ValorNota, DataEmissao: DataEmissao, Fornecedor: Fornecedor, Cnpj: Cnpj
                     },
                     success: function (result) {
                         $('#novoAtivo').modal('hide');
@@ -731,6 +822,8 @@ function Ativar(Codigo) {
 };
 
 function Alterar(Codigo) {
+    $("#divLoading").show();
+
     LimparCampos();
     document.getElementById("cbbRegional").removeAttribute("required");
     document.getElementById("cbbFilial").removeAttribute("required");
@@ -756,21 +849,35 @@ function Alterar(Codigo) {
                 $('#novoAtivo').modal('show');
 
                 $("#txtId").val(result.codigo);
-                $("#txtIdNotaFiscal").val(result.notaFiscal);
+                $("#txtIdNotaFiscal").val(result.notaFiscal.codigo);
                 $("#txtOperacao").val(1);
                 $("#txtPlaca").val(result.placa);
                 $("#txtTag").val(result.tag);
                 $("#cbbEstado").val(result.estado);
                 $("#txtObservacao").val(result.observacao);
                 $("#txtDescricao").val(result.descricao);
-                $("#cbbTpAtivo").val(result.tpAtivoCodigo);
+                $('#cbbTpAtivo').selectpicker('val', result.tpAtivoCodigo);
                 $("#txtMarca").val(result.marca);
                 $("#txtNumSerie").val(result.numeroSerie);
                 $("#txtModelo").val(result.modelo);
-                $("#txtValor").val(result.valor);
+                //$("#txtValor").val(result.valor);
 
                 if (result.imagens != null)
                     MostraImagens(result.imagens);
+
+                if (result.notaFiscal.codigo > 0) {
+                    $("#txtFornecedor").val(result.notaFiscal.fornecedor);
+                    document.getElementById('txtDataEmissao').value = ObterDataInput(result.notaFiscal.dataEmissao);
+                    $("#txtValorNota").val(result.notaFiscal.valorNota);
+                    $("#txtNumeroNota").val(result.notaFiscal.codigoNota);
+                    //$("#txtValor").val(result.notaFiscal.valorNota);
+                }
+                else {
+                    $("#txtValorNota").val(result.valor);
+
+                }
+
+                $("#divLoading").hide(400);
 
             }
 
@@ -781,6 +888,13 @@ function Alterar(Codigo) {
         }
     });
 };
+function ObterDataInput(Data) {
+    var split = Data.split('-');
+    if (split.length > 2) {
+        var NovaData = split[0] + '-' + split[1] + '-' + split[2][0] + '' + split[2][1];
+        return NovaData;
+    }
+}
 function BuscarLocalizacao(Codigo) {
     $.ajax({
         type: 'POST',
@@ -832,7 +946,21 @@ document.querySelector('.custom-file-input').addEventListener('change', function
     nextSibling.innerText = fileName;
 });
 
+function Data(data) {
+    if (data != null && data != "") {
+        var partes = data.split('-');
+        var dia;
+        if (partes.length > 2) {
+            dia = '' + partes[2][0];
+            dia += '' + partes[2][1];
+            var dtFormatada = '' + dia + '/' + partes[1] + '/' + partes[0];
+            return dtFormatada;
+        }
+        return data;
 
+    }
+    return 'Data Invalida';
+};
 function MostraImagens(imgs) {
 
     var cont = 0;
@@ -855,6 +983,7 @@ function MostraImagens(imgs) {
                                         <div class="form-group">\
                                             <div class="card " style="width: 10rem;">\
                                                 <img id="minhaImagem" src="'+ txr2 + '" class="card-img-top" alt="...">\
+                                                     <p class="text-muted">Data: '+ Data(this.dataInsercao)+ '</p>\
                                                     <div class="card-body">\
                                                         <button type="button" class="btn btn-outline-danger btn-sm" onclick="javascript: ExcluirFoto('+ $("#txtQtd").val() + ')"><i class="fas fa-trash"></i></button>\
                                                     </div>\
@@ -995,39 +1124,45 @@ function ExcluirFoto(Codigo) {
 function Mensagem(div, msg) {
     $("#" + div).html(msg);
     $("#" + div).show(300);
-    $("#" + div).delay(5000);
+    $("#" + div).delay(6000);
     $("#" + div).hide(300);
 };
 
 function UnlockFields() {
     document.getElementById('txtTag').disabled = false;
-    document.getElementById('cbbEstado').disabled = false;
     document.getElementById('txtObservacao').disabled = false;
     document.getElementById('txtDescricao').disabled = false;
-  //  document.getElementById('cbbTpAtivo').disabled = false;
+    $("#cbbTpAtivo").attr("disabled", false);
+    $('.selectpicker').selectpicker('refresh');
+
     document.getElementById('txtMarca').disabled = false;
     document.getElementById('txtNumSerie').disabled = false;
     document.getElementById('txtModelo').disabled = false;
     document.getElementById('fuArquivo').disabled = false;
-
+    document.getElementById('cbbEstado').disabled = false;
 };
 
 function LockFields() {
     document.getElementById('txtTag').disabled = true;
-    document.getElementById('cbbEstado').disabled = true;
     document.getElementById('txtObservacao').disabled = true;
     document.getElementById('txtDescricao').disabled = true;
-    //document.getElementById('cbbTpAtivo').disabled = true;
+    document.getElementById('cbbEstado').disabled = true;
     document.getElementById('txtMarca').disabled = true;
     document.getElementById('txtNumSerie').disabled = true;
     document.getElementById('txtModelo').disabled = true;
-    document.getElementById('txtValor').disabled = true;
+    //document.getElementById('txtValor').disabled = true;
     document.getElementById('fuArquivo').disabled = true;
+    $("#cbbTpAtivo").attr("disabled", true);
+    $('.selectpicker').selectpicker('refresh');
+
 };
 
 function ValidarPlaca() {
-    var Placa = document.getElementById('txtPlaca').value;
+    $("#divLoading").show();
 
+    var Placa = document.getElementById('txtPlaca').value;
+    var txt = "";
+    var status = "";
     $.ajax({
         type: 'POST',
         url: '/Ativo/ObterAtivosPlaca',
@@ -1036,13 +1171,23 @@ function ValidarPlaca() {
         success: function (result) {
             if (result.length > 0) {
                 LockFields();
-                Mensagem("divAlertaPlaca", 'Placa Informada Ja Cadastrada');
+                for (var i = 0; i < result.length; i++) {
+                    if (result[i].status)
+                        status = '<span class="badge badge-success">Ativo</span>';
+                    else
+                        status = '<span class="badge badge-danger">Inativo</span>';
+
+                    txt += 'Placa Ja Cadastrada - Regional: <b>' + result[i].regional + '</b> - Filial: <b>' + result[i].filial + '</b> - Status: ' + status+'<br>'
+                }
+                Mensagem("divAlertaPlaca", txt);
                 document.getElementById('validaPlaca').value = "1";
             }
             else {
                 UnlockFields();
                 document.getElementById('validaPlaca').value = "0";
             }
+            $("#divLoading").hide(1000);
+
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
@@ -1061,7 +1206,7 @@ function PreencherValor(Combo) {
         async: false,
         success: function (result) {
             if (result != null) {
-                $("#txtValor").val(result.valor);
+                $("#txtValorNota").val(result.valor);
             }
             
         },
@@ -1140,4 +1285,55 @@ function GravarTipoAtivo() {
             $("#divLoading").hide(400);
         }
     });
+};
+
+function AlterarRequeridoNome() {
+    document.getElementById("cbbRegiaoPesq").required = true;
+    document.getElementById("cbbRegiaoPesq").required = true;
+    document.getElementById("txtPesquisar").required = false;
+};
+
+function AlterarRequeridoPlaca() {
+    $('#cbbRegiaoPesq').selectpicker('val', '');
+    $('#cbbFilialPesq').selectpicker('val', '0');
+
+    document.getElementById("cbbRegiaoPesq").required = false;
+    document.getElementById("cbbRegiaoPesq").required = false;
+    document.getElementById("txtPesquisar").required = true;
+};
+function ObterImagens(Codigo) {
+    $("#divLoading").show();
+
+    $.ajax({
+        type: 'POST',
+        url: '/Ativo/ObterImagens',
+        data: {
+            Codigo: Codigo
+        },
+        success: function (result) {
+            if (result.length > 0) {
+                $('#galeria').modal('show');
+                MontarGaleriaAtivo(result);
+            }
+        },
+        error: function (XMLHttpRequest, txtStatus, errorThrown) {
+            alert("Status: " + txtStatus); alert("Error: " + errorThrown);
+            $("#divLoading").hide(400);
+        }
+    });
+};
+
+function MontarGaleriaAtivo(dados) {
+    var Header = '<li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>';
+    var Corpo = '<div class="carousel-item active"><img src="' + dados[0].imagem + '" class="img-fluid d-block" style="height:500px; width:500px; margin:0 auto" alt="..."><div class="carousel-caption d-none d-md-block"><h5>Data Inserção: ' + Data(dados[0].dataInsercao) + '</h5></div></div>';
+
+    for (var i = 1; i < dados.length; i++) {
+        Header += '<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '"></li>';
+        Corpo += '<div class="carousel-item"><img src="' + dados[i].imagem + '" class="img-fluid d-block" style="height:500px; width:500px; margin:0 auto" alt="..."><div class="carousel-caption d-none d-md-block"><h5>Data Inserção: ' + Data(dados[i    ].dataInsercao) + '</h5></div></div>';
+    };
+
+    $("#headerGaleria").html(Header);
+    $("#corpoGaleria").html(Corpo);
+
+    $("#divLoading").hide(400);
 };

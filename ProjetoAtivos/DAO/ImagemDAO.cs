@@ -24,7 +24,8 @@ namespace ProjetoAtivos.DAO
                          select new Imagem(
                                             Convert.ToInt32(row["img_codigo"]),
                                             Encoding.UTF8.GetString((byte[])row["img_imagem"]),
-                                            Convert.ToInt32(row["ati_codigo"])
+                                            Convert.ToInt32(row["ati_codigo"]),
+                                            Convert.ToDateTime(row["img_dtinsercao"])
                          )).ToList();
             return dados;
         }

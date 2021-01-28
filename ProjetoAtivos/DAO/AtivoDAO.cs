@@ -44,6 +44,34 @@ namespace ProjetoAtivos.DAO
 
             return dados;
         }
+        internal List<object> TableToListAtivos(DataTable dt)
+        {
+            List<object> Dados = new List<object>();
+
+            if (dt.Rows.Count > 0)
+            {
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    Dados.Add(new
+                    {
+                        Codigo = Convert.ToInt32(dt.Rows[i]["ati_codigo"]),
+                        Latitude = DBNull.Value.Equals(dt.Rows[i]["loca_latitude"]) ? "" : dt.Rows[i]["loca_latitude"].ToString(),
+                        Longitude = DBNull.Value.Equals(dt.Rows[i]["loca_longitude"]) ? "" : dt.Rows[i]["loca_longitude"].ToString(),
+                        Imagem = DBNull.Value.Equals(dt.Rows[i]["img_imagem"]) ? "" : Encoding.UTF8.GetString((byte[])dt.Rows[i]["img_imagem"]),
+                        Placa = Convert.ToInt32(dt.Rows[i]["ati_placa"]),
+                        Descricao = dt.Rows[i]["ati_descricao"].ToString(),
+                        Estado = dt.Rows[i]["ati_estado"].ToString(),
+                        Razao = dt.Rows[i]["fil_razao"].ToString(),
+                        StAtivo = Convert.ToBoolean(dt.Rows[i]["ati_stativo"]),
+                        NotaFiscal = dt.Rows[i]["nt_codigo"].ToString(),
+                        ValorAtivo = dt.Rows[i]["ati_valor"].ToString(),
+                        ValorNota = dt.Rows[i]["nt_valor"].ToString(),
+                    });
+                }
+            }
+
+            return Dados == null ? null : Dados;
+        }
         internal List<object> TableToListCompleta(DataTable dt)
         {
             List<object> Dados = new List<object>();
@@ -93,93 +121,115 @@ namespace ProjetoAtivos.DAO
         }
         internal int Gravar(Ativo Ativo, List<Imagem> Imagens, Localizacao Localizacao)
         {
-            int Codigo = 0, NotaFiscal = Ativo.GetNota().Gravar();
+            int Codigo = 0, NotaFiscal = 0;
             int j = 0;
             Boolean OK = false;
 
-            if (NotaFiscal >= 0)  //deu bom gravar nota ou alterar
+            try
             {
-                b.getComandoSQL().Parameters.Clear();
-
-                if (Ativo.GetCodigo() == 0)
+                NotaFiscal = Ativo.GetNota().Gravar();
+                if (NotaFiscal >= 0)  //deu bom gravar nota ou alterar
                 {
-                    if(NotaFiscal > 0)
+                    b.getComandoSQL().Parameters.Clear();
+
+                    if (Ativo.GetCodigo() == 0)
                     {
-                        b.getComandoSQL().CommandText = @"insert into Ativos (ati_placa, ati_descricao, ati_estado, ati_observacao, ati_tag, ati_marca, ati_modelo, ati_numeroserie, ati_stativo, ati_valor, tpa_codigo, sal_codigo, nt_codigo) 
+                        if (NotaFiscal > 0)
+                        {
+                            b.getComandoSQL().CommandText = @"insert into Ativos (ati_placa, ati_descricao, ati_estado, ati_observacao, ati_tag, ati_marca, ati_modelo, ati_numeroserie, ati_stativo, ati_valor, tpa_codigo, sal_codigo, nt_codigo) 
                    values(@placa, @descricao, @estado, @observacao, @tag, @marca, @modelo, @numserie, @ativo, @valor, @tpativo, @sala, @nota);
                 SELECT LAST_INSERT_ID();";
-                        b.getComandoSQL().Parameters.AddWithValue("@nota", NotaFiscal);
-                    }
-                    else
-                    {
-                        b.getComandoSQL().CommandText = @"insert into Ativos (ati_placa, ati_descricao, ati_estado, ati_observacao, ati_tag, ati_marca, ati_modelo, ati_numeroserie, ati_stativo, ati_valor, tpa_codigo, sal_codigo) 
-                   values(@placa, @descricao, @estado, @observacao, @tag, @marca, @modelo, @numserie, @ativo, @valor, @tpativo, @sala);
-                SELECT LAST_INSERT_ID();";
+                            b.getComandoSQL().Parameters.AddWithValue("@nota", NotaFiscal);
+                            b.getComandoSQL().Parameters.AddWithValue("@valor", Ativo.GetNota().ValorNota);    //se tiver nota fiscal pega valor da nota
 
-                    }
-
-                    b.getComandoSQL().Parameters.AddWithValue("@sala", Ativo.GetSala().GetCodigo());
-                    b.getComandoSQL().Parameters.AddWithValue("@valor", Ativo.GetValor());
-                }
-                else
-                {
-                    if(NotaFiscal > 0)
-                    {
-                        b.getComandoSQL().CommandText = @"UPDATE Ativos SET ati_descricao = @descricao, ati_estado = @estado, ati_observacao = @observacao, ati_tag = @tag, ati_marca = @marca, ati_modelo = @modelo, ati_numeroSerie = @numserie, ati_stativo = @ativo, tpa_codigo = @tpativo, ati_valor = @valor, ati_placa = @placa, nt_codigo = @nota WHERE ati_codigo = @codigo;";
-                        b.getComandoSQL().Parameters.AddWithValue("@nota", NotaFiscal);
-                    }
-                    else
-                    {
-                        b.getComandoSQL().CommandText = @"UPDATE Ativos SET ati_descricao = @descricao, ati_estado = @estado, ati_observacao = @observacao, ati_tag = @tag, ati_marca = @marca, ati_modelo = @modelo, ati_numeroSerie = @numserie, ati_stativo = @ativo, tpa_codigo = @tpativo, ati_valor = @valor, ati_placa = @placa WHERE ati_codigo = @codigo;";
-                    }
-
-                    b.getComandoSQL().Parameters.AddWithValue("@codigo", Ativo.GetCodigo());
-                    
-
-                }
-
-                b.getComandoSQL().Parameters.AddWithValue("@placa", Ativo.GetPlaca());
-                b.getComandoSQL().Parameters.AddWithValue("@descricao", Ativo.GetDescricao());
-                b.getComandoSQL().Parameters.AddWithValue("@estado", Ativo.GetEstado());
-                b.getComandoSQL().Parameters.AddWithValue("@observacao", Ativo.GetObservacao());
-                b.getComandoSQL().Parameters.AddWithValue("@tag", Ativo.GetTag());
-                b.getComandoSQL().Parameters.AddWithValue("@marca", Ativo.GetMarca());
-                b.getComandoSQL().Parameters.AddWithValue("@modelo", Ativo.GetModelo());
-                b.getComandoSQL().Parameters.AddWithValue("@numserie", Ativo.GetNumeroSerie());
-                b.getComandoSQL().Parameters.AddWithValue("@ativo", Ativo.GetStAtivo());
-                b.getComandoSQL().Parameters.AddWithValue("@tpativo", Ativo.GetTipoAtivo().GetCodigo());
-
-                if (Ativo.GetCodigo() == 0)
-                    OK = b.ExecutaComando(true, out Codigo) == 1;
-                else
-                    OK = b.ExecutaComando(true) == 1;
-
-                if (OK)
-                {
-
-                    if (Ativo.GetCodigo() != 0)    //n pode excluir e gravar dnv ... pq se n altera a localizacao  ... tem q fazer update 
-                    {
-                        Codigo = Ativo.GetCodigo();
-                        Ativo.Imagens = new ImagemDAO().BuscarImagens(Ativo.GetCodigo());
-
-                        if (Ativo.Imagens != null)
-                        {
-                            for (j = 0; OK && j < Ativo.Imagens.Count; j++)
-                            {
-                                OK = Ativo.Imagens[j].Excluir();
-                            }
-
-
-                            for (j = 0; OK && j < Imagens.Count; j++)
-                            {
-                                Ativo.SetCodigo(Codigo);
-                                Imagens[j].SetAtivo(Ativo);
-                                ImagemDAO ImagemDAO = new ImagemDAO();
-
-                                OK = ImagemDAO.Gravar(Imagens[j], Localizacao);
-                            }
                         }
                         else
+                        {
+                            b.getComandoSQL().CommandText = @"insert into Ativos (ati_placa, ati_descricao, ati_estado, ati_observacao, ati_tag, ati_marca, ati_modelo, ati_numeroserie, ati_stativo, ati_valor, tpa_codigo, sal_codigo) 
+                   values(@placa, @descricao, @estado, @observacao, @tag, @marca, @modelo, @numserie, @ativo, @valor, @tpativo, @sala);
+                SELECT LAST_INSERT_ID();";
+                            b.getComandoSQL().Parameters.AddWithValue("@valor", Ativo.GetNota().ValorNota);      //se n tiver pegar valor do tipo_ativo
+                        }
+
+                        b.getComandoSQL().Parameters.AddWithValue("@sala", Ativo.GetSala().GetCodigo());
+           
+                    }
+                    else
+                    {
+                        if (NotaFiscal > 0)
+                        {
+                            b.getComandoSQL().CommandText = @"UPDATE Ativos SET ati_descricao = @descricao, ati_estado = @estado, ati_observacao = @observacao, ati_tag = @tag, ati_marca = @marca, ati_modelo = @modelo, ati_numeroSerie = @numserie, ati_stativo = @ativo, tpa_codigo = @tpativo, ati_valor = @valor, ati_placa = @placa, nt_codigo = @nota WHERE ati_codigo = @codigo;";
+                            b.getComandoSQL().Parameters.AddWithValue("@nota", NotaFiscal);
+                            b.getComandoSQL().Parameters.AddWithValue("@valor", Ativo.GetNota().ValorNota);    //se tiver nota altera o valor pelo valor da nota
+                        }
+                        else
+                        {
+                            b.getComandoSQL().CommandText = @"UPDATE Ativos SET ati_descricao = @descricao, ati_estado = @estado, ati_observacao = @observacao, ati_tag = @tag, ati_marca = @marca, ati_modelo = @modelo, ati_numeroSerie = @numserie, ati_stativo = @ativo, tpa_codigo = @tpativo, ati_valor = @valor, ati_placa = @placa WHERE ati_codigo = @codigo;";// se n tiver pelo tipo_ativo
+
+                            b.getComandoSQL().Parameters.AddWithValue("@valor", Ativo.GetNota().ValorNota);
+
+                        }
+
+                        b.getComandoSQL().Parameters.AddWithValue("@codigo", Ativo.GetCodigo());
+
+
+
+                    }
+                    b.getComandoSQL().Parameters.AddWithValue("@placa", Ativo.GetPlaca());
+                    b.getComandoSQL().Parameters.AddWithValue("@descricao", Ativo.GetDescricao());
+                    b.getComandoSQL().Parameters.AddWithValue("@estado", Ativo.GetEstado());
+                    b.getComandoSQL().Parameters.AddWithValue("@observacao", Ativo.GetObservacao());
+                    b.getComandoSQL().Parameters.AddWithValue("@tag", Ativo.GetTag());
+                    b.getComandoSQL().Parameters.AddWithValue("@marca", Ativo.GetMarca());
+                    b.getComandoSQL().Parameters.AddWithValue("@modelo", Ativo.GetModelo());
+                    b.getComandoSQL().Parameters.AddWithValue("@numserie", Ativo.GetNumeroSerie());
+                    b.getComandoSQL().Parameters.AddWithValue("@ativo", Ativo.GetStAtivo());
+                    b.getComandoSQL().Parameters.AddWithValue("@tpativo", Ativo.GetTipoAtivo().GetCodigo());
+
+                    if (Ativo.GetCodigo() == 0)
+                        OK = b.ExecutaComando(true, out Codigo) == 1;
+                    else
+                        OK = b.ExecutaComando(true) == 1;
+
+                    if (OK)
+                    {
+
+                        if (Ativo.GetCodigo() != 0)    //n pode excluir e gravar dnv ... pq se n altera a localizacao  ... tem q fazer update 
+                        {
+                            Codigo = Ativo.GetCodigo();
+                            Ativo.Imagens = new ImagemDAO().BuscarImagens(Ativo.GetCodigo());
+
+                            if (Ativo.Imagens != null)
+                            {
+                                for (j = 0; OK && j < Ativo.Imagens.Count; j++)
+                                {
+                                    OK = Ativo.Imagens[j].Excluir();
+                                }
+
+
+                                for (j = 0; OK && j < Imagens.Count; j++)
+                                {
+                                    Ativo.SetCodigo(Codigo);
+                                    Imagens[j].SetAtivo(Ativo);
+                                    ImagemDAO ImagemDAO = new ImagemDAO();
+
+                                    OK = ImagemDAO.Gravar(Imagens[j], Localizacao);
+                                }
+                            }
+                            else
+                            {
+                                for (int i = 0; OK && i < Imagens.Count; i++)
+                                {
+                                    Ativo.SetCodigo(Codigo);
+                                    Imagens[i].SetAtivo(Ativo);
+                                    ImagemDAO ImagemDAO = new ImagemDAO();
+
+                                    OK = ImagemDAO.Gravar(Imagens[i], Localizacao);
+                                }
+                            }
+
+                        }
+                        else //gravar
                         {
                             for (int i = 0; OK && i < Imagens.Count; i++)
                             {
@@ -191,29 +241,21 @@ namespace ProjetoAtivos.DAO
                             }
                         }
 
-                    }
-                    else //gravar
-                    {
-                        for (int i = 0; OK && i < Imagens.Count; i++)
-                        {
-                            Ativo.SetCodigo(Codigo);
-                            Imagens[i].SetAtivo(Ativo);
-                            ImagemDAO ImagemDAO = new ImagemDAO();
+                        b.FinalizaTransacao(OK);
 
-                            OK = ImagemDAO.Gravar(Imagens[i], Localizacao);
-                        }
                     }
+                    else
+                        b.FinalizaTransacao(OK);
 
-                    b.FinalizaTransacao(OK);
 
                 }
                 else
-                    b.FinalizaTransacao(OK);
-
-
+                    b.FinalizaTransacao(false);
             }
-            else
+            catch (Exception e)
+            {
                 b.FinalizaTransacao(false);
+            }
 
             return OK == true? 1: 0;
         }
@@ -242,12 +284,14 @@ namespace ProjetoAtivos.DAO
 
        public List<object> ObterAtivosPlaca(int Placa)
         {
+            List<object> Dados = new List<object>();
             b.getComandoSQL().Parameters.Clear();
 
-            b.getComandoSQL().CommandText = @"select a.ati_codigo, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo
+            b.getComandoSQL().CommandText = @"select a.ati_placa, a.ati_descricao, f.fil_razao, r.reg_descricao, a.ati_stativo
                                               from Ativos a 
                                               inner join Sala s on s.sal_codigo = a.sal_codigo
                                               inner join Filial f on s.fil_codigo = f.fil_codigo
+                                              inner join regional r on f.reg_codigo = r.reg_codigo
                                               where a.ati_placa = @placa order by a.ati_placa;";
 
             b.getComandoSQL().Parameters.AddWithValue("@placa", Placa);
@@ -256,7 +300,20 @@ namespace ProjetoAtivos.DAO
             DataTable dt = b.ExecutaSelect();
 
             if (dt.Rows.Count > 0)
-                return TableToListSemFt(dt);
+            {
+               for(int i = 0; i < dt.Rows.Count; i++)
+                {
+                    Dados.Add(new
+                    {
+                        Placa = dt.Rows[i]["ati_placa"].ToString(),
+                        Descricao = dt.Rows[i]["ati_descricao"].ToString(),
+                        Status = Convert.ToBoolean(dt.Rows[i]["ati_stativo"]),
+                        Filial = dt.Rows[i]["fil_razao"].ToString(),
+                        Regional = dt.Rows[i]["reg_descricao"].ToString()
+                    });
+                }
+                return Dados;
+            }
             else
                 return null;
 
@@ -313,6 +370,8 @@ namespace ProjetoAtivos.DAO
         public List<object> ObterAtivos(string Chave, string Filtro, int Ativo, int Regiao, int Filial)
         {
             string Txt = "";
+
+            b.getComandoSQL().CommandTimeout = 0;
             b.getComandoSQL().Parameters.Clear();
 
 
@@ -321,21 +380,23 @@ namespace ProjetoAtivos.DAO
             {
                 if(Filial > 0)
                 {
-                    b.getComandoSQL().CommandText = @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo
+                    b.getComandoSQL().CommandText = @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                    from Ativos a 
                    LEFT join imagem i on a.ati_codigo = i.ati_codigo
                    LEFT join localizacao l on l.img_codigo = i.img_codigo
                    inner join Sala s on s.sal_codigo = a.sal_codigo
                    inner join Filial f on s.fil_codigo = f.fil_codigo
                    inner join Regional r on r.reg_codigo = f.reg_codigo
+                   inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo  
                    where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and f.fil_codigo = @filialONE
                    group by a.ati_codigo
                         union
                    select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
-                   f.fil_razao, a.ati_stativo
+                   f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                    from Ativos a 
                    RIGHT join imagem i on a.ati_codigo = i.ati_codigo
                    RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                   left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                    inner join Sala s on s.sal_codigo = a.sal_codigo
                    inner join Filial f on s.fil_codigo = f.fil_codigo
                    inner join Regional r on r.reg_codigo = f.reg_codigo
@@ -347,28 +408,31 @@ namespace ProjetoAtivos.DAO
                 }
                 else
                 {
-                    b.getComandoSQL().CommandText = @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo
+                    b.getComandoSQL().CommandText = @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                    from Ativos a 
                    LEFT join imagem i on a.ati_codigo = i.ati_codigo
                    LEFT join localizacao l on l.img_codigo = i.img_codigo
                    inner join Sala s on s.sal_codigo = a.sal_codigo
                    inner join Filial f on s.fil_codigo = f.fil_codigo
                    inner join Regional r on r.reg_codigo = f.reg_codigo
+                   inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                    where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE
                    group by a.ati_codigo
                         union
                    select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
-                   f.fil_razao, a.ati_stativo
+                   f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                    from Ativos a 
                    RIGHT join imagem i on a.ati_codigo = i.ati_codigo
                    RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                   left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                    inner join Sala s on s.sal_codigo = a.sal_codigo
                    inner join Filial f on s.fil_codigo = f.fil_codigo
                    inner join Regional r on r.reg_codigo = f.reg_codigo
                    where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO
                    group by a.ati_codigo;";
                 }
-               
+                b.getComandoSQL().Parameters.AddWithValue("@regionalONE", Regiao);
+                b.getComandoSQL().Parameters.AddWithValue("@regionalTWO", Regiao);
             }
             else
             {
@@ -376,21 +440,23 @@ namespace ProjetoAtivos.DAO
                 {
                     if(Filial > 0)
                     {
-                        b.getComandoSQL().CommandText = @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo
+                        b.getComandoSQL().CommandText = @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
                            LEFT join imagem i on a.ati_codigo = i.ati_codigo
                            LEFT join localizacao l on l.img_codigo = i.img_codigo
                            inner join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
+                           inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                            where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and a.ati_descricao like @nomeONE and f.fil_codigo = @filialONE
                            group by a.ati_codigo
                                 union
                            select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
-                           f.fil_razao, a.ati_stativo
+                           f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
                            RIGHT join imagem i on a.ati_codigo = i.ati_codigo
                            RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                           left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                            inner join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
@@ -402,21 +468,23 @@ namespace ProjetoAtivos.DAO
                     }
                     else
                     {
-                        b.getComandoSQL().CommandText = @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo
+                        b.getComandoSQL().CommandText = @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
                            LEFT join imagem i on a.ati_codigo = i.ati_codigo
                            LEFT join localizacao l on l.img_codigo = i.img_codigo
                            inner join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
+                           inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                            where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and a.ati_descricao like @nomeONE
                            group by a.ati_codigo
                                 union
                            select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
-                           f.fil_razao, a.ati_stativo
+                           f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
                            RIGHT join imagem i on a.ati_codigo = i.ati_codigo
                            RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                           left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                            inner join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
@@ -426,19 +494,118 @@ namespace ProjetoAtivos.DAO
 
                     b.getComandoSQL().Parameters.AddWithValue("@nomeONE", "%" + Chave + "%");
                     b.getComandoSQL().Parameters.AddWithValue("@nomeTWO", "%" + Chave + "%");
+                    b.getComandoSQL().Parameters.AddWithValue("@regionalONE", Regiao);
+                    b.getComandoSQL().Parameters.AddWithValue("@regionalTWO", Regiao);
+                }
 
+                if(Filtro == "Placa")
+                {
+                    if(Regiao > 0) //preencheu a regional
+                    {
+                        if(Filial > 0) //preencheu regional e filial
+                        {
+                            b.getComandoSQL().CommandText = @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                           from Ativos a 
+                           LEFT join imagem i on a.ati_codigo = i.ati_codigo
+                           LEFT join localizacao l on l.img_codigo = i.img_codigo
+                           inner join Sala s on s.sal_codigo = a.sal_codigo
+                           inner join Filial f on s.fil_codigo = f.fil_codigo
+                           inner join Regional r on r.reg_codigo = f.reg_codigo
+                           inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                           where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and f.fil_codigo = @filialONE and a.ati_placa like @placaOne
+                           group by a.ati_codigo
+                                union
+                           select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                           f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                           from Ativos a 
+                           RIGHT join imagem i on a.ati_codigo = i.ati_codigo
+                           RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                           left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                           inner join Sala s on s.sal_codigo = a.sal_codigo
+                           inner join Filial f on s.fil_codigo = f.fil_codigo
+                           inner join Regional r on r.reg_codigo = f.reg_codigo
+                           where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and f.fil_codigo = @filialTWO and a.ati_placa like @placaTwo
+                           group by a.ati_codigo";
+
+                            b.getComandoSQL().Parameters.AddWithValue("@filialONE", Filial);
+                            b.getComandoSQL().Parameters.AddWithValue("@filialTWO", Filial);
+                            b.getComandoSQL().Parameters.AddWithValue("@regionalONE", Regiao);
+                            b.getComandoSQL().Parameters.AddWithValue("@regionalTWO", Regiao);
+
+                            b.getComandoSQL().Parameters.AddWithValue("@placaOne", "%" + Chave + "%");
+                            b.getComandoSQL().Parameters.AddWithValue("@placaTwo", "%" + Chave + "%");
+
+                        }
+                        else  //preencheu regional mas n filial
+                        {
+                            b.getComandoSQL().CommandText = @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                           from Ativos a 
+                           LEFT join imagem i on a.ati_codigo = i.ati_codigo
+                           LEFT join localizacao l on l.img_codigo = i.img_codigo
+                           inner join Sala s on s.sal_codigo = a.sal_codigo
+                           inner join Filial f on s.fil_codigo = f.fil_codigo
+                           inner join Regional r on r.reg_codigo = f.reg_codigo
+                           inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                           where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and a.ati_placa like @placaOne
+                           group by a.ati_codigo
+                                union
+                           select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                           f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                           from Ativos a 
+                           RIGHT join imagem i on a.ati_codigo = i.ati_codigo
+                           RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                           left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                           inner join Sala s on s.sal_codigo = a.sal_codigo
+                           inner join Filial f on s.fil_codigo = f.fil_codigo
+                           inner join Regional r on r.reg_codigo = f.reg_codigo
+                           where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and a.ati_placa like @placaTwo
+                           group by a.ati_codigo";
+
+                            b.getComandoSQL().Parameters.AddWithValue("@regionalONE", Regiao);
+                            b.getComandoSQL().Parameters.AddWithValue("@regionalTWO", Regiao);
+
+                            b.getComandoSQL().Parameters.AddWithValue("@placaOne", "%" + Chave + "%");
+                            b.getComandoSQL().Parameters.AddWithValue("@placaTwo", "%" + Chave + "%");
+                        }
+                    }
+                    else //nao preencheu
+                    {
+                        b.getComandoSQL().CommandText = @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                           from Ativos a 
+                           LEFT join imagem i on a.ati_codigo = i.ati_codigo
+                           LEFT join localizacao l on l.img_codigo = i.img_codigo
+                           inner join Sala s on s.sal_codigo = a.sal_codigo
+                           inner join Filial f on s.fil_codigo = f.fil_codigo
+                           inner join Regional r on r.reg_codigo = f.reg_codigo
+                   inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                           where a.ati_stativo = @ativoONE and a.ati_placa like @placaOne
+                           group by a.ati_codigo
+                                union
+                           select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                           f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                           from Ativos a 
+                           RIGHT join imagem i on a.ati_codigo = i.ati_codigo
+                           RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                           left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                           inner join Sala s on s.sal_codigo = a.sal_codigo
+                           inner join Filial f on s.fil_codigo = f.fil_codigo
+                           inner join Regional r on r.reg_codigo = f.reg_codigo
+                           where a.ati_stativo = @ativoTWO and a.ati_placa like @placaTwo
+                           group by a.ati_codigo";
+
+                        b.getComandoSQL().Parameters.AddWithValue("@placaOne", "%" + Chave + "%");
+                        b.getComandoSQL().Parameters.AddWithValue("@placaTwo", "%" + Chave + "%");
+                    }
                 }
             }
 
             b.getComandoSQL().Parameters.AddWithValue("@ativoONE", Ativo);
             b.getComandoSQL().Parameters.AddWithValue("@ativoTWO", Ativo);
-            b.getComandoSQL().Parameters.AddWithValue("@regionalONE", Regiao);
-            b.getComandoSQL().Parameters.AddWithValue("@regionalTWO", Regiao);
 
             DataTable dt = b.ExecutaSelect();
 
             if (dt.Rows.Count > 0)
-                return TableToListCompleta(dt);
+                return TableToListAtivos(dt);
             else
                 return null;
         }
@@ -481,6 +648,7 @@ namespace ProjetoAtivos.DAO
             {
                 Ativo a = TableToList(dt).FirstOrDefault();
                 a.Imagens = new ImagemDAO().BuscarImagens(Codigo, false);
+                a.SetNota(new NotaFiscal().BuscarNota(a.GetNota().Codigo));
                 return a;
             }
             else
@@ -696,6 +864,35 @@ namespace ProjetoAtivos.DAO
             }
             else
                 return null;
+        }
+
+        public List<object> ObterImagens(int Codigo)
+        {
+            List<object> Dados = new List<object>();
+            b.getComandoSQL().Parameters.Clear();
+
+            b.getComandoSQL().CommandText = @"select img_imagem, img_dtinsercao from imagem where ati_codigo = @codigo";
+
+            b.getComandoSQL().Parameters.AddWithValue("@codigo", Codigo);
+
+            DataTable dt = b.ExecutaSelect();
+
+            if (dt.Rows.Count > 0)
+            {
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    Dados.Add(new
+                    {
+                        Imagem = DBNull.Value.Equals(dt.Rows[i]["img_imagem"]) ? "" : Encoding.UTF8.GetString((byte[])dt.Rows[i]["img_imagem"]),
+                        DataInsercao = Convert.ToDateTime(dt.Rows[i]["img_dtinsercao"])
+
+                    });
+                }
+                return Dados;
+            }
+            else
+                return null;
+
         }
     }
 }

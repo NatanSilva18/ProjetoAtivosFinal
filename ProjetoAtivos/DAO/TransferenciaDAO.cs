@@ -205,11 +205,34 @@ INSERT INTO itens_ativos
 
         public List<object> ObterTransferencias(int Origem, int Destino, int Ativo, int Regiao, int Filial)
         {
+            b.getComandoSQL().CommandTimeout = 0;
+
             b.getComandoSQL().Parameters.Clear();
 
             if(Origem != 0)
             {
-                b.getComandoSQL().CommandText = @"select t.transf_codigo, t.transf_observacao, t.transf_stativo, t.transf_dtabertura, ifnull(t.transf_dtfechamento, ' ') as transf_dtfechamento, 
+              
+                if (Destino != 0)
+                {
+                    b.getComandoSQL().CommandText = @"select t.transf_codigo, t.transf_observacao, t.transf_stativo, t.transf_dtabertura, ifnull(t.transf_dtfechamento, ' ') as transf_dtfechamento, 
+                                              m.mot_codigo, m.mot_descricao, fo.fil_codigo, fd.fil_codigo,  fo.fil_razao as origem, fd.fil_razao as destino
+                                              , ifnull(aprdes_dtinsercao,' ') as aprovacaoDestino, ifnull(apr_dtinsercao,' ') as aprovacaoGerente
+                                              from tranferencia t
+                                              inner join Motivo m on m.mot_codigo = t.mot_codigo
+                                              inner join Filial fo on fo.fil_codigo = t.fil_codigo
+                                              inner join Filial fd on fd.fil_codigo = t.fil_codigo_destino
+                                              left outer join Aprovacao_Destino ad on ad.aprdes_codigo = t.aprdes_codigo
+                                              left outer join Aprovacao_Gerente ag on ag.apr_codigo = t.apr_codigo
+                                              where t.fil_codigo = @origem and t.fil_codigo_destino = @destino
+                                              order by t.transf_dtabertura desc;";
+
+                    b.getComandoSQL().Parameters.AddWithValue("@origem", Origem);
+                    b.getComandoSQL().Parameters.AddWithValue("@destino", Destino);
+
+                }
+                else
+                {
+                    b.getComandoSQL().CommandText = @"select t.transf_codigo, t.transf_observacao, t.transf_stativo, t.transf_dtabertura, ifnull(t.transf_dtfechamento, ' ') as transf_dtfechamento, 
                                               m.mot_codigo, m.mot_descricao, fo.fil_codigo, fd.fil_codigo,  fo.fil_razao as origem, fd.fil_razao as destino
                                               , ifnull(aprdes_dtinsercao,' ') as aprovacaoDestino, ifnull(apr_dtinsercao,' ') as aprovacaoGerente
                                               from tranferencia t
@@ -220,12 +243,8 @@ INSERT INTO itens_ativos
                                               left outer join Aprovacao_Gerente ag on ag.apr_codigo = t.apr_codigo
                                               where t.fil_codigo = @origem
                                               order by t.transf_dtabertura desc;";
-                b.getComandoSQL().Parameters.AddWithValue("@origem", Origem);
 
-
-                if (Destino != 0)
-                {
-                   //mexer aqui
+                    b.getComandoSQL().Parameters.AddWithValue("@origem", Origem);
                 }
 
             }
@@ -299,8 +318,6 @@ INSERT INTO itens_ativos
             if (dt.Rows.Count > 0)
             {
                 return TableToObj(dt);
-
-
             }
             else
                 return null;

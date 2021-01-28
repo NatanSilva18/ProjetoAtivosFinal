@@ -6,7 +6,7 @@ namespace ProjetoAtivos.Control
 {
     public class AtivoControl
     {
-        public int Gravar(int Codigo, int Regional, int Filial, int Sala, int Placa, string Tag, string Estado, string Observacao, string Descricao, int TipoAtivo, string Marca, string NumeroSerie, string Modelo, double Valor, string Img, string Latitude, string Longitude, int CodigoNota, string NumeroNota, double ValorNota, DateTime DataEmissao, string Fornecedor)
+        public int Gravar(int Codigo, int Regional, int Filial, int Sala, int Placa, string Tag, string Estado, string Observacao, string Descricao, int TipoAtivo, string Marca, string NumeroSerie, string Modelo, double Valor, string Img, string Latitude, string Longitude, int CodigoNota, string NumeroNota, double ValorNota, DateTime DataEmissao, string Fornecedor, string Cnpj)
         {           
                 Localizacao Localiza = new Localizacao(Latitude, Longitude, 0);
 
@@ -20,7 +20,7 @@ namespace ProjetoAtivos.Control
                 }
 
                 Ativo Ativo = new Ativo(Codigo, Placa, Descricao, Estado, Observacao, Tag, Marca, Modelo, NumeroSerie, true, Valor, TipoAtivo, "",0, Sala, "", CodigoNota);
-            NotaFiscal Nota = new NotaFiscal(CodigoNota, NumeroNota, ValorNota, DataEmissao, Fornecedor);
+            NotaFiscal Nota = new NotaFiscal(CodigoNota, NumeroNota, ValorNota, DataEmissao, Fornecedor, Cnpj);
             Ativo.SetNota(Nota);
 
 
@@ -78,7 +78,12 @@ namespace ProjetoAtivos.Control
         {
             return new Ativo().ObterRelatorioImagem(Regional, Filial);
         }
+        public List<object> ObterImagens(int Codigo)
+        {
+            return new Ativo().ObterImagens(Codigo);
+        }
 
-        
+
+
     }
 }

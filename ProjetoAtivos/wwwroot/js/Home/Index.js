@@ -182,13 +182,24 @@ function CardQuantidadeAtivos(dados) {
     var Texto = document.getElementById("txtQtd");
     Texto.innerHTML = '<i class="fa fa-info"></i> Quantidade Ativos: ' + dados;
 };
-function MontarLabelRegional(dados) {
+function MontarLabelRegionalQuantidade(dados) {
     var label = [];
     var Texto = '';
 
 
     $.each(dados, function () {
-        label.push(this.regional.replace('REGIONAL', ''))
+        label.push(this.regional.replace('REGIONAL', '') + ' : ' + this.quantidade)
+    });
+
+    return label;
+}
+function MontarLabelRegionalValor(dados) {
+    var label = [];
+    var Texto = '';
+
+
+    $.each(dados, function () {
+        label.push(this.regional.replace('REGIONAL', '') + ' : ' + this.soma.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
     });
 
     return label;
@@ -215,7 +226,7 @@ function GraficoValorAtivoRegional(dados) {
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: MontarLabelRegional(dados),
+            labels: MontarLabelRegionalValor(dados),
             datasets: [{
                 label: ['Ativos'],
                 data: MontarDataValorAtivos(dados),
@@ -243,9 +254,12 @@ function GraficoValorAtivoRegional(dados) {
                 yAxes: [{
                     ticks: {
                         beginAtZero: true
-                    }
+                    },
+                    stacked: true,
+                    display: false
                 }]
-            }
+            },
+            responsive: true
         }
     });
 }
@@ -254,7 +268,7 @@ function GraficoAtivoRegional(dados) {
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: MontarLabelRegional(dados),
+            labels: MontarLabelRegionalQuantidade(dados),
             datasets: [{
                 label: ['Ativos'],
                 data: MontarDataAtivos(dados),
@@ -282,9 +296,13 @@ function GraficoAtivoRegional(dados) {
                 yAxes: [{
                     ticks: {
                         beginAtZero: true
-                    }
+                    },
+                    display: false
                 }]
-            }
+            },
+            responsive: true
+
+
         }
     });
 };
@@ -317,9 +335,12 @@ function GraficoImagem(dados) {
                 yAxes: [{
                     ticks: {
                         beginAtZero: true
-                    }
+                    },
+                    display: false
                 }]
-            }
+            },
+            responsive: true
+
         }
     });
 };
@@ -351,9 +372,11 @@ function GraficoSomaAtivos(dados) {
                 yAxes: [{
                     ticks: {
                         beginAtZero: true
-                    }
+                    },
+                    display: false
                 }]
-            }
+            },
+            responsive: true
         }
     });
 

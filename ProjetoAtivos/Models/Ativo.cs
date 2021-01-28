@@ -262,6 +262,13 @@ namespace ProjetoAtivos.Models
             return new AtivoDAO().ObterRelatorioImagem(Regional, Filial);
 
         }
+        public List<object> ObterImagens(int Codigo)
+        {
+            if (Codigo > 0)
+                return new AtivoDAO().ObterImagens(Codigo);
+            else
+                return null;
+        }
 
     }
 }
