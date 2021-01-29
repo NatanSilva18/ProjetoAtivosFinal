@@ -57,7 +57,6 @@ namespace ProjetoAtivos
                     name: "default",
                     pattern: "{controller=Login}/{action=Index}/{id?}");
             });
-            //teste
         }
     }
 }
