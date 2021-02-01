@@ -130,6 +130,7 @@ namespace ProjetoAtivos.DAO
                 NotaFiscal = Ativo.GetNota().Gravar();
                 if (NotaFiscal >= 0)  //deu bom gravar nota ou alterar
                 {
+                    
                     b.getComandoSQL().Parameters.Clear();
 
                     if (Ativo.GetCodigo() == 0)
@@ -240,6 +241,24 @@ namespace ProjetoAtivos.DAO
                                 OK = ImagemDAO.Gravar(Imagens[i], Localizacao);
                             }
                         }
+
+                        if(OK)
+                        {
+                            
+                            if (Ativo.GetAnexo() != null)
+                            {
+                                Ativo.GetAnexo().Ativo = Ativo;
+                                OK = Ativo.GetAnexo().Gravar();
+                            }
+                            else
+                            {
+                                if(new AnexoDAO().Buscar(Ativo.GetCodigo()) != null)
+                                {
+                                    OK = new AnexoDAO().Excluir(Ativo.GetCodigo());
+                                }
+                            }
+                        }
+
 
                         b.FinalizaTransacao(OK);
 
@@ -649,6 +668,7 @@ namespace ProjetoAtivos.DAO
                 Ativo a = TableToList(dt).FirstOrDefault();
                 a.Imagens = new ImagemDAO().BuscarImagens(Codigo, false);
                 a.SetNota(new NotaFiscal().BuscarNota(a.GetNota().Codigo));
+                a.SetAnexo(new AnexoDAO().Buscar(a.GetCodigo()));
                 return a;
             }
             else

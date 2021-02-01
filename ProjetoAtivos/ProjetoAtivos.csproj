@@ -66,6 +66,7 @@
 
   <ItemGroup>
 	<Folder Include="wwwroot\Docs\" />
+	<Folder Include="wwwroot\Anexos\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -40,7 +40,7 @@ namespace ProjetoAtivos.Models
             this.TipoAtivo = new TipoAtivo();
             this.Sala = new Sala();
             this.Nota = new NotaFiscal();
-            this.Anexo = new Anexo();
+            this.Anexo = null;
         }
         public Ativo(int Codigo)
         {
@@ -59,7 +59,7 @@ namespace ProjetoAtivos.Models
             this.TipoAtivo = new TipoAtivo();
             this.Sala = new Sala();
             this.Nota = new NotaFiscal();
-            this.Anexo = new Anexo();
+            this.Anexo = null;
         }
 
         public Ativo(int Codigo, Int32 Placa, string Descricao, string Estado, string Observacao, string Tag, string Marca, string Modelo, string NumeroSerie, Boolean StAtivo, double Valor, int TipoAtivo, string DescTpAtivo, double ValorApr, int Sala, string DescSala, int Nota)
@@ -79,7 +79,7 @@ namespace ProjetoAtivos.Models
             this.TipoAtivo = new TipoAtivo(TipoAtivo, DescTpAtivo, ValorApr, true);
             this.Sala = new Sala(Sala, DescSala, true, 0);
             this.Nota = new NotaFiscal(Nota);
-            this.Anexo = new Anexo();
+            this.Anexo = null;
         }
 
 

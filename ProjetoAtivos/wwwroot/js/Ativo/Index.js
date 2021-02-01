@@ -301,6 +301,12 @@ function LimparCampos() {
     $("#txtValorNota").val("");
     $("#txtCnpj").val("");
     $("#txtNumeroNota").val("");
+    $("#hdAnexo").val("");
+    $("#nomeAnexo").val("");
+    $('#linkAnexo').attr('href', '');
+
+    $("#anexo").hide();
+
 };
 function Rolagem() {
     var $anchor = $(this);
@@ -657,6 +663,10 @@ function Gravar() {
             var Cnpj = document.getElementById('txtCnpj').value;
             var VerificaImagem = $('#minhaImagemHidden').val();
 
+            var anexo = $("#hdAnexo").val();
+            var nomeAnexo = $("#nomeAnexo").val();            
+            
+
             if (VerificaImagem != "") {
                 var Imagem = $('#minhaImagemHidden').val();
                 $.ajax({
@@ -665,7 +675,7 @@ function Gravar() {
                     data: {
                         Codigo: Codigo, Regional: Regional, Filial: Filial, Sala: Sala, Placa: Placa, Tag: Tag, Estado: Estado, Observacao: Observacao,
                         Descricao: Descricao, TipoAtivo: TipoAtivo, Marca: Marca, NumeroSerie: NumeroSerie, Modelo: Modelo, Valor: Valor, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude,
-                        CodigoNota: CodigoNota, NumeroNota: NumeroNota, ValorNota: ValorNota, DataEmissao: DataEmissao, Fornecedor: Fornecedor, Cnpj: Cnpj
+                        CodigoNota: CodigoNota, NumeroNota: NumeroNota, ValorNota: ValorNota, DataEmissao: DataEmissao, Fornecedor: Fornecedor, Cnpj: Cnpj, NomeAnexo: nomeAnexo, Anexo : anexo
                     },
                     success: function (result) {
                         $('#novoAtivo').modal('hide');
@@ -865,6 +875,13 @@ function Alterar(Codigo) {
                 if (result.imagens != null)
                     MostraImagens(result.imagens);
 
+                if (result.anexo != null)
+                {
+                    $("#nomeAnexo").val(result.anexo.nome);
+                    $('#linkAnexo').attr('href', '/Ativo/BaixarAnexo/' + result.codigo);
+                    $("#anexo").show(300);
+                }
+
                 if (result.notaFiscal.codigo > 0) {
                     $("#txtFornecedor").val(result.notaFiscal.fornecedor);
                     document.getElementById('txtDataEmissao').value = ObterDataInput(result.notaFiscal.dataEmissao);
@@ -1004,6 +1021,7 @@ function MostraImagens(imgs) {
 
 
 }
+
 function SalvarFotos() {
 
     var arquivos = document.getElementById("fuArquivo");
@@ -1336,4 +1354,78 @@ function MontarGaleriaAtivo(dados) {
     $("#corpoGaleria").html(Corpo);
 
     $("#divLoading").hide(400);
+};
+
+function LimparAnexo() {
+    $("#hdAnexo").val('');
+    $("#nomeAnexo").val('');
+
+    $('#linkAnexo').attr('href', '' );
+
+
+    $("#anexo").hide();
+}
+
+function SalvarAnexo() {
+
+    var arquivos = document.getElementById("fuDoc");
+    if (arquivos.files.length > 0) {
+        $("#divLoading").show(0);
+
+        document.getElementById('btnSalvarDoc').innerHTML = '<div class="spinner-border text-primary" role="status"><span class="sr-only" > Loading...</span></div>';
+        var txr2;
+        var formData = new FormData();
+        formData.append("id", $("#txtId").val());
+        formData.append("nome", $("#txtNome").val());
+        for (var i = 0; i < arquivos.files.length; i++) {
+            if (arquivos.files[i].size > 0) {
+                formData.append("arquivo" + i, arquivos.files[i]);
+            }
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/Ativo/ReceberAnexo',
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                var txt = "";
+                $.each(response, function () {
+                    if (this.id >= 0) {
+                        
+
+                        $("#hdAnexo").val(this.dados);
+                        $("#nomeAnexo").val(this.nome);
+                        
+                        
+                        $("#anexo").show(300);
+
+
+                    }
+                    if (this.id == -1) {
+                        Mensagem("divAlerta", this.dados);
+                    }
+
+                    if (this.id == -2) {
+                        Mensagem("divAlerta", this.dados);
+                    }
+
+                    document.getElementById('btnSalvarDoc').innerHTML = 'Substituir';
+                    $("#divLoading").hide(2000);
+
+                });
+            },
+            error: function (error) {
+                alert(error);
+                $("#divLoading").hide(2000);
+            }
+        });
+    }
+    else {
+        Mensagem("divAlerta", 'Selecione um arquivo!');
+    }
+    $("#divLoading").hide(2000);
+
 };

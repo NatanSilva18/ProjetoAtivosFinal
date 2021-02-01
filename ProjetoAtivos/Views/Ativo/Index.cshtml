@@ -263,16 +263,37 @@
                                     </div>
 
                                     <div class="col-lg-6">
-                                        <div class="input-group">
-                                            <div class="custom-file" id="customFile" lang="pt-br">
-                                                <input type="file" class="custom-file-input" id="fuDoc" aria-describedby="fileHelp">
-                                                <label class="custom-file-label" for="fuDoc" id="labelDoc">
-                                                    Selecione o Documento
-                                                </label>
+                                        <div class="form-group">
+                                            <label for="fuDoc">Documento</label>
+                                            <div class="input-group">
+                                                <div class="custom-file" id="customFile" lang="pt-br">
+                                                    <input type="file" class="custom-file-input" id="fuDoc" aria-describedby="fileHelp" onchange="SalvarAnexo()">
+                                                    <label class="custom-file-label" for="fuDoc" id="labelDoc">
+                                                        Selecione o Documento
+                                                    </label>
+                                                </div>
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-success" type="button" id="btnSalvarDoc" onclick="javascript: SalvarAnexo();">Anexar</button>
+                                                </div>
                                             </div>
+                                        </div>
+                                        </div>
+
+                                    <div class="col-lg-6" id="anexo" style="display:none" >
+                                        <div class="form-group">
+                                            <label for="nomeAnexo" style="color:white">.</label>
+                                            <input type="hidden" id="hdAnexo" name="hdAnexo" value="" />
+
+
                                             <div class="input-group-append">
-                                                <button class="btn btn-success" type="button" id="btnSalvarDoc">Adicionar</button>
+                                                <a id="linkAnexo" href="#" target="_blank" class="stretched-link" style="width: 100%;">
+                                                    <input class="form-control" type="text" id="nomeAnexo" disabled />
+                                                </a>
+                                                <button class="btn btn-danger" type="button" onclick="javascript: LimparAnexo();">X</button>
                                             </div>
+
+
+
                                         </div>
 
                                     </div>

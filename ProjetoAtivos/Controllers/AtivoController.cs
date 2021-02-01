@@ -56,6 +56,67 @@ namespace ProjetoAtivos.Controllers
             newBMP.Dispose();
         }
 
+        [HttpPost]
+        public JsonResult ReceberAnexo(IFormCollection form)
+        {
+            List<object> retorno = new List<object>();
+
+            int id = 0;
+            int.TryParse(form["id"], out id);
+            string nome = form["nome"];
+
+            try
+            {
+                if (Request.Form.Files.Count > 0)
+                {
+                    var extensoesPermitidas = new[] { ".jpg", ".gif", ".png", ".jpeg", ".tiff", ".svg", ".jfif", ".pdf", ".doc", ".docx" };
+                    for (int i = 0; i < Request.Form.Files.Count; i++)
+                    {
+                        //Recepcionando cada arquivo
+                        var arquivo = Request.Form.Files[i];
+                        if (arquivo != null && arquivo.Length > 0 &&
+                            arquivo.Length <= 100048576) //Maximo 1MB
+                        {
+                            string extensaoArquivo =
+                                                Path.GetExtension(arquivo.FileName).ToLower();
+                            if (extensoesPermitidas.Contains(extensaoArquivo))
+                            {
+                                var nomeArquivo = string.Format("{0}-{1}-{2}",
+                                    id, i, arquivo.FileName);
+
+                                var caminho = _env.WebRootPath + "\\img";
+                                caminho = Path.Combine(caminho, nomeArquivo);
+
+                                //Gravar o arquivo no servidor
+                                //using (var stream = new FileStream(caminho, FileMode.Create))
+                                //{
+                                //    arquivo.CopyTo(stream);
+                                //}
+
+                                string base64 = "";
+                                var img = new MemoryStream();
+                                arquivo.CopyTo(img);
+                                Request.Form.Files[i].CopyTo(img);
+                                base64 = Convert.ToBase64String(img.ToArray());
+                                
+                                //ctlimg.Gravar(0, base64, DateTime.now(), CodigoAtivo);    //grava no banco
+                                retorno.Add(new { Id = i, Dados = base64, Nome = arquivo.FileName });
+                            }
+                            else
+                                retorno.Add(new { Id = -2, Dados = "Formato inválido de arquivo." });
+                        }
+                        else
+                            retorno.Add(new { Id = -1, Dados = "Tamanho inválido de arquivo." });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                retorno.Add(new { Id = -10, Dados = ex.Message });
+            }
+
+            return Json(retorno);
+        }
 
         [HttpPost]
         public JsonResult ReceberDados(IFormCollection form)
@@ -116,9 +177,9 @@ namespace ProjetoAtivos.Controllers
 
             return Json(retorno);
         }
-        public JsonResult Gravar(int Codigo, int Regional, int Filial, int Sala, int Placa, string Tag, string Estado, string Observacao, string Descricao, int TipoAtivo, string Marca, string NumeroSerie, string Modelo, double Valor, string Imagem, string Latitude, string Longitude, int CodigoNota, string NumeroNota, double ValorNota, DateTime DataEmissao, string Fornecedor, string Cnpj )
-        {
-            int Retorno = ctlAtivo.Gravar(Codigo, Regional, Filial, Sala, Placa, Tag, Estado, Observacao, Descricao, TipoAtivo, Marca, NumeroSerie, Modelo, Valor, Imagem, Latitude, Longitude, CodigoNota, NumeroNota, ValorNota, DataEmissao, Fornecedor, Cnpj);
+        public JsonResult Gravar(int Codigo, int Regional, int Filial, int Sala, int Placa, string Tag, string Estado, string Observacao, string Descricao, int TipoAtivo, string Marca, string NumeroSerie, string Modelo, double Valor, string Imagem, string Latitude, string Longitude, int CodigoNota, string NumeroNota, double ValorNota, DateTime DataEmissao, string Fornecedor, string Cnpj, string NomeAnexo, string Anexo)
+        {            
+            int Retorno = ctlAtivo.Gravar(Codigo, Regional, Filial, Sala, Placa, Tag, Estado, Observacao, Descricao, TipoAtivo, Marca, NumeroSerie, Modelo, Valor, Imagem, Latitude, Longitude, CodigoNota, NumeroNota, ValorNota, DataEmissao, Fornecedor, Cnpj,  NomeAnexo,  Anexo);
             if (Retorno == 1)
                 return Json("");
             else
@@ -222,7 +283,8 @@ namespace ProjetoAtivos.Controllers
                     Tag = L.GetTag(),
                     StAtivo = L.GetStAtivo(),
                     NotaFiscal = L.GetNota(),
-                    Imagens = imagens
+                    Imagens = imagens,
+                    Anexo = L.GetAnexo()
 
                 });
             }
@@ -264,6 +326,14 @@ namespace ProjetoAtivos.Controllers
             var Lista = ctlAtivo.ObterImagens(Codigo);
 
             return Lista == null ? Json("") : Json(Lista);
+        }
+
+        public FileResult BaixarAnexo(int id)
+        {
+            var a = ctlAtivo.BuscaAnexo(id);
+            byte[] fileBytes = System.IO.File.ReadAllBytes(a.Local);
+            string fileName = a.Nome;
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
     }
 
