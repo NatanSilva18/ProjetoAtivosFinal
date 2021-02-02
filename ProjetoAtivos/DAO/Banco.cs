@@ -47,8 +47,8 @@ namespace Survey.DAL
 
         private Banco()
         {
-            _strConexao = @"Server=localhost;Port=3306;Database=16440_parebemativos;Uid=root;Pwd=";
-            //_strConexao = @"Server=bd.asp.hostazul.com.br;Port=4406;Database=16440_parebemativos;Uid=16440_prod;Pwd=pundvlbk2imgjth;";
+            //_strConexao = @"Server=localhost;Port=3306;Database=16440_parebemativos;Uid=root;Pwd=";
+            _strConexao = @"Server=bd.asp.hostazul.com.br;Port=4406;Database=16440_parebemativos;Uid=16440_prod;Pwd=pundvlbk2imgjth;";
             //_strConexao = @"Data Source=bd.asp.hostazul.com.br; Initial Catalog=16440_parebemativos;User Id=16440_prod;Password=pundvlbk2imgjth";
             _conn = new MySqlConnection(_strConexao);
             _ComandoSQL = new MySqlCommand();
