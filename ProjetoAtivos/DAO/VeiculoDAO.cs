@@ -34,23 +34,81 @@ namespace ProjetoAtivos.DAO
             return dados;
         }
 
-        internal Boolean Gravar(Anexo Anexo)
+        internal Boolean Gravar(Veiculo Veiculo)
         {
             
                 b.getComandoSQL().Parameters.Clear();
 
+            if (Veiculo.Codigo == 0)
+            {
 
-                b.getComandoSQL().CommandText = @"insert into anexos_ativos (aa_local, aa_nmArquivo, aa_type, ati_codigo) values(@local, @nmArquivo, @tipo, @ativo);";
+                b.getComandoSQL().CommandText = @"INSERT INTO `veiculos`
+                                                (
+                                                `ve_tipo`,
+                                                `ve_marca`,
+                                                `ve_modelo`,
+                                                `ve_placa`,
+                                                `ve_ano`,
+                                                `ve_cor`,
+                                                `ve_combustivel`,
+                                                `ve_anoRef`,
+                                                `ve_fipe`,
+                                                `ve_dut`,
+                                                `ve_crlv`,
+                                                `fil_codigo`)
+                                                VALUES
+                                                (
+                                                @ve_tipo,
+                                                @ve_marca,
+                                                @ve_modelo,
+                                                @ve_placa,
+                                                @ve_ano,
+                                                @ve_cor,
+                                                @ve_combustivel,
+                                                @ve_anoRef,
+                                                @ve_fipe,
+                                                @ve_dut,
+                                                @ve_crlv,
+                                                @fil_codigo);";
+
+            }
+            else
+            {
+                b.getComandoSQL().CommandText = @"UPDATE `veiculos`
+                                                SET
+                                                `ve_tipo` = @ve_tipo,
+                                                `ve_marca` = @ve_marca,
+                                                `ve_modelo` = @ve_modelo,
+                                                `ve_placa` = @ve_placa,
+                                                `ve_ano` = @ve_ano,
+                                                `ve_cor` = @ve_cor,
+                                                `ve_combustivel` = @ve_combustivel,
+                                                `ve_anoRef` = @ve_anoRef,
+                                                `ve_fipe` = @ve_fipe,
+                                                `ve_dut` = @ve_dut,
+                                                `ve_crlv` = @ve_crlv,
+                                                `fil_codigo` = @fil_codigo
+                                                WHERE `ve_codigo` = @ve_codigo;
+                                                ";
+
+                b.getComandoSQL().Parameters.AddWithValue("@ve_codigo", Veiculo.Codigo);
+            }
+
+                b.getComandoSQL().Parameters.AddWithValue("@ve_tipo", Veiculo.Fipe.Tipo);
+                b.getComandoSQL().Parameters.AddWithValue("@ve_marca", Veiculo.Fipe.Marca);
+                b.getComandoSQL().Parameters.AddWithValue("@ve_modelo", Veiculo.Fipe.Modelo);
+                b.getComandoSQL().Parameters.AddWithValue("@ve_placa", Veiculo.Placa);
+                b.getComandoSQL().Parameters.AddWithValue("@ve_ano", Veiculo.Fipe.Ano);
+                b.getComandoSQL().Parameters.AddWithValue("@ve_cor", Veiculo.Cor);
+                b.getComandoSQL().Parameters.AddWithValue("@ve_combustivel", Veiculo.Fipe.Combustivel);
+                b.getComandoSQL().Parameters.AddWithValue("@ve_anoRef", Veiculo.Fipe.AnoRef);
+                b.getComandoSQL().Parameters.AddWithValue("@ve_fipe", Veiculo.Fipe.Codigo);
+                b.getComandoSQL().Parameters.AddWithValue("@ve_dut", Veiculo.DUT);
+                b.getComandoSQL().Parameters.AddWithValue("@ve_crlv", Veiculo.CRLV);
+                b.getComandoSQL().Parameters.AddWithValue("@fil_codigo", Veiculo.Filial.GetCodigo());
 
 
-
-                b.getComandoSQL().Parameters.AddWithValue("@local", Anexo.Local);
-                b.getComandoSQL().Parameters.AddWithValue("@nmArquivo", Anexo.Nome);
-                b.getComandoSQL().Parameters.AddWithValue("@tipo", Anexo.Type);
-                b.getComandoSQL().Parameters.AddWithValue("@ativo", Anexo.Ativo.GetCodigo());
-
-
-                return b.ExecutaComando(true) == 1;
+            return b.ExecutaComando(true) == 1;
             
         }
 

@@ -6,7 +6,7 @@ namespace ProjetoAtivos.Models
 {
     public class Ativo
     {
-        public List<Imagem> Imagens { get; set; }
+        
         private int Codigo;
         private int Placa;
         private string Descricao;
@@ -22,6 +22,8 @@ namespace ProjetoAtivos.Models
         private Sala Sala;
         private NotaFiscal Nota;
         private Anexo Anexo;
+        public List<Imagem> Imagens { get; set; }
+        public Veiculo Veiculo { get; set; }
 
         public Ativo()
         {
@@ -41,6 +43,7 @@ namespace ProjetoAtivos.Models
             this.Sala = new Sala();
             this.Nota = new NotaFiscal();
             this.Anexo = null;
+            Veiculo = null;
         }
         public Ativo(int Codigo)
         {
@@ -60,6 +63,7 @@ namespace ProjetoAtivos.Models
             this.Sala = new Sala();
             this.Nota = new NotaFiscal();
             this.Anexo = null;
+            Veiculo = null;
         }
 
         public Ativo(int Codigo, Int32 Placa, string Descricao, string Estado, string Observacao, string Tag, string Marca, string Modelo, string NumeroSerie, Boolean StAtivo, double Valor, int TipoAtivo, string DescTpAtivo, double ValorApr, int Sala, string DescSala, int Nota)
@@ -80,6 +84,7 @@ namespace ProjetoAtivos.Models
             this.Sala = new Sala(Sala, DescSala, true, 0);
             this.Nota = new NotaFiscal(Nota);
             this.Anexo = null;
+            Veiculo = null;
         }
 
 

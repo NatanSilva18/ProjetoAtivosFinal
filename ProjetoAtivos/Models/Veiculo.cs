@@ -13,6 +13,13 @@ namespace ProjetoAtivos.Models
         public string DUT { get; set; }
         public string CRLV { get; set; }
         public Fipe Fipe { get; set; }
+        public Filial Filial { get; set; }
+
+        public Veiculo()
+        {
+            Codigo = 0;
+
+        }
 
     }
 }

@@ -220,39 +220,45 @@ function CarregarFiliais(Combo) {
 
 };
 function BuscarSalas(Combo) {
-    document.getElementById("cbbSala").required = true;
 
-
-    var Codigo = Combo.value;
-    var cbbSala = document.getElementById("cbbSala");
-    if (cbbSala != null) {
-        document.getElementById('sala').style.display = "block ";
+    if ($("#cbbTpAtivo").val() != 3) {
         document.getElementById("cbbSala").required = true;
-        $.ajax({
-            type: 'POST',
-            url: '/Sala/BuscarSalas',
-            async: false,
-            data: { Codigo: Codigo },
-            success: function (result) {
-                if (result != null && result.length > 0) {
-                    for (var i = 0; i < result.length; i++) {
 
-                        var opt = document.createElement("option");
-                        opt.value = result[i].codigo;
-                        opt.text = result[i].descricao;
-                        cbbSala.add(opt, cbbSala.options[i + 1]);
+
+        var Codigo = Combo.value;
+        var cbbSala = document.getElementById("cbbSala");
+        if (cbbSala != null) {
+            document.getElementById('sala').style.display = "block ";
+            document.getElementById("cbbSala").required = true;
+            $.ajax({
+                type: 'POST',
+                url: '/Sala/BuscarSalas',
+                async: false,
+                data: { Codigo: Codigo },
+                success: function (result) {
+                    if (result != null && result.length > 0) {
+                        for (var i = 0; i < result.length; i++) {
+
+                            var opt = document.createElement("option");
+                            opt.value = result[i].codigo;
+                            opt.text = result[i].descricao;
+                            cbbSala.add(opt, cbbSala.options[i + 1]);
+                        }
                     }
+                },
+                error: function (XMLHttpRequest, txtStatus, errorThrown) {
+                    alert("Status: " + txtStatus); alert("Error: " + errorThrown);
+                    $("#divLoading").hide(300);
                 }
-            },
-            error: function (XMLHttpRequest, txtStatus, errorThrown) {
-                alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                $("#divLoading").hide(300);
-            }
-        });
+            });
 
+        }
+        $('#cbbSala').selectpicker('refresh');
+        $('#sala').show();
     }
-    $('#cbbSala').selectpicker('refresh');
-
+    else {
+        $('#sala').hide();
+    }
 };
 
 function LimparTabela() {
@@ -1170,7 +1176,7 @@ function LockFields() {
     document.getElementById('txtModelo').disabled = true;
     //document.getElementById('txtValor').disabled = true;
     document.getElementById('fuArquivo').disabled = true;
-    $("#cbbTpAtivo").attr("disabled", true);
+    //$("#cbbTpAtivo").attr("disabled", true);
     $('.selectpicker').selectpicker('refresh');
 
 };
@@ -1216,6 +1222,38 @@ function ValidarPlaca() {
 
 function PreencherValor(Combo) {
     var Codigo = Combo.value;
+
+    if (Codigo == 3) {
+        $('#sala').hide();
+        $('#marcaMod').hide();
+        $('#marcaModV').show();
+        $('#AnoVeiculo').show();
+        $('#upCRLV').show();
+        $('#upDut').show();
+        
+
+        $("#txtNumeroNota").removeAttr('required');
+        $("#txtValorNota").removeAttr('required');
+        $("#txtDataEmissao").removeAttr('required');
+        $("#txtFornecedor").removeAttr('required');
+        $("#txtCnpj").removeAttr('required');
+
+    }
+    else {
+        $('#sala').show();
+        $('#marcaMod').show();
+        $('#marcaModV').hide();
+        $('#AnoVeiculo').hide();
+        $('#upCRLV').hide();
+        $('#upDut').hide();
+        $('#InfoVeiculo').hide();
+        
+        $("#txtNumeroNota").Attr('required', 'required');
+        $("#txtValorNota").Attr('required', 'required');
+        $("#txtDataEmissao").Attr('required', 'required');
+        $("#txtFornecedor").Attr('required', 'required');
+        $("#txtCnpj").Attr('required', 'required');
+    }
 
     $.ajax({
         type: 'POST',
@@ -1356,23 +1394,24 @@ function MontarGaleriaAtivo(dados) {
     $("#divLoading").hide(400);
 };
 
-function LimparAnexo() {
-    $("#hdAnexo").val('');
-    $("#nomeAnexo").val('');
+function LimparAnexo(sulf = "Anexo", dest = "anexo", button ="btnSalvarDoc") {
+    $("#hd" + sulf).val('');
+    $("#nome" + sulf).val('');
 
-    $('#linkAnexo').attr('href', '' );
+    $('#link' + sulf).attr('href', '' );
 
+    $("#" + button).html('Anexar');
 
-    $("#anexo").hide();
+    $("#" + dest).hide();
 }
 
-function SalvarAnexo() {
+function SalvarAnexo(input = "fuDoc", button = 'btnSalvarDoc', sulf = 'Anexo', dest ="anexo") {
 
-    var arquivos = document.getElementById("fuDoc");
+    var arquivos = document.getElementById(input);
     if (arquivos.files.length > 0) {
         $("#divLoading").show(0);
 
-        document.getElementById('btnSalvarDoc').innerHTML = '<div class="spinner-border text-primary" role="status"><span class="sr-only" > Loading...</span></div>';
+        document.getElementById(button).innerHTML = '<div class="spinner-border text-primary" role="status"><span class="sr-only" > Loading...</span></div>';
         var txr2;
         var formData = new FormData();
         formData.append("id", $("#txtId").val());
@@ -1396,11 +1435,11 @@ function SalvarAnexo() {
                     if (this.id >= 0) {
                         
 
-                        $("#hdAnexo").val(this.dados);
-                        $("#nomeAnexo").val(this.nome);
+                        $("#hd" + sulf).val(this.dados);
+                        $("#nome" + sulf).val(this.nome);
                         
                         
-                        $("#anexo").show(300);
+                        $("#" + dest).show(300);
 
 
                     }
@@ -1412,7 +1451,7 @@ function SalvarAnexo() {
                         Mensagem("divAlerta", this.dados);
                     }
 
-                    document.getElementById('btnSalvarDoc').innerHTML = 'Substituir';
+                    document.getElementById(button).innerHTML = 'Substituir';
                     $("#divLoading").hide(2000);
 
                 });
@@ -1429,3 +1468,164 @@ function SalvarAnexo() {
     $("#divLoading").hide(2000);
 
 };
+
+function buscaMarcas(x) {
+
+    if (x != "") {
+        $.ajax({
+            type: 'GET',
+            url: 'https://fipeapi.appspot.com/api/1/'+x+'/marcas.json',
+            dataType: 'json',
+           
+            success: function (response) {
+
+                var txt = '';
+                $.each(response, function () {
+
+                    txt += '<option value="' + this.id + '">' + this.fipe_name+'</option>';
+
+                });
+
+                $("#cbbMarcaV").append(txt);
+                $("#cbbMarcaV").removeAttr('disabled');
+
+                $("#cbbModeloV").attr('disabled', 'disabled');
+                $("#cbbAnoVeiculo").attr('disabled', 'disabled');
+                $("#txtCor").attr('disabled', 'disabled');
+                $("#txtPlavaV").attr('disabled', 'disabled');
+
+                $("#cbbModeloV").html('<option value="" selected>Modelo do Veículo</option>');
+                $("#cbbAnoVeiculo").html('<option value="" selected>Versão Veículo</option>');
+
+                $('#cbbModeloV').selectpicker('refresh');
+                $('#cbbAnoVeiculo').selectpicker('refresh');
+
+                $("#txtCor").val();
+                $("#txtPlavaV").val();
+
+                $("#cbbMarcaV").val('');
+
+                $('#cbbMarcaV').selectpicker('refresh');
+                
+            },
+            error: function (error) {
+                alert(error);
+                $("#divLoading").hide(2000);
+            }
+        });
+
+    }
+}
+
+function buscaModelos(x) {
+
+    var tipo = $("#cbbtpVeiculo").val();
+
+    if (x != "") {
+        $.ajax({
+            type: 'GET',
+            url: 'https://fipeapi.appspot.com/api/1/' + tipo+'/veiculos/'+x+'.json',
+            dataType: 'json',
+
+            success: function (response) {
+
+                var txt = '';
+                $.each(response, function () {
+
+                    txt += '<option value="' + this.id + '">' + this.fipe_name + '</option>';
+
+                });
+
+                $("#cbbModeloV").append(txt);
+                $("#cbbModeloV").removeAttr('disabled');
+
+                
+                $("#cbbAnoVeiculo").attr('disabled', 'disabled');
+                $("#txtCor").attr('disabled', 'disabled');
+                $("#txtPlavaV").attr('disabled', 'disabled');
+
+                $("#cbbAnoVeiculo").html('<option value="" selected>Versão Veículo</option>');
+                $('#cbbAnoVeiculo').selectpicker('refresh');
+
+                $('#cbbModeloV').selectpicker('refresh');
+            },
+            error: function (error) {
+                alert(error);
+                $("#divLoading").hide(2000);
+            }
+        });
+
+    }
+
+}
+
+function buscaVersoes(x) {
+
+    var tipo = $("#cbbtpVeiculo").val();
+    var marca = $("#cbbMarcaV").val();
+
+    if (x != "") {
+        $.ajax({
+            type: 'GET',
+            url: 'https://fipeapi.appspot.com/api/1/'+tipo+'/veiculo/'+marca+'/'+x+'.json',
+            dataType: 'json',
+
+            success: function (response) {
+
+                var txt = '';
+                $.each(response, function () {
+
+                    txt += '<option value="' + this.id + '">' + this.name + '</option>';
+
+                });
+
+                $("#cbbAnoVeiculo").append(txt);
+                $("#cbbAnoVeiculo").removeAttr('disabled');
+
+                $('#cbbAnoVeiculo').selectpicker('refresh');
+            },
+            error: function (error) {
+                alert(error);
+                $("#divLoading").hide(2000);
+            }
+        });
+
+    }
+
+}
+
+function registraFipe(x) {
+
+    if (x != '') {
+        var tipo = $("#cbbtpVeiculo").val();
+        var marca = $("#cbbMarcaV").val();
+        var modelo = $("#cbbModeloV").val();
+
+        
+
+        $.ajax({
+            type: 'GET',
+            url: 'https://fipeapi.appspot.com/api/1/'+tipo+'/veiculo/'+marca+'/'+modelo+'/'+x+'.json',
+            dataType: 'json',
+
+            success: function (response) {
+
+                var preco = response.preco;
+                $("#txtPrecoV").val(preco);
+
+                var cod = tipo + '/veiculo/' + marca + '/' + response.fipe_codigo + '/' + x;
+                $("#codFipe").val(cod)
+
+                $('#InfoVeiculo').show();
+
+                $("#txtCor").removeAttr('disabled');
+                $("#txtPlavaV").removeAttr('disabled');
+
+            },
+            error: function (error) {
+                alert(error);
+                $("#divLoading").hide(2000);
+            }
+        });
+    }
+}
