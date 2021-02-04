@@ -6,6 +6,50 @@ namespace ProjetoAtivos.Control
 {
     public class AtivoControl
     {
+        
+        public int Gravar(int Codigo, int Regional, int Filial, int Sala, int Placa, string Tag, string Estado, string Observacao, string Descricao, int TipoAtivo, string Marca, string NumeroSerie, string Modelo, double Valor, string Img, string Latitude, string Longitude, int CodigoNota, string NumeroNota, double ValorNota, DateTime DataEmissao, string Fornecedor, string Cnpj, string NomeAnexo, string Anexo, string Cor, string PlacaVeiculo, string CRLV, string DUT, string FIPE)
+        {
+            Localizacao Localiza = new Localizacao(Latitude, Longitude, 0);
+
+            List<Imagem> imagens = new List<Imagem>();
+
+            string[] bases64 = Img.Split("**Separdor Imagem**");
+
+            foreach (string i in bases64)
+            {
+                imagens.Add(new Imagem(0, i, 0));
+            }
+
+            Ativo Ativo = new Ativo(Codigo, Placa, Descricao, Estado, Observacao, Tag, Marca, Modelo, NumeroSerie, true, Valor, TipoAtivo, "", 0, Sala, "", CodigoNota);
+            NotaFiscal Nota = new NotaFiscal(CodigoNota, NumeroNota, ValorNota, DataEmissao, Fornecedor, Cnpj);
+            Ativo.SetNota(Nota);
+
+            Veiculo v = new Veiculo()
+            {
+                Cor = Cor,
+                CRLV = CRLV,
+                DUT = DUT,
+                Filial = new Filial(Filial),
+                Placa = PlacaVeiculo,
+                Fipe = new Fipe()
+                {
+                    Codigo = FIPE
+                }
+            };
+
+            Ativo.Veiculo = v;
+
+            if (NomeAnexo != "" && NomeAnexo != null)
+            {
+                Ativo.SetAnexo(new Anexo()
+                {
+                    Nome = NomeAnexo,
+                    Base64 = Anexo
+                });
+            }
+
+            return Ativo.Gravar(imagens, Localiza);
+        }
         public int Gravar(int Codigo, int Regional, int Filial, int Sala, int Placa, string Tag, string Estado, string Observacao, string Descricao, int TipoAtivo, string Marca, string NumeroSerie, string Modelo, double Valor, string Img, string Latitude, string Longitude, int CodigoNota, string NumeroNota, double ValorNota, DateTime DataEmissao, string Fornecedor, string Cnpj, string NomeAnexo, string Anexo)
         {           
                 Localizacao Localiza = new Localizacao(Latitude, Longitude, 0);

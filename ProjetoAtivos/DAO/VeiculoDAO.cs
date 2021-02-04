@@ -19,18 +19,23 @@ namespace ProjetoAtivos.DAO
         internal List<Veiculo> TableToList(DataTable dt)
         {
             List<Veiculo> dados = null;
-           /* if (dt != null && dt.Rows.Count > 0)
+            if (dt != null && dt.Rows.Count > 0)
                 dados = (from DataRow row in dt.Rows
-                         select new Anexo()
+                         select new Veiculo()
                          {
-                             Codigo = Convert.ToInt32(row["aa_codigo"]),
-                             Local = row["aa_local"].ToString(),
-                             Nome = row["aa_nmArquivo"].ToString(),
-                             Type = row["aa_type"].ToString(),
-                             Ativo = new Ativo(Convert.ToInt32(row["ati_codigo"]))
+                             Codigo = Convert.ToInt32(row["ve_codigo"]),
+                             Placa = row["ve_placa"].ToString(),
+                             Cor = row["ve_cor"].ToString(),
+                             Filial = new FilialDAO().BuscarFilial(Convert.ToInt32(row["fil_codigo"])),
+                             CRLV = row["ve_crlv"].ToString(),
+                             DUT = row["ve_dut"].ToString(),
+                             Fipe = new Fipe()
+                             {
+                                 Codigo = row["ve_fipe"].ToString()
+                             }
                          }
                          ).ToList();
-           */
+           
             return dados;
         }
 
@@ -43,29 +48,18 @@ namespace ProjetoAtivos.DAO
             {
 
                 b.getComandoSQL().CommandText = @"INSERT INTO `veiculos`
-                                                (
-                                                `ve_tipo`,
-                                                `ve_marca`,
-                                                `ve_modelo`,
-                                                `ve_placa`,
-                                                `ve_ano`,
-                                                `ve_cor`,
-                                                `ve_combustivel`,
-                                                `ve_anoRef`,
+                                                (                                                
+                                                `ve_placa`,                                                
+                                                `ve_cor`,                                                
                                                 `ve_fipe`,
                                                 `ve_dut`,
                                                 `ve_crlv`,
                                                 `fil_codigo`)
                                                 VALUES
                                                 (
-                                                @ve_tipo,
-                                                @ve_marca,
-                                                @ve_modelo,
-                                                @ve_placa,
-                                                @ve_ano,
-                                                @ve_cor,
-                                                @ve_combustivel,
-                                                @ve_anoRef,
+                                                
+                                                @ve_placa,                                               
+                                                @ve_cor,                                              
                                                 @ve_fipe,
                                                 @ve_dut,
                                                 @ve_crlv,
@@ -76,14 +70,9 @@ namespace ProjetoAtivos.DAO
             {
                 b.getComandoSQL().CommandText = @"UPDATE `veiculos`
                                                 SET
-                                                `ve_tipo` = @ve_tipo,
-                                                `ve_marca` = @ve_marca,
-                                                `ve_modelo` = @ve_modelo,
-                                                `ve_placa` = @ve_placa,
-                                                `ve_ano` = @ve_ano,
-                                                `ve_cor` = @ve_cor,
-                                                `ve_combustivel` = @ve_combustivel,
-                                                `ve_anoRef` = @ve_anoRef,
+                                                
+                                                `ve_placa` = @ve_placa,                                                
+                                                `ve_cor` = @ve_cor,                                                
                                                 `ve_fipe` = @ve_fipe,
                                                 `ve_dut` = @ve_dut,
                                                 `ve_crlv` = @ve_crlv,
@@ -94,14 +83,14 @@ namespace ProjetoAtivos.DAO
                 b.getComandoSQL().Parameters.AddWithValue("@ve_codigo", Veiculo.Codigo);
             }
 
-                b.getComandoSQL().Parameters.AddWithValue("@ve_tipo", Veiculo.Fipe.Tipo);
+                /*b.getComandoSQL().Parameters.AddWithValue("@ve_tipo", Veiculo.Fipe.Tipo);
                 b.getComandoSQL().Parameters.AddWithValue("@ve_marca", Veiculo.Fipe.Marca);
-                b.getComandoSQL().Parameters.AddWithValue("@ve_modelo", Veiculo.Fipe.Modelo);
+                b.getComandoSQL().Parameters.AddWithValue("@ve_modelo", Veiculo.Fipe.Modelo);*/
                 b.getComandoSQL().Parameters.AddWithValue("@ve_placa", Veiculo.Placa);
-                b.getComandoSQL().Parameters.AddWithValue("@ve_ano", Veiculo.Fipe.Ano);
+                //b.getComandoSQL().Parameters.AddWithValue("@ve_ano", Veiculo.Fipe.Ano);
                 b.getComandoSQL().Parameters.AddWithValue("@ve_cor", Veiculo.Cor);
-                b.getComandoSQL().Parameters.AddWithValue("@ve_combustivel", Veiculo.Fipe.Combustivel);
-                b.getComandoSQL().Parameters.AddWithValue("@ve_anoRef", Veiculo.Fipe.AnoRef);
+                /*b.getComandoSQL().Parameters.AddWithValue("@ve_combustivel", Veiculo.Fipe.Combustivel);
+                b.getComandoSQL().Parameters.AddWithValue("@ve_anoRef", Veiculo.Fipe.AnoRef);*/
                 b.getComandoSQL().Parameters.AddWithValue("@ve_fipe", Veiculo.Fipe.Codigo);
                 b.getComandoSQL().Parameters.AddWithValue("@ve_dut", Veiculo.DUT);
                 b.getComandoSQL().Parameters.AddWithValue("@ve_crlv", Veiculo.CRLV);
@@ -109,7 +98,26 @@ namespace ProjetoAtivos.DAO
 
 
             return b.ExecutaComando(true) == 1;
-            
+                
+        }
+
+        internal Veiculo Buscar(int Codigo)
+        {
+            b.getComandoSQL().Parameters.Clear();
+
+            b.getComandoSQL().CommandText = @"select * from veiculos where ve_codigo = @codigo;";
+            b.getComandoSQL().Parameters.AddWithValue("@codigo", Codigo);
+
+            DataTable dt = b.ExecutaSelect();
+
+            if (dt.Rows.Count > 0)
+            {
+                Veiculo a = TableToList(dt).FirstOrDefault();
+                
+                return a;
+            }
+            else
+                return null;
         }
 
     }

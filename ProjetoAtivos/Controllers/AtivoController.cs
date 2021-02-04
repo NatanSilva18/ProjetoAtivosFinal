@@ -65,11 +65,15 @@ namespace ProjetoAtivos.Controllers
             int.TryParse(form["id"], out id);
             string nome = form["nome"];
 
+            bool apenasImagens = form.Keys.Contains("apenasImagens");
+
             try
             {
                 if (Request.Form.Files.Count > 0)
                 {
                     var extensoesPermitidas = new[] { ".jpg", ".gif", ".png", ".jpeg", ".tiff", ".svg", ".jfif", ".pdf", ".doc", ".docx" };
+                    if(apenasImagens)
+                        extensoesPermitidas = new[] { ".jpg", ".gif", ".png", ".jpeg", ".tiff", ".svg", ".jfif"};
                     for (int i = 0; i < Request.Form.Files.Count; i++)
                     {
                         //Recepcionando cada arquivo
@@ -98,7 +102,10 @@ namespace ProjetoAtivos.Controllers
                                 arquivo.CopyTo(img);
                                 Request.Form.Files[i].CopyTo(img);
                                 base64 = Convert.ToBase64String(img.ToArray());
-                                
+
+                                if (apenasImagens)
+                                    base64 = "data:" + Request.Form.Files[i].ContentType + ";base64," + base64;
+
                                 //ctlimg.Gravar(0, base64, DateTime.now(), CodigoAtivo);    //grava no banco
                                 retorno.Add(new { Id = i, Dados = base64, Nome = arquivo.FileName });
                             }
@@ -196,6 +203,27 @@ namespace ProjetoAtivos.Controllers
                 }
             }
         }
+
+        public JsonResult Gravar(int Codigo, int Regional, int Filial, int Sala, int Placa, string Tag, string Estado, string Observacao, string Descricao, int TipoAtivo, string Marca, string NumeroSerie, string Modelo, double Valor, string Imagem, string Latitude, string Longitude, int CodigoNota, string NumeroNota, double ValorNota, DateTime DataEmissao, string Fornecedor, string Cnpj, string NomeAnexo, string Anexo, string Cor, string PlacaVeiculo, string CRLV, string DUT, string FIPE)
+        {
+            int Retorno = ctlAtivo.Gravar(Codigo, Regional, Filial, Sala, Placa, Tag, Estado, Observacao, Descricao, TipoAtivo, Marca, NumeroSerie, Modelo, Valor, Imagem, Latitude, Longitude, CodigoNota, NumeroNota, ValorNota, DataEmissao, Fornecedor, Cnpj, NomeAnexo, Anexo, Cor, PlacaVeiculo, CRLV, DUT, FIPE);
+            if (Retorno == 1)
+                return Json("");
+            else
+            {
+                if (Retorno == 0)
+                    return Json("Erro ao Gravar o Registro");
+                else
+                {
+                    if (Retorno == -10)
+                        return Json("Insira uma Imagem!");
+                    else
+                        return Json("Ativo ja Cadastrada com a Placa Informada");
+
+                }
+            }
+        }
+
         public JsonResult ObterAtivos(string Chave, string Filtro, int Ativo, int Regiao, int Filial)
         {
 

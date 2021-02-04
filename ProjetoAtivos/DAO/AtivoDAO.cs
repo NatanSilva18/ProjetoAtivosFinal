@@ -40,7 +40,11 @@ namespace ProjetoAtivos.DAO
                                           row["sal_descricao"].ToString(),
                                           row["nt_codigo"] == DBNull.Value? 0: Convert.ToInt32(row["nt_codigo"])
 
-                         )).ToList();
+                         )
+                         {
+                             Veiculo = row["ve_codigo"] != DBNull.Value ? new VeiculoDAO().Buscar(Convert.ToInt32(row["ati_codigo"])) : null
+                         }
+                         ).ToList();
 
             return dados;
         }
@@ -257,6 +261,11 @@ namespace ProjetoAtivos.DAO
                                     OK = new AnexoDAO().Excluir(Ativo.GetCodigo());
                                 }
                             }
+                        }
+
+                        if (OK && Ativo.Veiculo != null)
+                        {
+                            OK = Ativo.Veiculo.Gravar();
                         }
 
 

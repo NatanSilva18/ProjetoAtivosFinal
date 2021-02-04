@@ -646,6 +646,7 @@ function Gravar() {
             var Latitude = position.coords.latitude;
             var Longitude = position.coords.longitude;
 
+            var TipoAtivo = $('#cbbTpAtivo').val();
             var Codigo = $('#txtId').val();
             var Regional = $('#cbbRegional').val();
             var Filial = $('#cbbFilial').val();
@@ -654,8 +655,7 @@ function Gravar() {
             var Tag = $('#txtTag').val();
             var Estado = $('#cbbEstado').val();
             var Observacao = $('#txtObservacao').val();
-            var Descricao = $('#txtDescricao').val();
-            var TipoAtivo = $('#cbbTpAtivo').val();
+            var Descricao = $('#txtDescricao').val();            
             var Marca = $('#txtMarca').val();
             var NumeroSerie = $('#txtNumSerie').val();
             var Modelo = $('#txtModelo').val();
@@ -675,55 +675,121 @@ function Gravar() {
 
             if (VerificaImagem != "") {
                 var Imagem = $('#minhaImagemHidden').val();
-                $.ajax({
-                    type: 'POST',
-                    url: '/Ativo/Gravar',
-                    data: {
-                        Codigo: Codigo, Regional: Regional, Filial: Filial, Sala: Sala, Placa: Placa, Tag: Tag, Estado: Estado, Observacao: Observacao,
-                        Descricao: Descricao, TipoAtivo: TipoAtivo, Marca: Marca, NumeroSerie: NumeroSerie, Modelo: Modelo, Valor: Valor, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude,
-                        CodigoNota: CodigoNota, NumeroNota: NumeroNota, ValorNota: ValorNota, DataEmissao: DataEmissao, Fornecedor: Fornecedor, Cnpj: Cnpj, NomeAnexo: nomeAnexo, Anexo : anexo
-                    },
-                    success: function (result) {
-                        $('#novoAtivo').modal('hide');
 
-                        if (result.length > 0) {
-                            Swal.fire({
-                                title: 'Oops...',
-                                type: 'error',
-                                text: result,
-                                timer: 5000
-                            })
-                        }
-                        else {
-                            if (Codigo == 0) {
+                if (TipoAtivo != 3) {
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Ativo/Gravar',
+                        data: {
+                            Codigo: Codigo, Regional: Regional, Filial: Filial, Sala: Sala, Placa: Placa, Tag: Tag, Estado: Estado, Observacao: Observacao,
+                            Descricao: Descricao, TipoAtivo: TipoAtivo, Marca: Marca, NumeroSerie: NumeroSerie, Modelo: Modelo, Valor: Valor, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude,
+                            CodigoNota: CodigoNota, NumeroNota: NumeroNota, ValorNota: ValorNota, DataEmissao: DataEmissao, Fornecedor: Fornecedor, Cnpj: Cnpj, NomeAnexo: nomeAnexo, Anexo: anexo
+                        },
+                        success: function (result) {
+                            $('#novoAtivo').modal('hide');
+
+                            if (result.length > 0) {
                                 Swal.fire({
-                                    title: 'Sucesso',
-                                    type: 'success',
-                                    text: 'Ativo Gravado com Sucesso',
+                                    title: 'Oops...',
+                                    type: 'error',
+                                    text: result,
                                     timer: 5000
                                 })
                             }
                             else {
+                                if (Codigo == 0) {
+                                    Swal.fire({
+                                        title: 'Sucesso',
+                                        type: 'success',
+                                        text: 'Ativo Gravado com Sucesso',
+                                        timer: 5000
+                                    })
+                                }
+                                else {
+                                    Swal.fire({
+                                        title: 'Sucesso',
+                                        type: 'success',
+                                        text: 'Ativo Alterado com Sucesso',
+                                        timer: 5000
+                                    })
+                                }
+                            }
+                            document.getElementById('btnConfirmar').disabled = false;
+                            if ($("#cbbRegiaoPesq").val() != "")
+                                ObterAtivos();
+
+                            $("#divLoading").hide();
+                        },
+                        error: function (XMLHttpRequest, txtStatus, errorThrown) {
+                            alert("Status: " + txtStatus); alert("Error: " + errorThrown);
+                            $("#divLoading").hide(400);
+                            document.getElementById('btnConfirmar').disabled = false;
+                        }
+                    });
+                }
+                else {
+
+                    var cor = $('#txtCor').val();
+                    var placaVeiculo = $('#txtPlavaV').val();
+                    var crlv = $('#hdCRLV').val();
+                    var dut = $('#hdDUT').val();
+                    var fipe = $('#codFipe').val(); 
+                    var Marca = $("#cbbMarcaV option:selected").text(); cbbAnoVeiculo
+                    var Modelo = $("#cbbModeloV option:selected").text() + ' ' + $("#cbbAnoVeiculo option:selected").text();  
+                    //var valor = $('#txtPrecoV').val();
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Ativo/Gravar',
+                        data: {
+                            Codigo: Codigo, Regional: Regional, Filial: Filial, Placa: Placa, Tag: Tag, Estado: Estado, Observacao: Observacao,
+                            Descricao: Descricao, TipoAtivo: TipoAtivo, Marca: Marca, NumeroSerie: NumeroSerie, Modelo: Modelo, Valor: Valor, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude,
+                            CodigoNota: CodigoNota, NumeroNota: NumeroNota, ValorNota: ValorNota, DataEmissao: DataEmissao, Fornecedor: Fornecedor, Cnpj: Cnpj, NomeAnexo: nomeAnexo, Anexo: anexo,
+                            Cor: cor, PlacaVeiculo: placaVeiculo, CRLV : crlv, DUT: dut, FIPE: fipe
+                        },
+                        success: function (result) {
+                            $('#novoAtivo').modal('hide');
+
+                            if (result.length > 0) {
                                 Swal.fire({
-                                    title: 'Sucesso',
-                                    type: 'success',
-                                    text: 'Ativo Alterado com Sucesso',
+                                    title: 'Oops...',
+                                    type: 'error',
+                                    text: result,
                                     timer: 5000
                                 })
                             }
-                        }
-                        document.getElementById('btnConfirmar').disabled = false;
-                        if ($("#cbbRegiaoPesq").val() != "")
-                            ObterAtivos();
+                            else {
+                                if (Codigo == 0) {
+                                    Swal.fire({
+                                        title: 'Sucesso',
+                                        type: 'success',
+                                        text: 'Ativo Gravado com Sucesso',
+                                        timer: 5000
+                                    })
+                                }
+                                else {
+                                    Swal.fire({
+                                        title: 'Sucesso',
+                                        type: 'success',
+                                        text: 'Ativo Alterado com Sucesso',
+                                        timer: 5000
+                                    })
+                                }
+                            }
+                            document.getElementById('btnConfirmar').disabled = false;
+                            if ($("#cbbRegiaoPesq").val() != "")
+                                ObterAtivos();
 
-                        $("#divLoading").hide();
-                    },
-                    error: function (XMLHttpRequest, txtStatus, errorThrown) {
-                        alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                        $("#divLoading").hide(400);
-                        document.getElementById('btnConfirmar').disabled = false;
-                    }
-                });
+                            $("#divLoading").hide();
+                        },
+                        error: function (XMLHttpRequest, txtStatus, errorThrown) {
+                            alert("Status: " + txtStatus); alert("Error: " + errorThrown);
+                            $("#divLoading").hide(400);
+                            document.getElementById('btnConfirmar').disabled = false;
+                        }
+                    });
+                }
             }
             else {
                 Mensagem("divAlerta", 'Por favor Envie a Imagem');
@@ -1405,7 +1471,7 @@ function LimparAnexo(sulf = "Anexo", dest = "anexo", button ="btnSalvarDoc") {
     $("#" + dest).hide();
 }
 
-function SalvarAnexo(input = "fuDoc", button = 'btnSalvarDoc', sulf = 'Anexo', dest ="anexo") {
+function SalvarAnexo(input = "fuDoc", button = 'btnSalvarDoc', sulf = 'Anexo', dest ="anexo", apenaImagens = false) {
 
     var arquivos = document.getElementById(input);
     if (arquivos.files.length > 0) {
@@ -1416,6 +1482,10 @@ function SalvarAnexo(input = "fuDoc", button = 'btnSalvarDoc', sulf = 'Anexo', d
         var formData = new FormData();
         formData.append("id", $("#txtId").val());
         formData.append("nome", $("#txtNome").val());
+
+        if (apenaImagens)
+            formData.append("apenasImagens", true);
+
         for (var i = 0; i < arquivos.files.length; i++) {
             if (arquivos.files[i].size > 0) {
                 formData.append("arquivo" + i, arquivos.files[i]);
@@ -1436,22 +1506,26 @@ function SalvarAnexo(input = "fuDoc", button = 'btnSalvarDoc', sulf = 'Anexo', d
                         
 
                         $("#hd" + sulf).val(this.dados);
-                        $("#nome" + sulf).val(this.nome);
+
+                        if (apenaImagens)
+                            $("#nome" + sulf).attr('src', this.dados)
+                        else
+                            $("#nome" + sulf).val(this.nome);
                         
                         
                         $("#" + dest).show(300);
-
+                        document.getElementById(button).innerHTML = 'Substituir';
 
                     }
                     if (this.id == -1) {
-                        Mensagem("divAlerta", this.dados);
+                        Mensagem("divAlerta" + sulf, this.dados);
                     }
 
                     if (this.id == -2) {
-                        Mensagem("divAlerta", this.dados);
+                        Mensagem("divAlerta" + sulf, this.dados);
                     }
 
-                    document.getElementById(button).innerHTML = 'Substituir';
+                    
                     $("#divLoading").hide(2000);
 
                 });
@@ -1463,7 +1537,7 @@ function SalvarAnexo(input = "fuDoc", button = 'btnSalvarDoc', sulf = 'Anexo', d
         });
     }
     else {
-        Mensagem("divAlerta", 'Selecione um arquivo!');
+        Mensagem("divAlerta" + sulf, 'Selecione um arquivo!');
     }
     $("#divLoading").hide(2000);
 
@@ -1600,9 +1674,7 @@ function registraFipe(x) {
         var tipo = $("#cbbtpVeiculo").val();
         var marca = $("#cbbMarcaV").val();
         var modelo = $("#cbbModeloV").val();
-
         
-
         $.ajax({
             type: 'GET',
             url: 'https://fipeapi.appspot.com/api/1/'+tipo+'/veiculo/'+marca+'/'+modelo+'/'+x+'.json',

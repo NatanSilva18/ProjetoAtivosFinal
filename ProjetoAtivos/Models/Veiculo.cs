@@ -1,11 +1,12 @@
-﻿using System;
+﻿using ProjetoAtivos.DAO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ProjetoAtivos.Models
 {
-    public class Veiculo
+    public class Veiculo 
     {
         public int Codigo { get; set; }              
         public string Placa { get; set; }
@@ -18,8 +19,13 @@ namespace ProjetoAtivos.Models
         public Veiculo()
         {
             Codigo = 0;
-
         }
 
+        public bool Gravar()
+        {
+           
+            return new VeiculoDAO().Gravar(this);
+            
+        }
     }
 }

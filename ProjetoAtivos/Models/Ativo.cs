@@ -22,8 +22,9 @@ namespace ProjetoAtivos.Models
         private Sala Sala;
         private NotaFiscal Nota;
         private Anexo Anexo;
-        public List<Imagem> Imagens { get; set; }
         public Veiculo Veiculo { get; set; }
+        public List<Imagem> Imagens { get; set; }
+        
 
         public Ativo()
         {
@@ -44,6 +45,8 @@ namespace ProjetoAtivos.Models
             this.Nota = new NotaFiscal();
             this.Anexo = null;
             Veiculo = null;
+
+
         }
         public Ativo(int Codigo)
         {

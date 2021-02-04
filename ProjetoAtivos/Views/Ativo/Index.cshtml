@@ -306,7 +306,7 @@
                                         </div>
                                     </div>
 
-                                    <div id="divAlerta" class="alert alert-danger col-lg-6" role="alert" style="display:none"></div>
+                                    <div id="divAlertaAnexo" class="alert alert-danger col-lg-6" role="alert" style="display:none"></div>
 
                                 </div>
                             </div>
@@ -516,73 +516,73 @@
                                 </div>
                             </div>
 
-                                <div class="row" id="upCRLV">
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label for="fuCRLV">CRLV</label>
-                                            <div class="input-group">
-                                                <div class="custom-file" id="customFile" lang="pt-br">
-                                                    <input type="file" class="custom-file-input" id="fuCRLV" aria-describedby="fileHelp" onchange='SalvarAnexo("fuCRLV", "btnCRLV", "CRLV", "CRLV")'>
-                                                    <label class="custom-file-label" for="fuCRLV" id="labelDoc">
-                                                        Selecione o Documento
-                                                    </label>
-                                                </div>
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-success" type="button" id="btnCRLV" onclick='javascript: SalvarAnexo("fuCRLV", "btnCRLV", "CRLV", "CRLV");'>Anexar</button>
-                                                </div>
+                            <div class="row" id="upCRLV" style="display:none">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="fuCRLV">CRLV</label>
+                                        <div class="input-group">
+                                            <div class="custom-file" id="customFile" lang="pt-br">
+                                                <input type="file" class="custom-file-input" id="fuCRLV" aria-describedby="fileHelp" onchange='SalvarAnexo("fuCRLV", "btnCRLV", "CRLV", "CRLV", true)'>
+                                                <label class="custom-file-label" for="fuCRLV" id="labelDoc">
+                                                    Selecione o Documento
+                                                </label>
                                             </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6" id="CRLV" style="display:none">
-                                        <div class="form-group">
-                                            <label for="nomeCRLV" style="color:white">.</label>
-                                            <input type="hidden" id="hdCRLV" name="hdCRLV" value="" />
-
                                             <div class="input-group-append">
-                                                <a id="linkAnexo" href="#" target="_blank" class="stretched-link" style="width: 100%;">
-                                                    <input class="form-control" type="text" id="nomeCRLV" disabled />
-                                                </a>
-                                                <button class="btn btn-danger" type="button" onclick="javascript: LimparAnexo('CRLV', 'CRLV', 'btnCRLV');">X</button>
+                                                <button class="btn btn-success" type="button" id="btnCRLV" onclick='javascript: SalvarAnexo("fuCRLV", "btnCRLV", "CRLV", "CRLV", true);'>Anexar</button>
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
 
-                                <div class="row" id="upDut">
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label for="fuDUT">DUT</label>
-                                            <div class="input-group">
-                                                <div class="custom-file" id="customFile" lang="pt-br">
-                                                    <input type="file" class="custom-file-input" id="fuDUT" aria-describedby="fileHelp" onchange='SalvarAnexo("fuDUT", "btnDUT", "DUT", "DUT")'>
-                                                    <label class="custom-file-label" for="fuDUT" id="labelDoc">
-                                                        Selecione o Documento
-                                                    </label>
-                                                </div>
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-success" type="button" id="btnDUT" onclick='javascript: SalvarAnexo("fuDUT", "btnDUT", "DUT", "DUT");'>Anexar</button>
-                                                </div>
-                                            </div>
+                                <div class="col-lg-6" id="CRLV" style="display:none">
+                                    <div class="form-group">
+                                        <label for="nomeCRLV" style="color:white">.</label>
+                                        <input type="hidden" id="hdCRLV" name="hdCRLV" value="" />
+
+                                        <div class="input-group-append">
+                                            <a id="linkAnexo" href="#" target="_blank" class="stretched-link" style="width: 30%;">
+                                                <img style="width: 100%;" id="nomeCRLV" />
+                                            </a>
+                                            <button class="btn btn-danger" type="button" onclick="javascript: LimparAnexo('CRLV', 'CRLV', 'btnCRLV');">X</button>
                                         </div>
                                     </div>
-
-                                    <div class="col-lg-6" id="DUT" style="display:none">
-                                        <div class="form-group">
-                                            <label for="nomeDUT" style="color:white">.</label>
-                                            <input type="hidden" id="hdDUT" name="hdDUT" value="" />
-
-                                            <div class="input-group-append">
-                                                <a id="linkAnexo" href="#" target="_blank" class="stretched-link" style="width: 100%;">
-                                                    <input class="form-control" type="text" id="nomeDUT" disabled />
-                                                </a>
-                                                <button class="btn btn-danger" type="button" onclick="javascript: LimparAnexo('DUT', 'DUT', 'btnDUT');">X</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                 </div>
+                                <div id="divAlertaCRLV" class="alert alert-danger col-lg-6" role="alert" style="display:none"></div>
+                            </div>
+
+                            <div class="row" id="upDut" style="display:none">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="fuDUT">DUT</label>
+                                        <div class="input-group">
+                                            <div class="custom-file" id="customFile" lang="pt-br">
+                                                <input type="file" class="custom-file-input" id="fuDUT" aria-describedby="fileHelp" onchange='SalvarAnexo("fuDUT", "btnDUT", "DUT", "DUT", true)'>
+                                                <label class="custom-file-label" for="fuDUT" id="labelDoc">
+                                                    Selecione o Documento
+                                                </label>
+                                            </div>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-success" type="button" id="btnDUT" onclick='javascript: SalvarAnexo("fuDUT", "btnDUT", "DUT", "DUT", true);'>Anexar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6" id="DUT" style="display:none">
+                                    <div class="form-group">
+                                        <label for="nomeDUT" style="color:white">.</label>
+                                        <input type="hidden" id="hdDUT" name="hdDUT" value="" />
+
+                                        <div class="input-group-append">
+                                            <a id="linkAnexo" href="#" target="_blank" class="stretched-link" style="width: 30%;">
+                                                <img style="width: 100%;" id="nomeDUT" />
+                                            </a>
+                                            <button class="btn btn-danger" type="button" onclick="javascript: LimparAnexo('DUT', 'DUT', 'btnDUT');">X</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="divAlertaDUT" class="alert alert-danger col-lg-6" role="alert" style="display:none"></div>
+                            </div>
                                 <hr />
                                 <div class="row" id="modalArquivo">
                                     <div class="col-lg-6">

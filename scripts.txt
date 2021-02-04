@@ -2,15 +2,9 @@ use `16440_parebemativos`;
 
 drop table `veiculos`;
 CREATE TABLE `veiculos` (
-  `ve_codigo` int(11) NOT NULL AUTO_INCREMENT,
-  `ve_tipo` varchar(20)  not NULL,
-  `ve_marca` varchar(100) not NULL,
-  `ve_modelo` varchar(200) not NULL,
-  `ve_placa` varchar(15) not NULL,
-  `ve_ano` int(4) not NULL,
-  `ve_cor` varchar(30) not NULL,
-  `ve_combustivel` varchar(30) not NULL,
-  `ve_anoRef` varchar(30) not NULL,
+  `ve_codigo` int(11) NOT NULL AUTO_INCREMENT,  
+  `ve_placa` varchar(15) not NULL,  
+  `ve_cor` varchar(30) not NULL,  
   `ve_fipe` varchar(30) not NULL,
   `ve_dut` MEDIUMTEXT  NULL,
   `ve_crlv` MEDIUMTEXT  NULL,
@@ -25,3 +19,4 @@ alter table ativos change sal_codigo sal_codigo int(11) null;
 alter table ativos add ve_codigo int(11) null;
 
 ALTER TABLE `ativos` ADD CONSTRAINT `fk_veiculo` FOREIGN KEY ( `ve_codigo` ) REFERENCES `veiculos` ( `ve_codigo` ) ;
+
