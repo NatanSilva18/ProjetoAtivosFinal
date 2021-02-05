@@ -36,8 +36,8 @@ namespace ProjetoAtivos.DAO
                                           Convert.ToInt32(row["tpa_codigo"]),
                                           row["tpa_descricao"].ToString(),
                                           Convert.ToDouble(row["tpa_valor"]),
-                                          Convert.ToInt32(row["sal_codigo"]),
-                                          row["sal_descricao"].ToString(),
+                                          row["sal_codigo"] != DBNull.Value ? Convert.ToInt32(row["sal_codigo"]) : 0,
+                                          row["sal_codigo"] != DBNull.Value ? row["sal_descricao"].ToString() : "",
                                           row["nt_codigo"] == DBNull.Value? 0: Convert.ToInt32(row["nt_codigo"])
 
                          )
@@ -156,8 +156,11 @@ namespace ProjetoAtivos.DAO
                             b.getComandoSQL().Parameters.AddWithValue("@valor", Ativo.GetNota().ValorNota);      //se n tiver pegar valor do tipo_ativo
                         }
 
-                        b.getComandoSQL().Parameters.AddWithValue("@sala", Ativo.GetSala().GetCodigo());
-           
+                        if(Ativo.GetSala().GetCodigo() != 0)
+                            b.getComandoSQL().Parameters.AddWithValue("@sala", Ativo.GetSala().GetCodigo());
+                        else
+                            b.getComandoSQL().Parameters.AddWithValue("@sala", DBNull.Value);
+
                     }
                     else
                     {
@@ -295,7 +298,8 @@ namespace ProjetoAtivos.DAO
                                                 a.ati_modelo, a.ati_numeroserie, a.ati_stativo, a.ati_valor, tp.tpa_codigo, tp.tpa_descricao, tp.tpa_valor, s.sal_codigo, s.sal_descricao, a.nt_codigo
                                               from Ativos a
                                               inner join Tipo_Ativo tp on tp.tpa_codigo = a.tpa_codigo
-                                              inner join Sala s on s.sal_codigo = a.sal_codigo
+                                              left outer join Sala s on s.sal_codigo = a.sal_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                                               where s.fil_codigo = @filial 
                                               group by  a.ati_codigo, a.ati_placa, a.ati_descricao, a.ati_estado, a.ati_observacao, a.ati_tag, a.ati_marca,        
                                                 a.ati_modelo, a.ati_numeroserie, a.ati_stativo, a.ati_valor, tp.tpa_codigo, tp.tpa_descricao, s.sal_codigo, s.sal_descricao;";
@@ -317,9 +321,10 @@ namespace ProjetoAtivos.DAO
 
             b.getComandoSQL().CommandText = @"select a.ati_placa, a.ati_descricao, f.fil_razao, r.reg_descricao, a.ati_stativo
                                               from Ativos a 
-                                              inner join Sala s on s.sal_codigo = a.sal_codigo
+                                              left outer join Sala s on s.sal_codigo = a.sal_codigo
                                               inner join Filial f on s.fil_codigo = f.fil_codigo
                                               inner join regional r on f.reg_codigo = r.reg_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                                               where a.ati_placa = @placa order by a.ati_placa;";
 
             b.getComandoSQL().Parameters.AddWithValue("@placa", Placa);
@@ -355,8 +360,9 @@ namespace ProjetoAtivos.DAO
                                                 a.ati_modelo, a.ati_numeroserie, a.ati_stativo, a.ati_valor, tp.tpa_codigo, tp.tpa_descricao, tp.tpa_valor, s.sal_codigo, s.sal_descricao, , a.nt_codigo
                                               from Ativos a
                                               inner join Tipo_Ativo tp on tp.tpa_codigo = a.tpa_codigo
-                                              inner join Sala s on s.sal_codigo = a.sal_codigo
+                                              left outer join Sala s on s.sal_codigo = a.sal_codigo
                                               inner join itens_ativos ia on a.ati_codigo = ia.ati_codigo 
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                                               where ia.transf_codigo = @transf;";
             b.getComandoSQL().Parameters.AddWithValue("@transf", t.GetCodigo());
 
@@ -375,8 +381,9 @@ namespace ProjetoAtivos.DAO
                                                 from itens_ativos ia
                                                 inner join Ativos a on a.ati_codigo = ia.ati_codigo 
                                                 inner join imagem i on a.ati_codigo = i.ati_codigo
-                                                inner join Sala s on s.sal_codigo = a.sal_codigo
+                                                left outer join Sala s on s.sal_codigo = a.sal_codigo
                                                 inner join Filial f on s.fil_codigo = f.fil_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                                                 where ia.transf_codigo = @transf and i.transf_codigo is null 
                                                 group by a.ati_codigo
                                                 order by a.ati_descricao;";
@@ -412,10 +419,11 @@ namespace ProjetoAtivos.DAO
                    from Ativos a 
                    LEFT join imagem i on a.ati_codigo = i.ati_codigo
                    LEFT join localizacao l on l.img_codigo = i.img_codigo
-                   inner join Sala s on s.sal_codigo = a.sal_codigo
+                   left outer join Sala s on s.sal_codigo = a.sal_codigo
                    inner join Filial f on s.fil_codigo = f.fil_codigo
                    inner join Regional r on r.reg_codigo = f.reg_codigo
                    inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo  
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                    where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and f.fil_codigo = @filialONE
                    group by a.ati_codigo
                         union
@@ -425,9 +433,10 @@ namespace ProjetoAtivos.DAO
                    RIGHT join imagem i on a.ati_codigo = i.ati_codigo
                    RIGHT join localizacao l on l.img_codigo = i.img_codigo
                    left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
-                   inner join Sala s on s.sal_codigo = a.sal_codigo
+                   left outer join Sala s on s.sal_codigo = a.sal_codigo
                    inner join Filial f on s.fil_codigo = f.fil_codigo
                    inner join Regional r on r.reg_codigo = f.reg_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                    where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and f.fil_codigo = @filialTWO
                    group by a.ati_codigo;";
 
@@ -440,10 +449,11 @@ namespace ProjetoAtivos.DAO
                    from Ativos a 
                    LEFT join imagem i on a.ati_codigo = i.ati_codigo
                    LEFT join localizacao l on l.img_codigo = i.img_codigo
-                   inner join Sala s on s.sal_codigo = a.sal_codigo
+                   left outer join Sala s on s.sal_codigo = a.sal_codigo
                    inner join Filial f on s.fil_codigo = f.fil_codigo
                    inner join Regional r on r.reg_codigo = f.reg_codigo
                    inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                    where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE
                    group by a.ati_codigo
                         union
@@ -453,9 +463,10 @@ namespace ProjetoAtivos.DAO
                    RIGHT join imagem i on a.ati_codigo = i.ati_codigo
                    RIGHT join localizacao l on l.img_codigo = i.img_codigo
                    left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
-                   inner join Sala s on s.sal_codigo = a.sal_codigo
+                   left outer join Sala s on s.sal_codigo = a.sal_codigo
                    inner join Filial f on s.fil_codigo = f.fil_codigo
                    inner join Regional r on r.reg_codigo = f.reg_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                    where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO
                    group by a.ati_codigo;";
                 }
@@ -472,10 +483,11 @@ namespace ProjetoAtivos.DAO
                            from Ativos a 
                            LEFT join imagem i on a.ati_codigo = i.ati_codigo
                            LEFT join localizacao l on l.img_codigo = i.img_codigo
-                           inner join Sala s on s.sal_codigo = a.sal_codigo
+                           left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
                            inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                            where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and a.ati_descricao like @nomeONE and f.fil_codigo = @filialONE
                            group by a.ati_codigo
                                 union
@@ -485,9 +497,10 @@ namespace ProjetoAtivos.DAO
                            RIGHT join imagem i on a.ati_codigo = i.ati_codigo
                            RIGHT join localizacao l on l.img_codigo = i.img_codigo
                            left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
-                           inner join Sala s on s.sal_codigo = a.sal_codigo
+                           left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                            where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and a.ati_descricao like @nomeTWO and f.fil_codigo = @filialTWO
                            group by a.ati_codigo";
 
@@ -500,10 +513,11 @@ namespace ProjetoAtivos.DAO
                            from Ativos a 
                            LEFT join imagem i on a.ati_codigo = i.ati_codigo
                            LEFT join localizacao l on l.img_codigo = i.img_codigo
-                           inner join Sala s on s.sal_codigo = a.sal_codigo
+                           left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
                            inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                            where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and a.ati_descricao like @nomeONE
                            group by a.ati_codigo
                                 union
@@ -513,9 +527,10 @@ namespace ProjetoAtivos.DAO
                            RIGHT join imagem i on a.ati_codigo = i.ati_codigo
                            RIGHT join localizacao l on l.img_codigo = i.img_codigo
                            left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
-                           inner join Sala s on s.sal_codigo = a.sal_codigo
+                           left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                            where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and a.ati_descricao like @nomeTWO
                            group by a.ati_codigo";
                     }
@@ -536,10 +551,11 @@ namespace ProjetoAtivos.DAO
                            from Ativos a 
                            LEFT join imagem i on a.ati_codigo = i.ati_codigo
                            LEFT join localizacao l on l.img_codigo = i.img_codigo
-                           inner join Sala s on s.sal_codigo = a.sal_codigo
+                           left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
                            inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                            where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and f.fil_codigo = @filialONE and a.ati_placa like @placaOne
                            group by a.ati_codigo
                                 union
@@ -549,9 +565,10 @@ namespace ProjetoAtivos.DAO
                            RIGHT join imagem i on a.ati_codigo = i.ati_codigo
                            RIGHT join localizacao l on l.img_codigo = i.img_codigo
                            left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
-                           inner join Sala s on s.sal_codigo = a.sal_codigo
+                           left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                            where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and f.fil_codigo = @filialTWO and a.ati_placa like @placaTwo
                            group by a.ati_codigo";
 
@@ -570,10 +587,11 @@ namespace ProjetoAtivos.DAO
                            from Ativos a 
                            LEFT join imagem i on a.ati_codigo = i.ati_codigo
                            LEFT join localizacao l on l.img_codigo = i.img_codigo
-                           inner join Sala s on s.sal_codigo = a.sal_codigo
+                           left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
                            inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                            where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and a.ati_placa like @placaOne
                            group by a.ati_codigo
                                 union
@@ -583,9 +601,10 @@ namespace ProjetoAtivos.DAO
                            RIGHT join imagem i on a.ati_codigo = i.ati_codigo
                            RIGHT join localizacao l on l.img_codigo = i.img_codigo
                            left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
-                           inner join Sala s on s.sal_codigo = a.sal_codigo
+                           left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                            where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and a.ati_placa like @placaTwo
                            group by a.ati_codigo";
 
@@ -602,10 +621,11 @@ namespace ProjetoAtivos.DAO
                            from Ativos a 
                            LEFT join imagem i on a.ati_codigo = i.ati_codigo
                            LEFT join localizacao l on l.img_codigo = i.img_codigo
-                           inner join Sala s on s.sal_codigo = a.sal_codigo
+                           left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
                    inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                            where a.ati_stativo = @ativoONE and a.ati_placa like @placaOne
                            group by a.ati_codigo
                                 union
@@ -615,9 +635,10 @@ namespace ProjetoAtivos.DAO
                            RIGHT join imagem i on a.ati_codigo = i.ati_codigo
                            RIGHT join localizacao l on l.img_codigo = i.img_codigo
                            left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
-                           inner join Sala s on s.sal_codigo = a.sal_codigo
+                           left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                            where a.ati_stativo = @ativoTWO and a.ati_placa like @placaTwo
                            group by a.ati_codigo";
 
@@ -666,7 +687,8 @@ namespace ProjetoAtivos.DAO
 
             b.getComandoSQL().CommandText = @"select a.ati_codigo, a.ati_placa, a.ati_descricao, a.ati_estado, a.ati_observacao, a.ati_tag, a.ati_marca, a.ati_modelo,                                         a.ati_numeroserie, a.ati_stativo, a.ati_valor, tp.tpa_codigo, tp.tpa_descricao, tp.tpa_valor, s.sal_codigo, s.sal_descricao, a.nt_codigo from Ativos a
                                               inner join Tipo_Ativo tp on tp.tpa_codigo = a.tpa_codigo
-                                              inner join Sala s on s.sal_codigo = a.sal_codigo
+                                              left outer join Sala s on s.sal_codigo = a.sal_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                                               where a.ati_codigo = @codigo and a.ati_stativo = 1;";
             b.getComandoSQL().Parameters.AddWithValue("@codigo", Codigo);
 
@@ -786,9 +808,10 @@ namespace ProjetoAtivos.DAO
             {
                 b.getComandoSQL().CommandText = @"select f.fil_razao, sum(a.ati_valor) as Valor, count(a.ati_codigo) as Quantidade
                                               from ativos a
-                                              inner join sala s on a.sal_codigo = s.sal_codigo
+                                              left outer join sala s on a.sal_codigo = s.sal_codigo
                                               inner join filial f on s.fil_codigo = f.fil_codigo
                                               inner join regional r on f.reg_codigo = r.reg_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                                               where r.reg_codigo = @regional and f.fil_codigo = @filial
                                               group by f.fil_razao;";
                 b.getComandoSQL().Parameters.AddWithValue("@regional", Regional);
@@ -799,9 +822,10 @@ namespace ProjetoAtivos.DAO
             {
                 b.getComandoSQL().CommandText = @"select f.fil_razao, sum(a.ati_valor) as Valor, count(a.ati_codigo) as Quantidade
                                               from ativos a
-                                              inner join sala s on a.sal_codigo = s.sal_codigo
+                                              left outer join sala s on a.sal_codigo = s.sal_codigo
                                               inner join filial f on s.fil_codigo = f.fil_codigo
                                               inner join regional r on f.reg_codigo = r.reg_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                                               where r.reg_codigo = @regional
                                               group by f.fil_razao;";
                 b.getComandoSQL().Parameters.AddWithValue("@regional", Regional);
@@ -836,18 +860,20 @@ namespace ProjetoAtivos.DAO
                 b.getComandoSQL().CommandText = @"select r.reg_descricao, f.fil_razao, a.ati_placa, i.img_codigo
                                                 from regional r
                                                 inner join filial f on r.reg_codigo = f.reg_codigo
-                                                inner join sala s on s.fil_codigo = f.fil_codigo
+                                                left outer join sala s on s.fil_codigo = f.fil_codigo
                                                 inner join ativos a on a.sal_codigo = s.sal_codigo
                                                 LEFT join imagem i on i.ati_codigo = a.ati_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                                                 where r.reg_codigo = @regional and f.fil_codigo = @filial and a.ati_stativo = 1
                                                 group by a.ati_placa
                                                 union
                                                 select r.reg_descricao, f.fil_razao, a.ati_placa, i.img_codigo
                                                 from regional r
                                                 inner join filial f on r.reg_codigo = f.reg_codigo
-                                                inner join sala s on s.fil_codigo = f.fil_codigo
+                                                left outer join sala s on s.fil_codigo = f.fil_codigo
                                                 inner join ativos a on a.sal_codigo = s.sal_codigo
                                                 RIGHT join imagem i on i.ati_codigo = a.ati_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                                                 where r.reg_codigo = @regional and f.fil_codigo = @filial and a.ati_stativo = 1";
                 b.getComandoSQL().Parameters.AddWithValue("@regional", Regional);
                 b.getComandoSQL().Parameters.AddWithValue("@filial", Filial);
@@ -858,18 +884,20 @@ namespace ProjetoAtivos.DAO
                 b.getComandoSQL().CommandText = @"select r.reg_descricao, f.fil_razao, a.ati_placa, i.img_codigo
                                                 from regional r
                                                 inner join filial f on r.reg_codigo = f.reg_codigo
-                                                inner join sala s on s.fil_codigo = f.fil_codigo
+                                                left outer join sala s on s.fil_codigo = f.fil_codigo
                                                 inner join ativos a on a.sal_codigo = s.sal_codigo
                                                 LEFT join imagem i on i.ati_codigo = a.ati_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                                                 where r.reg_codigo = @regional and a.ati_stativo = 1
                                                 group by a.ati_placa
                                                 union
                                                 select r.reg_descricao, f.fil_razao, a.ati_placa, i.img_codigo
                                                 from regional r
                                                 inner join filial f on r.reg_codigo = f.reg_codigo
-                                                inner join sala s on s.fil_codigo = f.fil_codigo
+                                                left outer join sala s on s.fil_codigo = f.fil_codigo
                                                 inner join ativos a on a.sal_codigo = s.sal_codigo
                                                 RIGHT join imagem i on i.ati_codigo = a.ati_codigo
+                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                                                 where r.reg_codigo = @regional and a.ati_stativo = 1";
 
                 b.getComandoSQL().Parameters.AddWithValue("@regional", Regional);

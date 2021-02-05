@@ -650,15 +650,15 @@ function Gravar() {
             var Codigo = $('#txtId').val();
             var Regional = $('#cbbRegional').val();
             var Filial = $('#cbbFilial').val();
-            var Sala = $('#cbbSala').val();
+            
             var Placa = $('#txtPlaca').val();
             var Tag = $('#txtTag').val();
             var Estado = $('#cbbEstado').val();
             var Observacao = $('#txtObservacao').val();
             var Descricao = $('#txtDescricao').val();            
-            var Marca = $('#txtMarca').val();
+            
             var NumeroSerie = $('#txtNumSerie').val();
-            var Modelo = $('#txtModelo').val();
+            
             var Valor = document.getElementById('txtValorNota').value.replace(',', '.');
 
             var CodigoNota = document.getElementById('txtIdNotaFiscal').value;
@@ -677,6 +677,10 @@ function Gravar() {
                 var Imagem = $('#minhaImagemHidden').val();
 
                 if (TipoAtivo != 3) {
+
+                    var Sala = $('#cbbSala').val();
+                    var Marca = $('#txtMarca').val();
+                    var Modelo = $('#txtModelo').val();
 
                     $.ajax({
                         type: 'POST',
@@ -741,7 +745,7 @@ function Gravar() {
 
                     $.ajax({
                         type: 'POST',
-                        url: '/Ativo/Gravar',
+                        url: '/Ativo/GravarVeiculo',
                         data: {
                             Codigo: Codigo, Regional: Regional, Filial: Filial, Placa: Placa, Tag: Tag, Estado: Estado, Observacao: Observacao,
                             Descricao: Descricao, TipoAtivo: TipoAtivo, Marca: Marca, NumeroSerie: NumeroSerie, Modelo: Modelo, Valor: Valor, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude,
@@ -943,6 +947,59 @@ function Alterar(Codigo) {
                 $("#txtNumSerie").val(result.numeroSerie);
                 $("#txtModelo").val(result.modelo);
                 //$("#txtValor").val(result.valor);
+
+                if (result.tpAtivoCodigo == 3 && result.veiculo != null) {
+                    $('#sala').hide();
+                    $('#marcaMod').hide();
+                    $('#marcaModV').show();
+                    $('#AnoVeiculo').show();
+                    $('#upCRLV').show();
+                    $('#upDut').show();
+
+                    $("#txtMarca").removeAttr('required');
+                    $("#txtModelo").removeAttr('required');
+                    $("#txtNumeroNota").removeAttr('required');
+                    $("#txtValorNota").removeAttr('required');
+                    $("#txtDataEmissao").removeAttr('required');
+                    $("#txtFornecedor").removeAttr('required');
+                    $("#txtCnpj").removeAttr('required');
+
+                    $('#txtCor').val(result.veiculo.cor);
+                    $('#txtPlavaV').val(result.veiculo.placa);
+                    $('#codFipe').val(result.veiculo.fipe.codigo); 
+
+                    if (result.veiculo.crlv != null) {
+                        $('#hdCRLV').val(result.veiculo.crlv);
+                        $('#CRLV').show();
+                        $("#nomeCRLV").Attr('src', result.veiculo.crlv); 
+                    }
+
+                    if (result.veiculo.dut != null) {
+                        $('#hdDUT').val(result.veiculo.dut);
+                        $('#DUT').show();
+                        $("#nomeDUT").Attr('src', result.veiculo.dut);
+                    }
+
+                    
+                }
+                else {
+                    $('#sala').show();
+                    $('#marcaMod').show();
+                    $('#marcaModV').hide();
+                    $('#AnoVeiculo').hide();
+                    $('#upCRLV').hide();
+                    $('#upDut').hide();
+                    $('#InfoVeiculo').hide();
+
+
+                    $("#txtMarca").Attr('required', 'required');
+                    $("#txtModelo").Attr('required', 'required');
+                    $("#txtNumeroNota").Attr('required', 'required');
+                    $("#txtValorNota").Attr('required', 'required');
+                    $("#txtDataEmissao").Attr('required', 'required');
+                    $("#txtFornecedor").Attr('required', 'required');
+                    $("#txtCnpj").Attr('required', 'required');
+                }
 
                 if (result.imagens != null)
                     MostraImagens(result.imagens);
@@ -1297,7 +1354,8 @@ function PreencherValor(Combo) {
         $('#upCRLV').show();
         $('#upDut').show();
         
-
+        $("#txtMarca").removeAttr('required');
+        $("#txtModelo").removeAttr('required');
         $("#txtNumeroNota").removeAttr('required');
         $("#txtValorNota").removeAttr('required');
         $("#txtDataEmissao").removeAttr('required');
@@ -1313,7 +1371,10 @@ function PreencherValor(Combo) {
         $('#upCRLV').hide();
         $('#upDut').hide();
         $('#InfoVeiculo').hide();
+
         
+        $("#txtMarca").Attr('required', 'required');
+        $("#txtModelo").Attr('required', 'required');
         $("#txtNumeroNota").Attr('required', 'required');
         $("#txtValorNota").Attr('required', 'required');
         $("#txtDataEmissao").Attr('required', 'required');
