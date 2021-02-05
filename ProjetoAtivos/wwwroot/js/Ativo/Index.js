@@ -968,16 +968,35 @@ function Alterar(Codigo) {
                     $('#txtPlavaV').val(result.veiculo.placa);
                     $('#codFipe').val(result.veiculo.fipe.codigo); 
 
+                    var parts = result.veiculo.fipe.codigo.split('/');
+
+                    $('#cbbtpVeiculo').val(parts[0]);
+                    buscaMarcas(parts[0], parts);
+
+                   
+/*
+ * 
+                    $('#cbbMarcaV').val(parts[2]);
+                    buscaModelos(parts[2])
+
+                    $('#cbbModeloV').val(parts[3]);
+                    buscaVersoes(parts[3])
+
+                    $('#cbbAnoVeiculo').val(parts[4]);    
+
+                    registraFipe(parts[4])
+                    */
+
                     if (result.veiculo.crlv != null) {
                         $('#hdCRLV').val(result.veiculo.crlv);
                         $('#CRLV').show();
-                        $("#nomeCRLV").Attr('src', result.veiculo.crlv); 
+                        $("#nomeCRLV").attr('src', result.veiculo.crlv); 
                     }
 
                     if (result.veiculo.dut != null) {
                         $('#hdDUT').val(result.veiculo.dut);
                         $('#DUT').show();
-                        $("#nomeDUT").Attr('src', result.veiculo.dut);
+                        $("#nomeDUT").attr('src', result.veiculo.dut);
                     }
 
                     
@@ -1604,7 +1623,7 @@ function SalvarAnexo(input = "fuDoc", button = 'btnSalvarDoc', sulf = 'Anexo', d
 
 };
 
-function buscaMarcas(x) {
+function buscaMarcas(x, parts = null) {
 
     if (x != "") {
         $.ajax({
@@ -1626,21 +1645,24 @@ function buscaMarcas(x) {
 
                 $("#cbbModeloV").attr('disabled', 'disabled');
                 $("#cbbAnoVeiculo").attr('disabled', 'disabled');
-                $("#txtCor").attr('disabled', 'disabled');
-                $("#txtPlavaV").attr('disabled', 'disabled');
 
                 $("#cbbModeloV").html('<option value="" selected>Modelo do Veículo</option>');
                 $("#cbbAnoVeiculo").html('<option value="" selected>Versão Veículo</option>');
 
+                $("#cbbMarcaV").val('');
+
+                if (parts != null) {
+                    $('#cbbMarcaV').val(parts[2]);
+                    buscaModelos(parts[2], parts);
+                }
+
                 $('#cbbModeloV').selectpicker('refresh');
                 $('#cbbAnoVeiculo').selectpicker('refresh');
 
-                $("#txtCor").val();
-                $("#txtPlavaV").val();
-
-                $("#cbbMarcaV").val('');
-
+                
                 $('#cbbMarcaV').selectpicker('refresh');
+
+                
                 
             },
             error: function (error) {
@@ -1652,7 +1674,7 @@ function buscaMarcas(x) {
     }
 }
 
-function buscaModelos(x) {
+function buscaModelos(x, parts = null) {
 
     var tipo = $("#cbbtpVeiculo").val();
 
@@ -1676,10 +1698,16 @@ function buscaModelos(x) {
 
                 
                 $("#cbbAnoVeiculo").attr('disabled', 'disabled');
-                $("#txtCor").attr('disabled', 'disabled');
-                $("#txtPlavaV").attr('disabled', 'disabled');
+               
 
                 $("#cbbAnoVeiculo").html('<option value="" selected>Versão Veículo</option>');
+
+
+                if (parts != null) {
+                    $('#cbbModeloV').val(parts[3]);
+                    buscaVersoes(parts[3], parts);
+                }
+
                 $('#cbbAnoVeiculo').selectpicker('refresh');
 
                 $('#cbbModeloV').selectpicker('refresh');
@@ -1694,7 +1722,7 @@ function buscaModelos(x) {
 
 }
 
-function buscaVersoes(x) {
+function buscaVersoes(x, parts = null) {
 
     var tipo = $("#cbbtpVeiculo").val();
     var marca = $("#cbbMarcaV").val();
@@ -1717,6 +1745,12 @@ function buscaVersoes(x) {
                 $("#cbbAnoVeiculo").append(txt);
                 $("#cbbAnoVeiculo").removeAttr('disabled');
 
+                if (parts != null) {
+                    $('#cbbAnoVeiculo').val(parts[4]);
+
+                    registraFipe(parts[4], parts);
+                }
+
                 $('#cbbAnoVeiculo').selectpicker('refresh');
             },
             error: function (error) {
@@ -1729,13 +1763,20 @@ function buscaVersoes(x) {
 
 }
 
-function registraFipe(x) {
+function registraFipe(x, parts = null) {
 
     if (x != '') {
         var tipo = $("#cbbtpVeiculo").val();
         var marca = $("#cbbMarcaV").val();
         var modelo = $("#cbbModeloV").val();
-        
+
+        if (parts != null) {
+            tipo = parts[0];
+            marca = parts[2];
+            modelo = parts[3];
+            x = parts[4];
+        }
+
         $.ajax({
             type: 'GET',
             url: 'https://fipeapi.appspot.com/api/1/'+tipo+'/veiculo/'+marca+'/'+modelo+'/'+x+'.json',
@@ -1753,6 +1794,17 @@ function registraFipe(x) {
 
                 $("#txtCor").removeAttr('disabled');
                 $("#txtPlavaV").removeAttr('disabled');
+
+                $('#cbbtpVeiculo').val(parts[0]);
+                $('#cbbMarcaV').val(parts[2]);
+                $("#cbbModeloV").find("option[text='" + response.name + "']").attr("selected", true);
+                $('#cbbAnoVeiculo').val(parts[4]);  
+
+                $('#cbbtpVeiculo').selectpicker('refresh');
+                $('#cbbMarcaV').selectpicker('refresh');
+                $('#cbbModeloV').selectpicker('refresh');
+                $('#cbbAnoVeiculo').selectpicker('refresh');
+
 
             },
             error: function (error) {

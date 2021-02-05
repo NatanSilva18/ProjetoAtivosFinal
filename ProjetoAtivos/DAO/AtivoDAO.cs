@@ -42,7 +42,7 @@ namespace ProjetoAtivos.DAO
 
                          )
                          {
-                             Veiculo = row["ve_codigo"] != DBNull.Value ? new VeiculoDAO().Buscar(Convert.ToInt32(row["ati_codigo"])) : null
+                             Veiculo = row["ve_codigo"] != DBNull.Value ? new VeiculoDAO().Buscar(Convert.ToInt32(row["ve_codigo"])) : null
                          }
                          ).ToList();
 
@@ -135,96 +135,122 @@ namespace ProjetoAtivos.DAO
                 if (NotaFiscal >= 0)  //deu bom gravar nota ou alterar
                 {
                     
-                    b.getComandoSQL().Parameters.Clear();
-
-                    if (Ativo.GetCodigo() == 0)
+                    if (Ativo.Veiculo != null)
                     {
-                        if (NotaFiscal > 0)
-                        {
-                            b.getComandoSQL().CommandText = @"insert into Ativos (ati_placa, ati_descricao, ati_estado, ati_observacao, ati_tag, ati_marca, ati_modelo, ati_numeroserie, ati_stativo, ati_valor, tpa_codigo, sal_codigo, nt_codigo) 
-                   values(@placa, @descricao, @estado, @observacao, @tag, @marca, @modelo, @numserie, @ativo, @valor, @tpativo, @sala, @nota);
-                SELECT LAST_INSERT_ID();";
-                            b.getComandoSQL().Parameters.AddWithValue("@nota", NotaFiscal);
-                            b.getComandoSQL().Parameters.AddWithValue("@valor", Ativo.GetNota().ValorNota);    //se tiver nota fiscal pega valor da nota
-
-                        }
-                        else
-                        {
-                            b.getComandoSQL().CommandText = @"insert into Ativos (ati_placa, ati_descricao, ati_estado, ati_observacao, ati_tag, ati_marca, ati_modelo, ati_numeroserie, ati_stativo, ati_valor, tpa_codigo, sal_codigo) 
-                   values(@placa, @descricao, @estado, @observacao, @tag, @marca, @modelo, @numserie, @ativo, @valor, @tpativo, @sala);
-                SELECT LAST_INSERT_ID();";
-                            b.getComandoSQL().Parameters.AddWithValue("@valor", Ativo.GetNota().ValorNota);      //se n tiver pegar valor do tipo_ativo
-                        }
-
-                        if(Ativo.GetSala().GetCodigo() != 0)
-                            b.getComandoSQL().Parameters.AddWithValue("@sala", Ativo.GetSala().GetCodigo());
-                        else
-                            b.getComandoSQL().Parameters.AddWithValue("@sala", DBNull.Value);
-
+                        Ativo.Veiculo.Codigo = new VeiculoDAO().BuscarVeiculoAtivo(Ativo.GetCodigo()).Codigo;
+                        Ativo.Veiculo.Gravar();
                     }
-                    else
-                    {
-                        if (NotaFiscal > 0)
-                        {
-                            b.getComandoSQL().CommandText = @"UPDATE Ativos SET ati_descricao = @descricao, ati_estado = @estado, ati_observacao = @observacao, ati_tag = @tag, ati_marca = @marca, ati_modelo = @modelo, ati_numeroSerie = @numserie, ati_stativo = @ativo, tpa_codigo = @tpativo, ati_valor = @valor, ati_placa = @placa, nt_codigo = @nota WHERE ati_codigo = @codigo;";
-                            b.getComandoSQL().Parameters.AddWithValue("@nota", NotaFiscal);
-                            b.getComandoSQL().Parameters.AddWithValue("@valor", Ativo.GetNota().ValorNota);    //se tiver nota altera o valor pelo valor da nota
-                        }
-                        else
-                        {
-                            b.getComandoSQL().CommandText = @"UPDATE Ativos SET ati_descricao = @descricao, ati_estado = @estado, ati_observacao = @observacao, ati_tag = @tag, ati_marca = @marca, ati_modelo = @modelo, ati_numeroSerie = @numserie, ati_stativo = @ativo, tpa_codigo = @tpativo, ati_valor = @valor, ati_placa = @placa WHERE ati_codigo = @codigo;";// se n tiver pelo tipo_ativo
 
-                            b.getComandoSQL().Parameters.AddWithValue("@valor", Ativo.GetNota().ValorNota);
-
-                        }
-
-                        b.getComandoSQL().Parameters.AddWithValue("@codigo", Ativo.GetCodigo());
-
-
-
-                    }
-                    b.getComandoSQL().Parameters.AddWithValue("@placa", Ativo.GetPlaca());
-                    b.getComandoSQL().Parameters.AddWithValue("@descricao", Ativo.GetDescricao());
-                    b.getComandoSQL().Parameters.AddWithValue("@estado", Ativo.GetEstado());
-                    b.getComandoSQL().Parameters.AddWithValue("@observacao", Ativo.GetObservacao());
-                    b.getComandoSQL().Parameters.AddWithValue("@tag", Ativo.GetTag());
-                    b.getComandoSQL().Parameters.AddWithValue("@marca", Ativo.GetMarca());
-                    b.getComandoSQL().Parameters.AddWithValue("@modelo", Ativo.GetModelo());
-                    b.getComandoSQL().Parameters.AddWithValue("@numserie", Ativo.GetNumeroSerie());
-                    b.getComandoSQL().Parameters.AddWithValue("@ativo", Ativo.GetStAtivo());
-                    b.getComandoSQL().Parameters.AddWithValue("@tpativo", Ativo.GetTipoAtivo().GetCodigo());
-
-                    if (Ativo.GetCodigo() == 0)
-                        OK = b.ExecutaComando(true, out Codigo) == 1;
-                    else
-                        OK = b.ExecutaComando(true) == 1;
-
-                    if (OK)
+                    if ((Ativo.Veiculo != null && Ativo.Veiculo.Codigo != 0) || Ativo.Veiculo == null)
                     {
 
-                        if (Ativo.GetCodigo() != 0)    //n pode excluir e gravar dnv ... pq se n altera a localizacao  ... tem q fazer update 
-                        {
-                            Codigo = Ativo.GetCodigo();
-                            Ativo.Imagens = new ImagemDAO().BuscarImagens(Ativo.GetCodigo());
+                        b.getComandoSQL().Parameters.Clear();
 
-                            if (Ativo.Imagens != null)
+                        if (Ativo.GetCodigo() == 0)
+                        {
+                            if (NotaFiscal > 0)
                             {
-                                for (j = 0; OK && j < Ativo.Imagens.Count; j++)
-                                {
-                                    OK = Ativo.Imagens[j].Excluir();
-                                }
+                                b.getComandoSQL().CommandText = @"insert into Ativos (ati_placa, ati_descricao, ati_estado, ati_observacao, ati_tag, ati_marca, ati_modelo, ati_numeroserie, ati_stativo, ati_valor, tpa_codigo, sal_codigo, nt_codigo, ve_codigo) 
+                   values(@placa, @descricao, @estado, @observacao, @tag, @marca, @modelo, @numserie, @ativo, @valor, @tpativo, @sala, @nota, @ve_codigo);
+                SELECT LAST_INSERT_ID();";
+                                b.getComandoSQL().Parameters.AddWithValue("@nota", NotaFiscal);
+                                b.getComandoSQL().Parameters.AddWithValue("@valor", Ativo.GetNota().ValorNota);    //se tiver nota fiscal pega valor da nota
 
-
-                                for (j = 0; OK && j < Imagens.Count; j++)
-                                {
-                                    Ativo.SetCodigo(Codigo);
-                                    Imagens[j].SetAtivo(Ativo);
-                                    ImagemDAO ImagemDAO = new ImagemDAO();
-
-                                    OK = ImagemDAO.Gravar(Imagens[j], Localizacao);
-                                }
                             }
                             else
+                            {
+                                b.getComandoSQL().CommandText = @"insert into Ativos (ati_placa, ati_descricao, ati_estado, ati_observacao, ati_tag, ati_marca, ati_modelo, ati_numeroserie, ati_stativo, ati_valor, tpa_codigo, sal_codigo, ve_codigo) 
+                   values(@placa, @descricao, @estado, @observacao, @tag, @marca, @modelo, @numserie, @ativo, @valor, @tpativo, @sala, @ve_codigo);
+                SELECT LAST_INSERT_ID();";
+                                b.getComandoSQL().Parameters.AddWithValue("@valor", Ativo.GetNota().ValorNota);      //se n tiver pegar valor do tipo_ativo
+                            }
+
+                            if (Ativo.GetSala().GetCodigo() != 0)
+                                b.getComandoSQL().Parameters.AddWithValue("@sala", Ativo.GetSala().GetCodigo());
+                            else
+                                b.getComandoSQL().Parameters.AddWithValue("@sala", DBNull.Value);
+
+                        }
+                        else
+                        {
+                            if (NotaFiscal > 0)
+                            {
+                                b.getComandoSQL().CommandText = @"UPDATE Ativos SET ati_descricao = @descricao, ati_estado = @estado, ati_observacao = @observacao, ati_tag = @tag, ati_marca = @marca, ati_modelo = @modelo, ati_numeroSerie = @numserie, ati_stativo = @ativo, tpa_codigo = @tpativo, ati_valor = @valor, ati_placa = @placa, nt_codigo = @nota, ve_codigo = @ve_codigo WHERE ati_codigo = @codigo;";
+                                b.getComandoSQL().Parameters.AddWithValue("@nota", NotaFiscal);
+                                b.getComandoSQL().Parameters.AddWithValue("@valor", Ativo.GetNota().ValorNota);    //se tiver nota altera o valor pelo valor da nota
+                            }
+                            else
+                            {
+                                b.getComandoSQL().CommandText = @"UPDATE Ativos SET ati_descricao = @descricao, ati_estado = @estado, ati_observacao = @observacao, ati_tag = @tag, ati_marca = @marca, ati_modelo = @modelo, ati_numeroSerie = @numserie, ati_stativo = @ativo, tpa_codigo = @tpativo, ati_valor = @valor, ati_placa = @placa, ve_codigo = @ve_codigo WHERE ati_codigo = @codigo;";// se n tiver pelo tipo_ativo
+
+                                b.getComandoSQL().Parameters.AddWithValue("@valor", Ativo.GetNota().ValorNota);
+
+                            }
+
+                            b.getComandoSQL().Parameters.AddWithValue("@codigo", Ativo.GetCodigo());
+
+
+                        }
+                        b.getComandoSQL().Parameters.AddWithValue("@placa", Ativo.GetPlaca());
+                        b.getComandoSQL().Parameters.AddWithValue("@descricao", Ativo.GetDescricao());
+                        b.getComandoSQL().Parameters.AddWithValue("@estado", Ativo.GetEstado());
+                        b.getComandoSQL().Parameters.AddWithValue("@observacao", Ativo.GetObservacao());
+                        b.getComandoSQL().Parameters.AddWithValue("@tag", Ativo.GetTag());
+                        b.getComandoSQL().Parameters.AddWithValue("@marca", Ativo.GetMarca());
+                        b.getComandoSQL().Parameters.AddWithValue("@modelo", Ativo.GetModelo());
+                        b.getComandoSQL().Parameters.AddWithValue("@numserie", Ativo.GetNumeroSerie());
+                        b.getComandoSQL().Parameters.AddWithValue("@ativo", Ativo.GetStAtivo());
+                        b.getComandoSQL().Parameters.AddWithValue("@tpativo", Ativo.GetTipoAtivo().GetCodigo());
+
+                        if(Ativo.Veiculo != null && Ativo.Veiculo.Codigo != 0)
+                            b.getComandoSQL().Parameters.AddWithValue("@ve_codigo", Ativo.Veiculo.Codigo);
+                        else
+                            b.getComandoSQL().Parameters.AddWithValue("@ve_codigo", DBNull.Value);
+
+                        if (Ativo.GetCodigo() == 0)
+                            OK = b.ExecutaComando(true, out Codigo) == 1;
+                        else
+                            OK = b.ExecutaComando(true) == 1;
+
+                        if (OK)
+                        {
+
+                            if (Ativo.GetCodigo() != 0)    //n pode excluir e gravar dnv ... pq se n altera a localizacao  ... tem q fazer update 
+                            {
+                                Codigo = Ativo.GetCodigo();
+                                Ativo.Imagens = new ImagemDAO().BuscarImagens(Ativo.GetCodigo());
+
+                                if (Ativo.Imagens != null)
+                                {
+                                    for (j = 0; OK && j < Ativo.Imagens.Count; j++)
+                                    {
+                                        OK = Ativo.Imagens[j].Excluir();
+                                    }
+
+
+                                    for (j = 0; OK && j < Imagens.Count; j++)
+                                    {
+                                        Ativo.SetCodigo(Codigo);
+                                        Imagens[j].SetAtivo(Ativo);
+                                        ImagemDAO ImagemDAO = new ImagemDAO();
+
+                                        OK = ImagemDAO.Gravar(Imagens[j], Localizacao);
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = 0; OK && i < Imagens.Count; i++)
+                                    {
+                                        Ativo.SetCodigo(Codigo);
+                                        Imagens[i].SetAtivo(Ativo);
+                                        ImagemDAO ImagemDAO = new ImagemDAO();
+
+                                        OK = ImagemDAO.Gravar(Imagens[i], Localizacao);
+                                    }
+                                }
+
+                            }
+                            else //gravar
                             {
                                 for (int i = 0; OK && i < Imagens.Count; i++)
                                 {
@@ -236,48 +262,33 @@ namespace ProjetoAtivos.DAO
                                 }
                             }
 
-                        }
-                        else //gravar
-                        {
-                            for (int i = 0; OK && i < Imagens.Count; i++)
+                            if (OK)
                             {
-                                Ativo.SetCodigo(Codigo);
-                                Imagens[i].SetAtivo(Ativo);
-                                ImagemDAO ImagemDAO = new ImagemDAO();
 
-                                OK = ImagemDAO.Gravar(Imagens[i], Localizacao);
-                            }
-                        }
-
-                        if(OK)
-                        {
-                            
-                            if (Ativo.GetAnexo() != null)
-                            {
-                                Ativo.GetAnexo().Ativo = Ativo;
-                                OK = Ativo.GetAnexo().Gravar();
-                            }
-                            else
-                            {
-                                if(new AnexoDAO().Buscar(Ativo.GetCodigo()) != null)
+                                if (Ativo.GetAnexo() != null)
                                 {
-                                    OK = new AnexoDAO().Excluir(Ativo.GetCodigo());
+                                    Ativo.GetAnexo().Ativo = Ativo;
+                                    OK = Ativo.GetAnexo().Gravar();
+                                }
+                                else
+                                {
+                                    if (new AnexoDAO().Buscar(Ativo.GetCodigo(), true) != null)
+                                    {
+                                        OK = new AnexoDAO().Excluir(Ativo.GetCodigo());
+                                    }
                                 }
                             }
+
+
+
+                            b.FinalizaTransacao(OK);
+
                         }
-
-                        if (OK && Ativo.Veiculo != null)
-                        {
-                            OK = Ativo.Veiculo.Gravar();
-                        }
-
-
-                        b.FinalizaTransacao(OK);
-
+                        else
+                            b.FinalizaTransacao(OK);
                     }
                     else
-                        b.FinalizaTransacao(OK);
-
+                        b.FinalizaTransacao(false);
 
                 }
                 else
@@ -423,7 +434,6 @@ namespace ProjetoAtivos.DAO
                    inner join Filial f on s.fil_codigo = f.fil_codigo
                    inner join Regional r on r.reg_codigo = f.reg_codigo
                    inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo  
-                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                    where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and f.fil_codigo = @filialONE
                    group by a.ati_codigo
                         union
@@ -436,7 +446,32 @@ namespace ProjetoAtivos.DAO
                    left outer join Sala s on s.sal_codigo = a.sal_codigo
                    inner join Filial f on s.fil_codigo = f.fil_codigo
                    inner join Regional r on r.reg_codigo = f.reg_codigo
-                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
+                   where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and f.fil_codigo = @filialTWO
+                   group by a.ati_codigo
+union
+                   select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                   f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                   from Ativos a 
+                   RIGHT join imagem i on a.ati_codigo = i.ati_codigo
+                   RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                   left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                   left outer join Sala s on s.sal_codigo = a.sal_codigo
+                    inner join veiculos v on v.ve_codigo = a.ve_codigo
+                   inner join Filial f on v.fil_codigo = f.fil_codigo
+                   inner join Regional r on r.reg_codigo = f.reg_codigo
+                   where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and f.fil_codigo = @filialONE
+                   group by a.ati_codigo
+                    union
+                   select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                   f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                   from Ativos a 
+                   RIGHT join imagem i on a.ati_codigo = i.ati_codigo
+                   RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                   left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                   left outer join Sala s on s.sal_codigo = a.sal_codigo
+                    inner join veiculos v on v.ve_codigo = a.ve_codigo
+                   inner join Filial f on v.fil_codigo = f.fil_codigo
+                   inner join Regional r on r.reg_codigo = f.reg_codigo
                    where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and f.fil_codigo = @filialTWO
                    group by a.ati_codigo;";
 
@@ -453,7 +488,6 @@ namespace ProjetoAtivos.DAO
                    inner join Filial f on s.fil_codigo = f.fil_codigo
                    inner join Regional r on r.reg_codigo = f.reg_codigo
                    inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
-                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                    where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE
                    group by a.ati_codigo
                         union
@@ -466,9 +500,34 @@ namespace ProjetoAtivos.DAO
                    left outer join Sala s on s.sal_codigo = a.sal_codigo
                    inner join Filial f on s.fil_codigo = f.fil_codigo
                    inner join Regional r on r.reg_codigo = f.reg_codigo
-                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                    where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO
-                   group by a.ati_codigo;";
+                   group by a.ati_codigo
+union
+                   select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                   f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                   from Ativos a 
+                   RIGHT join imagem i on a.ati_codigo = i.ati_codigo
+                   RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                   left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                   left outer join Sala s on s.sal_codigo = a.sal_codigo
+                   inner join veiculos v on v.ve_codigo = a.ve_codigo
+                   inner join Filial f on v.fil_codigo = f.fil_codigo
+                   inner join Regional r on r.reg_codigo = f.reg_codigo
+                   where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE
+                   group by a.ati_codigo
+union
+                   select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                   f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                   from Ativos a 
+                   RIGHT join imagem i on a.ati_codigo = i.ati_codigo
+                   RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                   left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                   left outer join Sala s on s.sal_codigo = a.sal_codigo
+                   inner join veiculos v on v.ve_codigo = a.ve_codigo
+                   inner join Filial f on v.fil_codigo = f.fil_codigo
+                   inner join Regional r on r.reg_codigo = f.reg_codigo
+                   where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO
+                   group by a.ati_codigo";
                 }
                 b.getComandoSQL().Parameters.AddWithValue("@regionalONE", Regiao);
                 b.getComandoSQL().Parameters.AddWithValue("@regionalTWO", Regiao);
@@ -487,7 +546,6 @@ namespace ProjetoAtivos.DAO
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
                            inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
-                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                            where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and a.ati_descricao like @nomeONE and f.fil_codigo = @filialONE
                            group by a.ati_codigo
                                 union
@@ -500,7 +558,31 @@ namespace ProjetoAtivos.DAO
                            left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
-                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
+                           where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and a.ati_descricao like @nomeTWO and f.fil_codigo = @filialTWO
+                           group by a.ati_codigo
+                        union
+                            select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                           from Ativos a 
+                           LEFT join imagem i on a.ati_codigo = i.ati_codigo
+                           LEFT join localizacao l on l.img_codigo = i.img_codigo
+                           left outer join Sala s on s.sal_codigo = a.sal_codigo
+                            inner join veiculos v on v.ve_codigo = a.ve_codigo
+                           inner join Filial f on v.fil_codigo = f.fil_codigo
+                           inner join Regional r on r.reg_codigo = f.reg_codigo
+                           inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                           where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and a.ati_descricao like @nomeONE and f.fil_codigo = @filialONE
+                           group by a.ati_codigo
+                                union
+                           select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                           f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                           from Ativos a 
+                           RIGHT join imagem i on a.ati_codigo = i.ati_codigo
+                           RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                           left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                           left outer join Sala s on s.sal_codigo = a.sal_codigo
+                            inner join veiculos v on v.ve_codigo = a.ve_codigo
+                           inner join Filial f on v.fil_codigo = f.fil_codigo
+                           inner join Regional r on r.reg_codigo = f.reg_codigo
                            where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and a.ati_descricao like @nomeTWO and f.fil_codigo = @filialTWO
                            group by a.ati_codigo";
 
@@ -517,7 +599,6 @@ namespace ProjetoAtivos.DAO
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
                            inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
-                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                            where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and a.ati_descricao like @nomeONE
                            group by a.ati_codigo
                                 union
@@ -530,7 +611,31 @@ namespace ProjetoAtivos.DAO
                            left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
-                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
+                           where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and a.ati_descricao like @nomeTWO
+                           group by a.ati_codigo
+                            union
+                            select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                           from Ativos a 
+                           LEFT join imagem i on a.ati_codigo = i.ati_codigo
+                           LEFT join localizacao l on l.img_codigo = i.img_codigo
+                           left outer join Sala s on s.sal_codigo = a.sal_codigo
+                            inner join veiculos v on v.ve_codigo = a.ve_codigo
+                           inner join Filial f on v.fil_codigo = f.fil_codigo
+                           inner join Regional r on r.reg_codigo = f.reg_codigo
+                           inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                           where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and a.ati_descricao like @nomeONE
+                           group by a.ati_codigo
+                                union
+                           select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                           f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                           from Ativos a 
+                           RIGHT join imagem i on a.ati_codigo = i.ati_codigo
+                           RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                           left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                           left outer join Sala s on s.sal_codigo = a.sal_codigo
+                            inner join veiculos v on v.ve_codigo = a.ve_codigo
+                           inner join Filial f on v.fil_codigo = f.fil_codigo
+                           inner join Regional r on r.reg_codigo = f.reg_codigo
                            where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and a.ati_descricao like @nomeTWO
                            group by a.ati_codigo";
                     }
@@ -555,7 +660,6 @@ namespace ProjetoAtivos.DAO
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
                            inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
-                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                            where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and f.fil_codigo = @filialONE and a.ati_placa like @placaOne
                            group by a.ati_codigo
                                 union
@@ -568,7 +672,6 @@ namespace ProjetoAtivos.DAO
                            left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
-                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                            where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and f.fil_codigo = @filialTWO and a.ati_placa like @placaTwo
                            group by a.ati_codigo";
 
@@ -591,7 +694,6 @@ namespace ProjetoAtivos.DAO
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
                            inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
-                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                            where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and a.ati_placa like @placaOne
                            group by a.ati_codigo
                                 union
@@ -604,7 +706,6 @@ namespace ProjetoAtivos.DAO
                            left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
-                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                            where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and a.ati_placa like @placaTwo
                            group by a.ati_codigo";
 
@@ -625,7 +726,6 @@ namespace ProjetoAtivos.DAO
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
                    inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
-                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                            where a.ati_stativo = @ativoONE and a.ati_placa like @placaOne
                            group by a.ati_codigo
                                 union
@@ -638,9 +738,9 @@ namespace ProjetoAtivos.DAO
                            left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
-                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
                            where a.ati_stativo = @ativoTWO and a.ati_placa like @placaTwo
-                           group by a.ati_codigo";
+                           group by a.ati_codigo
+                            ";
 
                         b.getComandoSQL().Parameters.AddWithValue("@placaOne", "%" + Chave + "%");
                         b.getComandoSQL().Parameters.AddWithValue("@placaTwo", "%" + Chave + "%");
@@ -685,7 +785,7 @@ namespace ProjetoAtivos.DAO
         {
             b.getComandoSQL().Parameters.Clear();
 
-            b.getComandoSQL().CommandText = @"select a.ati_codigo, a.ati_placa, a.ati_descricao, a.ati_estado, a.ati_observacao, a.ati_tag, a.ati_marca, a.ati_modelo,                                         a.ati_numeroserie, a.ati_stativo, a.ati_valor, tp.tpa_codigo, tp.tpa_descricao, tp.tpa_valor, s.sal_codigo, s.sal_descricao, a.nt_codigo from Ativos a
+            b.getComandoSQL().CommandText = @"select a.ati_codigo, a.ati_placa, a.ati_descricao, a.ati_estado, a.ati_observacao, a.ati_tag, a.ati_marca, a.ati_modelo, a.ati_numeroserie, a.ati_stativo, a.ati_valor, tp.tpa_codigo, tp.tpa_descricao, tp.tpa_valor, s.sal_codigo, s.sal_descricao, a.nt_codigo, a.ve_codigo from Ativos a
                                               inner join Tipo_Ativo tp on tp.tpa_codigo = a.tpa_codigo
                                               left outer join Sala s on s.sal_codigo = a.sal_codigo
                                               left outer join veiculos v on v.ve_codigo = a.ve_codigo

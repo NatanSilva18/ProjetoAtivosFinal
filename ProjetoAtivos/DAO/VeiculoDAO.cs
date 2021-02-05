@@ -56,14 +56,14 @@ namespace ProjetoAtivos.DAO
                                                 `ve_crlv`,
                                                 `fil_codigo`)
                                                 VALUES
-                                                (
-                                                
+                                                (                                                
                                                 @ve_placa,                                               
                                                 @ve_cor,                                              
                                                 @ve_fipe,
                                                 @ve_dut,
                                                 @ve_crlv,
-                                                @fil_codigo);";
+                                                @fil_codigo);
+                                            SELECT LAST_INSERT_ID();";
 
             }
             else
@@ -96,9 +96,20 @@ namespace ProjetoAtivos.DAO
                 b.getComandoSQL().Parameters.AddWithValue("@ve_crlv", Veiculo.CRLV);
                 b.getComandoSQL().Parameters.AddWithValue("@fil_codigo", Veiculo.Filial.GetCodigo());
 
+            int cod = 0;
 
-            return b.ExecutaComando(true) == 1;
-                
+            if (Veiculo.Codigo == 0)
+            {
+                if (b.ExecutaComando(true, out cod) == 1)
+                {
+                    Veiculo.Codigo = cod;
+                    return true;
+                }
+            }
+            else
+                return b.ExecutaComando(true) == 1;
+
+            return false;
         }
 
         internal Veiculo Buscar(int Codigo)
@@ -118,6 +129,26 @@ namespace ProjetoAtivos.DAO
             }
             else
                 return null;
+        }
+
+        internal Veiculo BuscarVeiculoAtivo(int Codigo)
+        {
+            b.getComandoSQL().Parameters.Clear();
+
+            b.getComandoSQL().CommandText = @"select * from veiculos v inner join ativos a on a.ve_codigo = v.ve_codigo 
+                                where ati_codigo = @codigo;";
+            b.getComandoSQL().Parameters.AddWithValue("@codigo", Codigo);
+
+            DataTable dt = b.ExecutaSelect(true);
+
+            if (dt.Rows.Count > 0)
+            {
+                Veiculo a = TableToList(dt).FirstOrDefault();
+
+                return a;
+            }
+            else
+                return new Veiculo(); ;
         }
 
     }

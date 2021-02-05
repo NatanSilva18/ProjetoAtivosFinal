@@ -60,7 +60,7 @@ namespace ProjetoAtivos.DAO
                 return false;
         }
 
-        internal Anexo Buscar(int CodigoAtivo)
+        internal Anexo Buscar(int CodigoAtivo, bool transction = false)
         {
             b.getComandoSQL().Parameters.Clear();
 
@@ -69,7 +69,7 @@ namespace ProjetoAtivos.DAO
                                               where ati_codigo = @codigo;";
             b.getComandoSQL().Parameters.AddWithValue("@codigo", CodigoAtivo);
 
-            DataTable dt = b.ExecutaSelect();
+            DataTable dt = b.ExecutaSelect(transction);
 
             if (dt.Rows.Count > 0)
                 return TableToList(dt).FirstOrDefault();

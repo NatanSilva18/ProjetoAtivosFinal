@@ -312,8 +312,8 @@ namespace ProjetoAtivos.Controllers
                     StAtivo = L.GetStAtivo(),
                     NotaFiscal = L.GetNota(),
                     Imagens = imagens,
-                    Anexo = L.GetAnexo()
-
+                    Anexo = L.GetAnexo(),
+                    Veiculo = L.Veiculo
                 });
             }
 

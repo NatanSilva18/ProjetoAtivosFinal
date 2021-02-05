@@ -1,11 +1,10 @@
 use `16440_parebemativos`;
 
-drop table `veiculos`;
 CREATE TABLE `veiculos` (
   `ve_codigo` int(11) NOT NULL AUTO_INCREMENT,  
   `ve_placa` varchar(15) not NULL,  
   `ve_cor` varchar(30) not NULL,  
-  `ve_fipe` varchar(30) not NULL,
+  `ve_fipe` varchar(50) not NULL,
   `ve_dut` MEDIUMTEXT  NULL,
   `ve_crlv` MEDIUMTEXT  NULL,
   `fil_codigo` int(11) not NULL,
@@ -19,4 +18,6 @@ alter table ativos change sal_codigo sal_codigo int(11) null;
 alter table ativos add ve_codigo int(11) null;
 
 ALTER TABLE `ativos` ADD CONSTRAINT `fk_veiculo` FOREIGN KEY ( `ve_codigo` ) REFERENCES `veiculos` ( `ve_codigo` ) ;
+
+
 
