@@ -86,6 +86,7 @@ function CarregarRegionais() {
     var filial = parseInt($("#filial").val());
     var regiaoFilial = parseInt($("#regiaoFilial").val());
 
+    $("#cbbRegional").html('<option value="" selected>Regionais</option>');
     var cbbRegional = document.getElementById("cbbRegional");
     if (cbbRegional != null) {
         var Chave = "";
@@ -739,8 +740,9 @@ function Gravar() {
                     var crlv = $('#hdCRLV').val();
                     var dut = $('#hdDUT').val();
                     var fipe = $('#codFipe').val(); 
-                    var Marca = $("#cbbMarcaV option:selected").text(); cbbAnoVeiculo
-                    var Modelo = $("#cbbModeloV option:selected").text() + ' ' + $("#cbbAnoVeiculo option:selected").text();  
+                    Marca = $("#cbbMarcaV option:selected").text(); 
+                    Modelo = $("#cbbModeloV option:selected").text() + ' ' + $("#cbbAnoVeiculo option:selected").text();  
+                    var modeloV = $("#cbbModeloV").val();
                     //var valor = $('#txtPrecoV').val();
 
                     $.ajax({
@@ -750,7 +752,7 @@ function Gravar() {
                             Codigo: Codigo, Regional: Regional, Filial: Filial, Placa: Placa, Tag: Tag, Estado: Estado, Observacao: Observacao,
                             Descricao: Descricao, TipoAtivo: TipoAtivo, Marca: Marca, NumeroSerie: NumeroSerie, Modelo: Modelo, Valor: Valor, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude,
                             CodigoNota: CodigoNota, NumeroNota: NumeroNota, ValorNota: ValorNota, DataEmissao: DataEmissao, Fornecedor: Fornecedor, Cnpj: Cnpj, NomeAnexo: nomeAnexo, Anexo: anexo,
-                            Cor: cor, PlacaVeiculo: placaVeiculo, CRLV : crlv, DUT: dut, FIPE: fipe
+                            Cor: cor, PlacaVeiculo: placaVeiculo, CRLV: crlv, DUT: dut, FIPE: fipe, ModeloV: modeloV
                         },
                         success: function (result) {
                             $('#novoAtivo').modal('hide');
@@ -971,8 +973,9 @@ function Alterar(Codigo) {
                     var parts = result.veiculo.fipe.codigo.split('/');
 
                     $('#cbbtpVeiculo').val(parts[0]);
-                    buscaMarcas(parts[0], parts);
+                    buscaMarcas(parts[0], parts, result.veiculo.fipe.modelo);
 
+                    //$('#cbbModeloV').val(result.veiculo.fipe.modelo);
                    
 /*
  * 
@@ -1623,7 +1626,7 @@ function SalvarAnexo(input = "fuDoc", button = 'btnSalvarDoc', sulf = 'Anexo', d
 
 };
 
-function buscaMarcas(x, parts = null) {
+function buscaMarcas(x, parts = null, mod = null) {
 
     if (x != "") {
         $.ajax({
@@ -1653,7 +1656,7 @@ function buscaMarcas(x, parts = null) {
 
                 if (parts != null) {
                     $('#cbbMarcaV').val(parts[2]);
-                    buscaModelos(parts[2], parts);
+                    buscaModelos(parts[2], parts, mod);
                 }
 
                 $('#cbbModeloV').selectpicker('refresh');
@@ -1674,7 +1677,7 @@ function buscaMarcas(x, parts = null) {
     }
 }
 
-function buscaModelos(x, parts = null) {
+function buscaModelos(x, parts = null, mod = null) {
 
     var tipo = $("#cbbtpVeiculo").val();
 
@@ -1705,7 +1708,7 @@ function buscaModelos(x, parts = null) {
 
                 if (parts != null) {
                     $('#cbbModeloV').val(parts[3]);
-                    buscaVersoes(parts[3], parts);
+                    buscaVersoes(parts[3], parts, mod);
                 }
 
                 $('#cbbAnoVeiculo').selectpicker('refresh');
@@ -1722,7 +1725,7 @@ function buscaModelos(x, parts = null) {
 
 }
 
-function buscaVersoes(x, parts = null) {
+function buscaVersoes(x, parts = null, mod = null) {
 
     var tipo = $("#cbbtpVeiculo").val();
     var marca = $("#cbbMarcaV").val();
@@ -1748,7 +1751,7 @@ function buscaVersoes(x, parts = null) {
                 if (parts != null) {
                     $('#cbbAnoVeiculo').val(parts[4]);
 
-                    registraFipe(parts[4], parts);
+                    registraFipe(parts[4], parts, mod);
                 }
 
                 $('#cbbAnoVeiculo').selectpicker('refresh');
@@ -1763,7 +1766,7 @@ function buscaVersoes(x, parts = null) {
 
 }
 
-function registraFipe(x, parts = null) {
+function registraFipe(x, parts = null, mod = null) {
 
     if (x != '') {
         var tipo = $("#cbbtpVeiculo").val();
@@ -1797,7 +1800,7 @@ function registraFipe(x, parts = null) {
 
                 $('#cbbtpVeiculo').val(parts[0]);
                 $('#cbbMarcaV').val(parts[2]);
-                $("#cbbModeloV").find("option[text='" + response.name + "']").attr("selected", true);
+                $("#cbbModeloV").val(mod);
                 $('#cbbAnoVeiculo').val(parts[4]);  
 
                 $('#cbbtpVeiculo').selectpicker('refresh');

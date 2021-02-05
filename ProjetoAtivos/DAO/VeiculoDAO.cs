@@ -31,7 +31,8 @@ namespace ProjetoAtivos.DAO
                              DUT = row["ve_dut"].ToString(),
                              Fipe = new Fipe()
                              {
-                                 Codigo = row["ve_fipe"].ToString()
+                                 Codigo = row["ve_fipe"].ToString(),
+                                 Modelo = row["ve_modelo"].ToString()
                              }
                          }
                          ).ToList();
@@ -54,7 +55,7 @@ namespace ProjetoAtivos.DAO
                                                 `ve_fipe`,
                                                 `ve_dut`,
                                                 `ve_crlv`,
-                                                `fil_codigo`)
+                                                `fil_codigo`, `ve_modelo`)
                                                 VALUES
                                                 (                                                
                                                 @ve_placa,                                               
@@ -62,8 +63,10 @@ namespace ProjetoAtivos.DAO
                                                 @ve_fipe,
                                                 @ve_dut,
                                                 @ve_crlv,
-                                                @fil_codigo);
+                                                @fil_codigo, @ve_modelo);
                                             SELECT LAST_INSERT_ID();";
+
+                b.getComandoSQL().Parameters.AddWithValue("@fil_codigo", Veiculo.Filial.GetCodigo());
 
             }
             else
@@ -76,7 +79,7 @@ namespace ProjetoAtivos.DAO
                                                 `ve_fipe` = @ve_fipe,
                                                 `ve_dut` = @ve_dut,
                                                 `ve_crlv` = @ve_crlv,
-                                                `fil_codigo` = @fil_codigo
+                                                `ve_modelo` =  @ve_modelo
                                                 WHERE `ve_codigo` = @ve_codigo;
                                                 ";
 
@@ -94,7 +97,9 @@ namespace ProjetoAtivos.DAO
                 b.getComandoSQL().Parameters.AddWithValue("@ve_fipe", Veiculo.Fipe.Codigo);
                 b.getComandoSQL().Parameters.AddWithValue("@ve_dut", Veiculo.DUT);
                 b.getComandoSQL().Parameters.AddWithValue("@ve_crlv", Veiculo.CRLV);
-                b.getComandoSQL().Parameters.AddWithValue("@fil_codigo", Veiculo.Filial.GetCodigo());
+                b.getComandoSQL().Parameters.AddWithValue("@ve_modelo", Veiculo.Fipe.Modelo);
+           
+                
 
             int cod = 0;
 

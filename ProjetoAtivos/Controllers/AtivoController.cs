@@ -204,9 +204,9 @@ namespace ProjetoAtivos.Controllers
             }
         }
 
-        public JsonResult GravarVeiculo(int Codigo, int Regional, int Filial, int Placa, string Tag, string Estado, string Observacao, string Descricao, int TipoAtivo, string Marca, string NumeroSerie, string Modelo, double Valor, string Imagem, string Latitude, string Longitude, int CodigoNota, string NumeroNota, double ValorNota, DateTime DataEmissao, string Fornecedor, string Cnpj, string NomeAnexo, string Anexo, string Cor, string PlacaVeiculo, string CRLV, string DUT, string FIPE)
+        public JsonResult GravarVeiculo(int Codigo, int Regional, int Filial, int Placa, string Tag, string Estado, string Observacao, string Descricao, int TipoAtivo, string Marca, string NumeroSerie, string Modelo, double Valor, string Imagem, string Latitude, string Longitude, int CodigoNota, string NumeroNota, double ValorNota, DateTime DataEmissao, string Fornecedor, string Cnpj, string NomeAnexo, string Anexo, string Cor, string PlacaVeiculo, string CRLV, string DUT, string FIPE, string ModeloV)
         {
-            int Retorno = ctlAtivo.Gravar(Codigo, Regional, Filial, Placa, Tag, Estado, Observacao, Descricao, TipoAtivo, Marca, NumeroSerie, Modelo, Valor, Imagem, Latitude, Longitude, CodigoNota, NumeroNota, ValorNota, DataEmissao, Fornecedor, Cnpj, NomeAnexo, Anexo, Cor, PlacaVeiculo, CRLV, DUT, FIPE);
+            int Retorno = ctlAtivo.Gravar(Codigo, Regional, Filial, Placa, Tag, Estado, Observacao, Descricao, TipoAtivo, Marca, NumeroSerie, Modelo, Valor, Imagem, Latitude, Longitude, CodigoNota, NumeroNota, ValorNota, DataEmissao, Fornecedor, Cnpj, NomeAnexo, Anexo, Cor, PlacaVeiculo, CRLV, DUT, FIPE, ModeloV);
             if (Retorno == 1)
                 return Json("");
             else

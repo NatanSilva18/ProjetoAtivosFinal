@@ -7,7 +7,7 @@ namespace ProjetoAtivos.Control
     public class AtivoControl
     {
         
-        public int Gravar(int Codigo, int Regional, int Filial,  int Placa, string Tag, string Estado, string Observacao, string Descricao, int TipoAtivo, string Marca, string NumeroSerie, string Modelo, double Valor, string Img, string Latitude, string Longitude, int CodigoNota, string NumeroNota, double ValorNota, DateTime DataEmissao, string Fornecedor, string Cnpj, string NomeAnexo, string Anexo, string Cor, string PlacaVeiculo, string CRLV, string DUT, string FIPE)
+        public int Gravar(int Codigo, int Regional, int Filial,  int Placa, string Tag, string Estado, string Observacao, string Descricao, int TipoAtivo, string Marca, string NumeroSerie, string Modelo, double Valor, string Img, string Latitude, string Longitude, int CodigoNota, string NumeroNota, double ValorNota, DateTime DataEmissao, string Fornecedor, string Cnpj, string NomeAnexo, string Anexo, string Cor, string PlacaVeiculo, string CRLV, string DUT, string FIPE, string ModeloV)
         {
             Localizacao Localiza = new Localizacao(Latitude, Longitude, 0);
 
@@ -33,7 +33,8 @@ namespace ProjetoAtivos.Control
                 Placa = PlacaVeiculo,
                 Fipe = new Fipe()
                 {
-                    Codigo = FIPE
+                    Codigo = FIPE,
+                    Modelo = ModeloV
                 }
             };
 
