@@ -1308,6 +1308,7 @@ function UnlockFields() {
     document.getElementById('txtModelo').disabled = false;
     document.getElementById('fuArquivo').disabled = false;
     document.getElementById('cbbEstado').disabled = false;
+    document.getElementById('cbbTpAtivo').disabled = false;
 };
 
 function LockFields() {
@@ -1318,6 +1319,7 @@ function LockFields() {
     document.getElementById('txtMarca').disabled = true;
     document.getElementById('txtNumSerie').disabled = true;
     document.getElementById('txtModelo').disabled = true;
+    document.getElementById('cbbTpAtivo').disabled = true;
     //document.getElementById('txtValor').disabled = true;
     document.getElementById('fuArquivo').disabled = true;
     //$("#cbbTpAtivo").attr("disabled", true);

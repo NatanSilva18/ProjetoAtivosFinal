@@ -72,7 +72,7 @@
 
                     <div class="col-lg-4 col-md-4 col-xl-4 d-inline">
                         <button type="submit" id="btnPesquisar" name="btnPesquisar" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Pesquisar Regionais"><i class="fas fa-search"></i> <span>Pesquisar</span></button>
-                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#novoAtivo" onclick="javascript: LimparCampos(); LockFields();" title="Novo Ativo"><i class="fas fa-plus"></i> <span>Ativo</span></button>
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#novoAtivo" onclick="javascript: LimparCampos(); LockFields();" title="Novo Veículo"><i class="fas fa-plus"></i> <span>Veículo</span></button>
                         <button type="button" class="btn btn-danger" onclick="javascript:LimparTabela()" title="Limpar Tabela Regionais"><i class="fas fa-ban"></i> <span>Cancelar</span></button>
                     </div>
                 </div>
@@ -112,7 +112,7 @@
 <div id="tbbAtivo" style="display:none" class="card mb-4">
     <div class="card-header">
         <i class="fa fa-table"></i>
-        <span><b>Ativos Cadastrados</b></span>
+        <span><b>Veículos Cadastrados</b></span>
     </div>
     <div class="card-body">
         <div class="table-responsive-xl table-responsive-sm table-responsive-md">
@@ -127,7 +127,7 @@
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Cadastrar Ativos</h5>
+                <h5 class="modal-title" id="staticBackdropLabel">Cadastrar Veículo</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -300,16 +300,17 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        <label for="txtTag">Tag </label>
+                                        <label for="txtDescricao">Descricao <label style="color:red">*</label></label>
                                         <div class="input-group">
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
                                             </div>
-                                            <input class="form-control" type="text" name="txtTag" id="txtTag" autocomplete="off" maxlength="30" disabled />
+                                            <input class="form-control" type="text" name="txtDescricao" id="txtDescricao" required autocomplete="off" maxlength="30" disabled />
                                         </div>
 
                                     </div>
                                 </div>
+
                                 <div class="col-lg-4">
                                     <div class="form-group">
                                         <label for="cbbEstado">Estado <label style="color:red">*</label></label>
@@ -329,7 +330,7 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-lg-4">
+                                <div class="col-lg-12">
                                     <div class="form-group">
                                         <label for="txtObservacao">Observacao </label>
                                         <div class="input-group">
@@ -341,30 +342,8 @@
 
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label for="txtDescricao">Descricao <label style="color:red">*</label></label>
-                                        <div class="input-group">
-                                            <div class="input-group-append">
-                                                <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
-                                            </div>
-                                            <input class="form-control" type="text" name="txtDescricao" id="txtDescricao" required autocomplete="off" maxlength="30" disabled />
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label for="txtNumSerie">Numero de Serie <label style="color:red">*</label></label>
-                                        <div class="input-group">
-                                            <div class="input-group-append">
-                                                <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
-                                            </div>
-                                            <input class="form-control" type="text" name="txtNumSerie" id="txtNumSerie" required autocomplete="off" maxlength="30" disabled />
-                                        </div>
-
-                                    </div>
-                                </div>
+                                
+                                
                             </div>
                             
 
@@ -536,7 +515,7 @@
                                 <div class="row" id="modalArquivo">
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label for="fuArquivo">Fotos do Ativo</label>
+                                            <label for="fuArquivo">Fotos do Veículo</label>
                                             <div class="input-group">
                                                 <div class="custom-file" id="customFile" lang="pt-br">
                                                     <input type="file" class="custom-file-input" id="fuArquivo" aria-describedby="fileHelp" required disabled>
@@ -590,7 +569,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Localização Ativo</h5>
+                <h5 class="modal-title" id="staticBackdropLabel">Localização Veículo</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -683,7 +662,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Galeria Ativo</h5>
+                <h5 class="modal-title" id="staticBackdropLabel">Galeria</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

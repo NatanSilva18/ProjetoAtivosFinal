@@ -105,7 +105,7 @@ function CarregarRegionais() {
                         var opt = document.createElement("option");
                         opt.value = result[i].codigo;
                         opt.text = result[i].descricao;
-                        cbbRegional.add(opt, cbbRegional.options[i + 1]);
+                        cbbRegional.add(opt, cbbRegional.options[i ]);
                     }
 
                     if (filial != 0) {
@@ -277,12 +277,12 @@ function LimparTabela() {
 function LimparCampos() {
     $("#txtId").val("0");
     $("#txtPlaca").val("");
-    $("#txtTag").val("");
+    //$("#txtTag").val("");
     $("#cbbEstado").val("");
     $("#txtObservacao").val("");
     $("#txtDescricao").val("");
     //$("#txtMarca").val("");
-    $("#txtNumSerie").val("");
+    //$("#txtNumSerie").val("");
     //$("#txtValor").val("");
     $("#txtModelo").val("");
     $("#txtQtd").val("0");
@@ -586,7 +586,7 @@ function ObterAtivos() {
 
     $.ajax({
         type: 'POST',
-        url: '/Ativo/ObterAtivos',
+        url: '/Veiculo/ObterVeiculos',
         data: { Chave: Chave, Filtro: Filtro, Ativo: Ativo, Regiao: regiao, Filial: filial },
         success: function (result) {
             if (result != null && result.length > 0) {
@@ -668,12 +668,12 @@ function Gravar() {
             var Filial = $('#cbbFilial').val();
             
             var Placa = $('#txtPlaca').val();
-            var Tag = $('#txtTag').val();
+            var Tag = '';
             var Estado = $('#cbbEstado').val();
             var Observacao = $('#txtObservacao').val();
             var Descricao = $('#txtDescricao').val();            
             
-            var NumeroSerie = $('#txtNumSerie').val();
+            var NumeroSerie = '';
             
             var Valor = document.getElementById('txtValorNota').value.replace(',', '.');
 
@@ -750,10 +750,26 @@ function Gravar() {
                 }
                 else {
 
-                    var cor = $('#txtCor').val();
-                    var placaVeiculo = $('#txtPlavaV').val();
                     var crlv = $('#hdCRLV').val();
                     var dut = $('#hdDUT').val();
+
+                    if (crlv == '' ) {
+                        Mensagem("divAlertaCRLV", 'Por favor, envie o CRLV.');
+                        document.getElementById('btnConfirmar').disabled = false;
+                        $("#divLoading").hide();
+                        return;
+                    }
+
+                    if (dut == '') {
+                        Mensagem("divAlertaDUT", 'Por favor, envie o DUT.');
+                        document.getElementById('btnConfirmar').disabled = false;
+                        $("#divLoading").hide();
+                        return;
+                    }
+
+                    var cor = $('#txtCor').val();
+                    var placaVeiculo = $('#txtPlavaV').val();
+                    
                     var fipe = $('#codFipe').val(); 
                     Marca = $("#cbbMarcaV option:selected").text(); 
                     Modelo = $("#cbbModeloV option:selected").text() + ' ' + $("#cbbAnoVeiculo option:selected").text();  
@@ -762,7 +778,7 @@ function Gravar() {
 
                     $.ajax({
                         type: 'POST',
-                        url: '/Ativo/GravarVeiculo',
+                        url: '/Veiculo/Gravar',
                         data: {
                             Codigo: Codigo, Regional: Regional, Filial: Filial, Placa: Placa, Tag: Tag, Estado: Estado, Observacao: Observacao,
                             Descricao: Descricao, TipoAtivo: TipoAtivo, Marca: Marca, NumeroSerie: NumeroSerie, Modelo: Modelo, Valor: Valor, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude,
@@ -955,13 +971,13 @@ function Alterar(Codigo) {
                 $("#txtIdNotaFiscal").val(result.notaFiscal.codigo);
                 $("#txtOperacao").val(1);
                 $("#txtPlaca").val(result.placa);
-                $("#txtTag").val(result.tag);
+                //$("#txtTag").val(result.tag);
                 $("#cbbEstado").val(result.estado);
                 $("#txtObservacao").val(result.observacao);
                 $("#txtDescricao").val(result.descricao);
                 $('#cbbTpAtivo').selectpicker('val', result.tpAtivoCodigo);
                 //$("#txtMarca").val(result.marca);
-                $("#txtNumSerie").val(result.numeroSerie);
+                //$("#txtNumSerie").val(result.numeroSerie);
                 $("#txtModelo").val(result.modelo);
                 //$("#txtValor").val(result.valor);
 
@@ -1313,27 +1329,27 @@ function Mensagem(div, msg) {
 };
 
 function UnlockFields() {
-    document.getElementById('txtTag').disabled = false;
+    //document.getElementById('txtTag').disabled = false;
     document.getElementById('txtObservacao').disabled = false;
     document.getElementById('txtDescricao').disabled = false;
-    $("#cbbTpAtivo").attr("disabled", false);
+    //$("#cbbTpAtivo").attr("disabled", false);
     $('.selectpicker').selectpicker('refresh');
 
     //document.getElementById('txtMarca').disabled = false;
-    document.getElementById('txtNumSerie').disabled = false;
-    document.getElementById('txtModelo').disabled = false;
+    //document.getElementById('txtNumSerie').disabled = false;
+    //document.getElementById('txtModelo').disabled = false;
     document.getElementById('fuArquivo').disabled = false;
     document.getElementById('cbbEstado').disabled = false;
 };
 
 function LockFields() {
-    document.getElementById('txtTag').disabled = true;
+    //document.getElementById('txtTag').disabled = true;
     document.getElementById('txtObservacao').disabled = true;
     document.getElementById('txtDescricao').disabled = true;
     document.getElementById('cbbEstado').disabled = true;
     //document.getElementById('txtMarca').disabled = true;
-    document.getElementById('txtNumSerie').disabled = true;
-    document.getElementById('txtModelo').disabled = true;
+    //document.getElementById('txtNumSerie').disabled = true;
+    //document.getElementById('txtModelo').disabled = true;
     //document.getElementById('txtValor').disabled = true;
     document.getElementById('fuArquivo').disabled = true;
     //$("#cbbTpAtivo").attr("disabled", true);
@@ -1369,6 +1385,7 @@ function ValidarPlaca() {
             else {
                 UnlockFields();
                 document.getElementById('validaPlaca').value = "0";
+                $('#txtDescricao').focus();
             }
             $("#divLoading").hide(1000);
 
@@ -1813,10 +1830,12 @@ function registraFipe(x, parts = null, mod = null) {
                 $("#txtCor").removeAttr('disabled');
                 $("#txtPlavaV").removeAttr('disabled');
 
-                $('#cbbtpVeiculo').val(parts[0]);
-                $('#cbbMarcaV').val(parts[2]);
-                $("#cbbModeloV").val(mod);
-                $('#cbbAnoVeiculo').val(parts[4]);  
+                if (parts != null) {
+                    $('#cbbtpVeiculo').val(parts[0]);
+                    $('#cbbMarcaV').val(parts[2]);
+                    $("#cbbModeloV").val(mod);
+                    $('#cbbAnoVeiculo').val(parts[4]);
+                }
 
                 $('#cbbtpVeiculo').selectpicker('refresh');
                 $('#cbbMarcaV').selectpicker('refresh');
