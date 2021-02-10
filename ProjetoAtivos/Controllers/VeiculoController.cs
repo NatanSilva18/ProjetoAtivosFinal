@@ -13,6 +13,7 @@ using System.Linq;
 
 namespace ProjetoAtivos.Controllers
 {
+    [FiltroSession]
     public class VeiculoController : Controller
     {
         private static AtivoControl ctlAtivo = new AtivoControl();

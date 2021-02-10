@@ -1851,3 +1851,196 @@ function registraFipe(x, parts = null, mod = null) {
         });
     }
 }
+
+
+function SalvarFotosInventario() {
+
+    var arquivos = document.getElementById("fuArquivoInventario");
+    if (arquivos.files.length > 0) {
+        $("#divLoading").show(0);
+
+        //document.getElementById('btnSalvarFotosInventario').innerHTML = '<div class="spinner-border text-primary" role="status"><span class="sr-only" > Loading...</span></div>';
+        var txr2;
+        var formData = new FormData();
+        formData.append("id", $("#txtIdInventario").val());
+        formData.append("nome", $("#txtNomeInventario").val());
+        for (var i = 0; i < arquivos.files.length; i++) {
+            if (arquivos.files[i].size > 0) {
+                formData.append("arquivo" + i, arquivos.files[i]);
+            }
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/Ativo/ReceberDados',
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                var txt = "";
+                $.each(response, function () {
+                    if (this.id >= 0) {
+                        $("#txtQtdInventario").val(parseInt($("#txtQtdInventario").val()) + 1);
+
+                        txr2 = 'data:image/jpg;base64, ' + this.dados;
+
+                        var imgs = $("#minhaImagemHiddenInventario").val();
+
+                        if (imgs != "")
+                            imgs += "**Separdor Imagem**";
+
+                        imgs += txr2;
+
+                        $("#minhaImagemHiddenInventario").val(imgs);
+
+                        var txt = '  <div class="col-lg-2" id="fotosInventario' + $("#txtQtdInventario").val() + '">\
+                                        <div class="form-group">\
+                                            <div class="card " style="width: 10rem;">\
+                                                <img id="minhaImagemInventario" src="'+ txr2 + '" class="card-img-top" alt="...">\
+                                                    <div class="card-body">\
+                                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="javascript: ExcluirFotoInventario('+ $("#txtQtdInventario").val() + ')"><i class="fas fa-trash"></i></button>\
+                                                    </div>\
+                                                </div>\
+                                            </div>\
+                                        </div>';
+                        $("#fotosInventario").show();
+                        $("#modalFotosInventario").show();
+
+
+                        $("#imagemInventario").append(txt)
+                        //document.getElementById("imagem").innerHTML = txt;
+                        $('#fuArquivoInventario').attr('disabled', 'disabled');
+                    }
+                    if (this.id == -1) {
+                        Mensagem("divAlertaInventario", this.dados);
+                    }
+
+                    if (this.id == -2) {
+                        Mensagem("divAlertaInventario", this.dados);
+                    }
+
+                    //document.getElementById('btnSalvarFotosInventario').innerHTML = 'Adicionar';
+                    $("#divLoading").hide(2000);
+
+                });
+            },
+            error: function (error) {
+                alert(error);
+                $("#divLoading").hide(2000);
+            }
+        });
+    }
+    else {
+        Mensagem("divAlerta", 'Selecione um arquivo!');
+    }
+    $("#divLoading").hide(2000);
+
+};
+
+function ExcluirFotoInventario(Codigo) {
+    var Foto = document.getElementById('fotosInventario' + Codigo);
+
+    if (Foto != null) {
+        Foto.remove();
+        $("#txtQtdInventario").val(parseInt($("#txtQtdInventario").val()) - 1);
+
+        document.getElementById("fuArquivoInventario").value = "";
+        document.getElementById("labelFotoInventario").innerHTML = 'Selecione uma Foto';
+
+        var bases = $("#minhaImagemHiddenInventario").val().split("**Separdor Imagem**");
+        var novo = "";
+
+        for (var i = 0; i < bases.length - 1; i++) {
+            if (i != Codigo - 1) {
+
+                novo += bases[i];
+
+                if ($("#txtQtdInventario").val() > 1)
+                    novo += "**Separdor Imagem**";
+            }
+        }
+
+        if (bases.length - 1 != Codigo - 1)
+            novo += bases[bases.length - 1];
+
+        $("#minhaImagemHiddenInventario").val(novo);
+    }
+    var Imagem = document.getElementById('imagemInventario');
+
+    if (Imagem.childElementCount == 0)
+        $("#modalFotosInventario").hide();
+
+    $('#fuArquivoInventario').removeAttr('disabled');
+};
+
+function Inventariar(x) {
+    $('#idAtivoInventario').val(x);
+    $('#inventario').modal('show');
+}
+
+function GravarInventario() {
+    $("#divLoading").show();
+
+    navigator.geolocation.getCurrentPosition(function Responder(position) {
+        var Latitude = position.coords.latitude;
+        var Longitude = position.coords.longitude;
+
+        var ativo = $('#idAtivoInventario').val();
+        var obs = $('#txtObservacaoInv').val();
+
+        var VerificaImagem = $('#minhaImagemHidden').val();
+        if (VerificaImagem != "") {
+            var Imagem = $('#minhaImagemHidden').val();
+
+            $.ajax({
+                type: 'POST',
+                url: '/Ativo/Inventariar',
+                data: {
+                    Codigo: Codigo, Observacao: Observacao, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude
+                },
+                success: function (result) {
+                    $('#inventario').modal('hide');
+
+                    if (result.length > 0) {
+                        Swal.fire({
+                            title: 'Oops...',
+                            type: 'error',
+                            text: result,
+                            timer: 5000
+                        })
+                    }
+                    else {
+                        if (Codigo == 0) {
+                            Swal.fire({
+                                title: 'Sucesso',
+                                type: 'success',
+                                text: 'Ativo Inventariado com Sucesso',
+                                timer: 5000
+                            })
+                        }
+                        else {
+                            Swal.fire({
+                                title: 'Sucesso',
+                                type: 'success',
+                                text: 'Ativo Inventariado com Sucesso',
+                                timer: 5000
+                            })
+                        }
+                    }
+
+                    $("#divLoading").hide();
+                },
+                error: function (XMLHttpRequest, txtStatus, errorThrown) {
+                    alert("Status: " + txtStatus); alert("Error: " + errorThrown);
+                    $("#divLoading").hide(400);
+                }
+            });
+        }
+        else {
+            Mensagem("divAlertaInventario", 'Por favor Envie a Imagem');
+            $("#divLoading").hide();
+        }
+
+    });
+}

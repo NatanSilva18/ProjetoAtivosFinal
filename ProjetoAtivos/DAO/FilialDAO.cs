@@ -308,5 +308,27 @@ namespace ProjetoAtivos.DAO
             else
                 return 0;
         }
+
+        internal Filial BuscarFilial(Ativo ativo)
+        {
+            b.getComandoSQL().Parameters.Clear();
+
+            b.getComandoSQL().CommandText = @"select f.fil_codigo, f.fil_razao, f.fil_cnpj, f.fil_stativo,e.end_codigo, e.end_logradouro, e.end_numero, e.end_referencia,  e.end_bairro,  e.end_cep,                                          e.end_cidade, e.end_estado, p.pes_codigo, p.pes_nome, r.reg_codigo, r.reg_descricao
+                                              from Filial f 
+                                              inner join Endereco e on f.end_codigo = e.end_codigo
+                                              inner join Pessoa p on f.pes_codigo = p.pes_codigo
+                                              inner join Regional r on f.reg_codigo = r.reg_codigo
+                                              inner join sala s on s.fil_codigo = f.fil_codigo
+                                              inner join ativos a on a.sal_codigo = s.sal_codigo
+                                              where a.ati_codigo = @codigo;";
+            b.getComandoSQL().Parameters.AddWithValue("@codigo", ativo.GetCodigo());
+
+            DataTable dt = b.ExecutaSelect();
+
+            if (dt.Rows.Count > 0)
+                return TableToListCompleta(dt).FirstOrDefault();
+            else
+                return null;
+        }
     }
 }

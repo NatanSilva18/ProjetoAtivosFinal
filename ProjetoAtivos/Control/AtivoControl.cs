@@ -5,8 +5,7 @@ using System.Collections.Generic;
 namespace ProjetoAtivos.Control
 {
     public class AtivoControl
-    {
-        
+    {        
         public int Gravar(int Codigo, int Regional, int Filial,  int Placa, string Tag, string Estado, string Observacao, string Descricao, int TipoAtivo, string Marca, string NumeroSerie, string Modelo, double Valor, string Img, string Latitude, string Longitude, int CodigoNota, string NumeroNota, double ValorNota, DateTime DataEmissao, string Fornecedor, string Cnpj, string NomeAnexo, string Anexo, string Cor, string PlacaVeiculo, string CRLV, string DUT, string FIPE, string ModeloV)
         {
             Localizacao Localiza = new Localizacao(Latitude, Longitude, 0);
@@ -78,6 +77,29 @@ namespace ProjetoAtivos.Control
             }
 
                 return Ativo.Gravar(imagens, Localiza);
+        }
+
+        public bool Inventariar(int Codigo, string Observacao, string Imagem, string Latitude, string Longitude)
+        {
+            List<Imagem> imagens = new List<Imagem>();
+
+            string[] bases64 = Imagem.Split("**Separdor Imagem**");
+
+            foreach (string i in bases64)
+            {
+                imagens.Add(new Imagem(0, i, 0));
+            }
+
+            Inventario iv = new Inventario()
+            {
+                Ativo = new Ativo(Codigo),
+                Data = DateTime.Now,
+                Obs = Observacao,
+                Imagem = imagens[0],
+                Localizacao = new Localizacao(Latitude, Longitude, 0)                
+            };
+
+            return iv.Gravar();
         }
 
         public List<object> ObterAtivos(string Chave, string Filtro, int Ativo, int Regiao, int Filial, bool Veiculo = false)
