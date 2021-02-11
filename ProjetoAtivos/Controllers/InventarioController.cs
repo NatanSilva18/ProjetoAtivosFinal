@@ -15,7 +15,7 @@ namespace ProjetoAtivos.Controllers
     [FiltroSession]
     public class InventarioController : Controller
     {
-        private static AtivoControl ctlAtivo = new AtivoControl();
+        private static InventarioControl ctlInv = new InventarioControl();
 
         public IActionResult Index()
         {
@@ -26,6 +26,13 @@ namespace ProjetoAtivos.Controllers
         public InventarioController(IHostingEnvironment env)
         {
             _env = env;
+        }
+
+        public JsonResult Buscar(string DtIni, string DtFim, int Regiao, int Filial)
+        {
+            List<object> Dados = ctlInv.Buscar(DtIni, DtFim, Regiao, Filial);
+
+            return Dados == null ? Json("") : Json(Dados);
         }
     }
 }

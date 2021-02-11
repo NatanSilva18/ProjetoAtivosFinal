@@ -36,6 +36,74 @@ namespace ProjetoAtivos.DAO
             return dados;
         }
 
+        internal List<Object> TableToListO(DataTable dt)
+        {
+            List<object> Dados = new List<object>();
+
+            if (dt.Rows.Count > 0)
+            {
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    Dados.Add(new
+                    {
+                        Codigo = Convert.ToInt32(dt.Rows[i]["iv_codigo"]),
+                        Data = Convert.ToDateTime(dt.Rows[i]["iv_data"]),
+                        Filial = new FilialDAO().BuscarFilial(Convert.ToInt32(dt.Rows[i]["fil_codigo"])),
+                        Ativo = new AtivoDAO().BuscarAtivo(Convert.ToInt32(dt.Rows[i]["ati_codigo"])),
+                        Obs = dt.Rows[i]["iv_obs"].ToString(),
+                        Imagem = new ImagemDAO().Buscar(Convert.ToInt32(dt.Rows[i]["img_codigo"]))                        
+                    });
+                }
+            }
+
+            return Dados == null ? null : Dados;
+            
+        }
+
+        internal List<object> Buscar(string dtIni, string dtFim, int regiao, int filial)
+        {
+            b.getComandoSQL().Parameters.Clear();
+
+            string where = "f.reg_codigo = @reg";
+
+            if (filial != 0)
+            {
+                where += " and i.fil_codigo = @fil";
+                b.getComandoSQL().Parameters.AddWithValue("@fil", filial);
+            }
+
+            if(dtIni != "")
+            {
+                if(dtFim != "")
+                {
+                    where += " and iv_date between @dtIni and @dtFim";
+                    b.getComandoSQL().Parameters.AddWithValue("@dtFim", dtFim);
+                }
+                else
+                {
+                    where += " and iv_date >= @dtIni";
+                }
+                b.getComandoSQL().Parameters.AddWithValue("@dtIni", dtIni);
+            }
+            else
+            {
+                where += " and iv_date <= @dtFim";
+                b.getComandoSQL().Parameters.AddWithValue("@dtFim", dtFim);
+            }
+
+            b.getComandoSQL().CommandText = @"select * from inventario i
+                                               inner join filial f on f.fil_codigo = i.fil_codigo
+                                               where "+ where + " order by fil_codigo, iv_date";
+
+            b.getComandoSQL().Parameters.AddWithValue("@reg", regiao);
+
+            DataTable dt = b.ExecutaSelect();
+
+            if (dt.Rows.Count > 0)
+                return TableToListO(dt);
+            else
+                return null;
+        }
 
         internal bool Gravar(Inventario Inv)
         {

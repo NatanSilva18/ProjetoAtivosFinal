@@ -268,10 +268,10 @@ function LimparTabela() {
     }
     $("#tbbAtivo").hide(0);
     $("#tableAtivo tr").remove();
-    $("#txtPesquisar").val("");
+    $("#txtDtIni").val("");
+    $("#txtDtFim").val("");
     $('#cbbRegiaoPesq').selectpicker('val', '');
     $('#cbbFilialPesq').selectpicker('val', '0');
-    var Radio = document.getElementsByName("rdAtivo"); Radio[0].checked = true;
 };
 
 function LimparCampos() {
@@ -523,16 +523,16 @@ function PreencherTabela(dados) {
         else
             ValorAtivo = this.valorNota;
 
-        if (this.stAtivo == 1) {
+        if (this.ativo.status == 1) {
             if (this.imagem != "") {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td onclick="javascript:ObterImagens(' + this.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo+'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
+                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td onclick="javascript:ObterImagens(' + this.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem.foto + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.ativo.placa + '</td><td>' + this.ativo.descricao + '</td><td>R$' + this.ativo.Valor + '</td><td>' + this.ativo.estado + '</td><td>' + this.ativo.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
                 txt += '<a role="button" class="btn btn-warning" href="javascript:UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>';
                 txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
                 txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>&nbsp;';
                 txt += '<a role="button" class="btn btn-info" href="javascript: Inventariar(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
             }
             else {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
+                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.ativo.placa + '</td><td>' + this.ativo.descricao + '</td><td>R$' + ativo.valor + '</td><td>' + this.ativo.estado + '</td><td>' + this.ativo.razao + '</td><td>' + Status(this.ativo.status) + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
                 txt += '<a role="button" class="btn btn-warning" href="javascript:UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
                 txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>&nbsp;';
                 txt += '<a role="button" class="btn btn-info" href="javascript: Inventariar(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
@@ -560,505 +560,7 @@ function PreencherTabela(dados) {
     funcaoTable("#tableAtivo");
     Rolagem();
 }
-function ObterAtivos() {
-    $("#divLoading").show(300);
-    document.getElementById('btnPesquisar').disabled = true;
 
-    var Chave = $("#txtPesquisar").val();
-    var Filtro = document.querySelector('input[name="rdFiltro"]:checked').value;
-    var Ativo = document.querySelector('input[name="rdAtivo"]:checked').value;
-    var Radio = document.getElementsByName("rdAtivo");
-    var regiao = parseInt($("#cbbRegiaoPesq").val());
-    var filial = parseInt($("#cbbFilialPesq").val());
-
-    var Texto = "";
-
-    $.ajax({
-        type: 'POST',
-        url: '/Ativo/ObterAtivos',
-        data: { Chave: Chave, Filtro: Filtro, Ativo: Ativo, Regiao: regiao, Filial: filial },
-        success: function (result) {
-            if (result != null && result.length > 0) {
-                PreencherTabela(result);
-            }
-            else {
-                if (Ativo == "1") {
-                    Texto = "Nenhum Ativo Encontrado!";
-                }
-                else {
-                    Texto = "Nenhum Ativo INATIVO Encontrado!";
-
-                }
-                Swal.fire({
-                    title: 'Oops...',
-                    text: Texto,
-                    type: 'error',
-                    timer: 5000
-                })
-                $("#tbbAtivo").hide(0);
-                Radio[0].checked = true;
-                LimparTabela();
-            }
-            $("#divLoading").hide(300);
-            $("#txtPesquisar").val("");
-            document.getElementById('btnPesquisar').disabled = false;
-
-        },
-        error: function (XMLHttpRequest, txtStatus, errorThrown) {
-            alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(300);
-            document.getElementById('btnPesquisar').disabled = false;
-
-        }
-    });
-};
-function VerificaConteudoNotaFiscal() {
-    var NotaFiscal = document.getElementById('notafiscal').className;
-    if (NotaFiscal.indexOf('show') != -1) {// diferente de -1 é encontrado
-       document.getElementById("txtNumeroNota").required = false;
-        document.getElementById("txtValorNota").required = false;
-        document.getElementById("txtDataEmissao").required = false;
-        document.getElementById("txtFornecedor").required = false;
-
-        document.getElementById('txtNumeroNota').value = "";
-        document.getElementById('txtValorNota').value = "";
-        document.getElementById('txtDataEmissao').value = "";
-        document.getElementById('txtFornecedor').value = "";
-    }
-    else {//nota on
-        document.getElementById("txtNumeroNota").required = true;
-        document.getElementById("txtValorNota").required = true;
-        document.getElementById("txtDataEmissao").required = true;
-        document.getElementById("txtFornecedor").required = true;
-    }
-};
-function AvaliarValorAtivo() {
-
-    var NotaFiscal = document.getElementById('notafiscal').className;
-    if (NotaFiscal.indexOf('show') != -1) {// nota aberta
-        document.getElementById('').value = 0; //valor nota
-    }
-    else {      //nota fechada
-        document.getElementById('').value = 0; //valor tipo ativo
-    }
-}
-function Gravar() {
-    $("#divLoading").show();
-    document.getElementById('btnConfirmar').disabled = true;
-
-    if (document.getElementById('validaPlaca').value == '0') {
-        navigator.geolocation.getCurrentPosition(function Responder(position) {
-            var Latitude = position.coords.latitude;
-            var Longitude = position.coords.longitude;
-
-            var TipoAtivo = $('#cbbTpAtivo').val();
-            var Codigo = $('#txtId').val();
-            var Regional = $('#cbbRegional').val();
-            var Filial = $('#cbbFilial').val();
-            
-            var Placa = $('#txtPlaca').val();
-            var Tag = $('#txtTag').val();
-            var Estado = $('#cbbEstado').val();
-            var Observacao = $('#txtObservacao').val();
-            var Descricao = $('#txtDescricao').val();            
-            
-            var NumeroSerie = $('#txtNumSerie').val();
-            
-            var Valor = document.getElementById('txtValorNota').value.replace(',', '.');
-
-            var CodigoNota = document.getElementById('txtIdNotaFiscal').value;
-            var NumeroNota = document.getElementById('txtNumeroNota').value;
-            var ValorNota = document.getElementById('txtValorNota').value.replace(',','.');
-            var DataEmissao = document.getElementById('txtDataEmissao').value;
-            var Fornecedor = document.getElementById('txtFornecedor').value;
-            var Cnpj = document.getElementById('txtCnpj').value;
-            
-
-            var anexo = $("#hdAnexo").val();
-            var nomeAnexo = $("#nomeAnexo").val();            
-            
-            var VerificaImagem = $('#minhaImagemHidden').val();
-            if (VerificaImagem != "") {
-                var Imagem = $('#minhaImagemHidden').val();
-
-                /*if (TipoAtivo != 3) {*/
-
-                    var Sala = $('#cbbSala').val();
-                    var Marca = $('#txtMarca').val();
-                    var Modelo = $('#txtModelo').val();
-
-                    $.ajax({
-                        type: 'POST',
-                        url: '/Ativo/Gravar',
-                        data: {
-                            Codigo: Codigo, Regional: Regional, Filial: Filial, Sala: Sala, Placa: Placa, Tag: Tag, Estado: Estado, Observacao: Observacao,
-                            Descricao: Descricao, TipoAtivo: TipoAtivo, Marca: Marca, NumeroSerie: NumeroSerie, Modelo: Modelo, Valor: Valor, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude,
-                            CodigoNota: CodigoNota, NumeroNota: NumeroNota, ValorNota: ValorNota, DataEmissao: DataEmissao, Fornecedor: Fornecedor, Cnpj: Cnpj, NomeAnexo: nomeAnexo, Anexo: anexo
-                        },
-                        success: function (result) {
-                            $('#novoAtivo').modal('hide');
-
-                            if (result.length > 0) {
-                                Swal.fire({
-                                    title: 'Oops...',
-                                    type: 'error',
-                                    text: result,
-                                    timer: 5000
-                                })
-                            }
-                            else {
-                                if (Codigo == 0) {
-                                    Swal.fire({
-                                        title: 'Sucesso',
-                                        type: 'success',
-                                        text: 'Ativo Gravado com Sucesso',
-                                        timer: 5000
-                                    })
-                                }
-                                else {
-                                    Swal.fire({
-                                        title: 'Sucesso',
-                                        type: 'success',
-                                        text: 'Ativo Alterado com Sucesso',
-                                        timer: 5000
-                                    })
-                                }
-                            }
-                            document.getElementById('btnConfirmar').disabled = false;
-                            if ($("#cbbRegiaoPesq").val() != "")
-                                ObterAtivos();
-
-                            $("#divLoading").hide();
-                        },
-                        error: function (XMLHttpRequest, txtStatus, errorThrown) {
-                            alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                            $("#divLoading").hide(400);
-                            document.getElementById('btnConfirmar').disabled = false;
-                        }
-                    });
-               /* }
-                else {
-
-                    var cor = $('#txtCor').val();
-                    var placaVeiculo = $('#txtPlavaV').val();
-                    var crlv = $('#hdCRLV').val();
-                    var dut = $('#hdDUT').val();
-                    var fipe = $('#codFipe').val(); 
-                    Marca = $("#cbbMarcaV option:selected").text(); 
-                    Modelo = $("#cbbModeloV option:selected").text() + ' ' + $("#cbbAnoVeiculo option:selected").text();  
-                    var modeloV = $("#cbbModeloV").val();
-                    //var valor = $('#txtPrecoV').val();
-
-                    $.ajax({
-                        type: 'POST',
-                        url: '/Ativo/GravarVeiculo',
-                        data: {
-                            Codigo: Codigo, Regional: Regional, Filial: Filial, Placa: Placa, Tag: Tag, Estado: Estado, Observacao: Observacao,
-                            Descricao: Descricao, TipoAtivo: TipoAtivo, Marca: Marca, NumeroSerie: NumeroSerie, Modelo: Modelo, Valor: Valor, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude,
-                            CodigoNota: CodigoNota, NumeroNota: NumeroNota, ValorNota: ValorNota, DataEmissao: DataEmissao, Fornecedor: Fornecedor, Cnpj: Cnpj, NomeAnexo: nomeAnexo, Anexo: anexo,
-                            Cor: cor, PlacaVeiculo: placaVeiculo, CRLV: crlv, DUT: dut, FIPE: fipe, ModeloV: modeloV
-                        },
-                        success: function (result) {
-                            $('#novoAtivo').modal('hide');
-
-                            if (result.length > 0) {
-                                Swal.fire({
-                                    title: 'Oops...',
-                                    type: 'error',
-                                    text: result,
-                                    timer: 5000
-                                })
-                            }
-                            else {
-                                if (Codigo == 0) {
-                                    Swal.fire({
-                                        title: 'Sucesso',
-                                        type: 'success',
-                                        text: 'Ativo Gravado com Sucesso',
-                                        timer: 5000
-                                    })
-                                }
-                                else {
-                                    Swal.fire({
-                                        title: 'Sucesso',
-                                        type: 'success',
-                                        text: 'Ativo Alterado com Sucesso',
-                                        timer: 5000
-                                    })
-                                }
-                            }
-                            document.getElementById('btnConfirmar').disabled = false;
-                            if ($("#cbbRegiaoPesq").val() != "")
-                                ObterAtivos();
-
-                            $("#divLoading").hide();
-                        },
-                        error: function (XMLHttpRequest, txtStatus, errorThrown) {
-                            alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                            $("#divLoading").hide(400);
-                            document.getElementById('btnConfirmar').disabled = false;
-                        }
-                    });
-                }*/
-            }
-            else {
-                Mensagem("divAlerta", 'Por favor Envie a Imagem');
-                document.getElementById('btnConfirmar').disabled = false;
-                $("#divLoading").hide();
-            }
-        });
-    }
-    else
-        document.getElementById('btnConfirmar').disabled = false;
-  
-};
-function ExcluirLogico(Codigo) {
-    Swal.fire({
-        title: 'Você tem Certeza?',
-        text: "Você não poderá reverter isso!",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Sim, Delete Isso!'
-    }).then((result) => {
-        if (result.value) {
-            $.ajax({
-                type: 'POST',
-                url: '/Ativo/ExcluirLogico',
-                data: {
-                    Codigo: Codigo
-                },
-                success: function (result) {
-
-                    if (result.length > 0) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            type: 'warning',
-                            allowEscapeKey: false,
-                            allowOutsideClick: false,
-                            text: result,
-                            timer: 5000
-                        })
-                        ObterAtivos();
-                    }
-                    else {
-                        Swal.fire({
-                            title: 'Sucesso',
-                            text: "Ativo Excluido com Sucesso!",
-                            type: 'success',
-                            allowEscapeKey: false,
-                            allowOutsideClick: false,
-                            confirmButtonColor: '#3085d6',
-                        }).then((result) => {
-                            if (result.value) {
-                                ObterAtivos();
-                            }
-                        })
-                    }
-                },
-                error: function (XMLHttpRequest, txtStatus, errorThrown) {
-                    alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                    $("#divLoading").hide(400);
-                }
-            });
-        }
-    })
-};
-
-function Ativar(Codigo) {
-
-    $.ajax({
-        type: 'POST',
-        url: '/Ativo/Ativar',
-        data: {
-            Codigo: Codigo
-        },
-        success: function (result) {
-
-            if (result != null && result.length > 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    type: 'error',
-                    allowEscapeKey: false,
-                    allowOutsideClick: false,
-                    text: result,
-                    timer: 5000
-                })
-                ObterAtivos();
-            }
-            else {
-                var Radio = document.getElementsByName("rdAtivo"); Radio[0].checked = true;
-                Swal.fire({
-                    title: 'Sucesso',
-                    text: "Ativo Ativado com Sucesso",
-                    type: 'success',
-                    allowEscapeKey: false,
-                    allowOutsideClick: false,
-                    confirmButtonColor: '#3085d6'
-                }).then((result) => {
-                    if (result.value) {
-                        ObterAtivos();
-                    }
-                })
-            }
-
-        },
-        error: function (XMLHttpRequest, txtStatus, errorThrown) {
-            alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(400);
-        }
-    });
-};
-
-function Alterar(Codigo) {
-    $("#divLoading").show();
-
-    LimparCampos();
-    document.getElementById("cbbRegional").removeAttribute("required");
-    document.getElementById("cbbFilial").removeAttribute("required");
-    document.getElementById("cbbSala").removeAttribute("required");
-    document.getElementById("fuArquivo").removeAttribute("required");
-
-    document.getElementById("staticBackdropLabel").innerHTML = "Alteração de Ativos";
-    $("#cardRegional").hide();
-    //$("#modalArquivo").hide();
-
-
-    $.ajax({
-        type: 'POST',
-        url: '/Ativo/BuscarAtivo',
-        data: {
-            Codigo: Codigo
-        },
-        async: true,
-        success: function (result) {
-
-            if (result != null) {
-
-                $('#novoAtivo').modal('show');
-
-                $("#txtId").val(result.codigo);
-                $("#txtIdNotaFiscal").val(result.notaFiscal.codigo);
-                $("#txtOperacao").val(1);
-                $("#txtPlaca").val(result.placa);
-                $("#txtTag").val(result.tag);
-                $("#cbbEstado").val(result.estado);
-                $("#txtObservacao").val(result.observacao);
-                $("#txtDescricao").val(result.descricao);
-                $('#cbbTpAtivo').selectpicker('val', result.tpAtivoCodigo);
-                $("#txtMarca").val(result.marca);
-                $("#txtNumSerie").val(result.numeroSerie);
-                $("#txtModelo").val(result.modelo);
-                //$("#txtValor").val(result.valor);
-
-                /*if (result.tpAtivoCodigo == 3 && result.veiculo != null) {
-                    $('#sala').hide();
-                    $('#marcaMod').hide();
-                    $('#marcaModV').show();
-                    $('#AnoVeiculo').show();
-                    $('#upCRLV').show();
-                    $('#upDut').show();
-
-                    $("#txtMarca").removeAttr('required');
-                    $("#txtModelo").removeAttr('required');
-                    $("#txtNumeroNota").removeAttr('required');
-                    $("#txtValorNota").removeAttr('required');
-                    $("#txtDataEmissao").removeAttr('required');
-                    $("#txtFornecedor").removeAttr('required');
-                    $("#txtCnpj").removeAttr('required');
-
-                    $('#txtCor').val(result.veiculo.cor);
-                    $('#txtPlavaV').val(result.veiculo.placa);
-                    $('#codFipe').val(result.veiculo.fipe.codigo); 
-
-                    var parts = result.veiculo.fipe.codigo.split('/');
-
-                    $('#cbbtpVeiculo').val(parts[0]);
-                    buscaMarcas(parts[0], parts, result.veiculo.fipe.modelo);
-
-                    //$('#cbbModeloV').val(result.veiculo.fipe.modelo);
-                   
-
-                    $('#cbbMarcaV').val(parts[2]);
-                    buscaModelos(parts[2])
-
-                    $('#cbbModeloV').val(parts[3]);
-                    buscaVersoes(parts[3])
-
-                    $('#cbbAnoVeiculo').val(parts[4]);    
-
-                    registraFipe(parts[4])
-                    
-
-                    if (result.veiculo.crlv != null) {
-                        $('#hdCRLV').val(result.veiculo.crlv);
-                        $('#CRLV').show();
-                        $("#nomeCRLV").attr('src', result.veiculo.crlv); 
-                    }
-
-                    if (result.veiculo.dut != null) {
-                        $('#hdDUT').val(result.veiculo.dut);
-                        $('#DUT').show();
-                        $("#nomeDUT").attr('src', result.veiculo.dut);
-                    }
-
-                    
-                }
-                else {
-                    $('#sala').show();
-                    $('#marcaMod').show();
-                    $('#marcaModV').hide();
-                    $('#AnoVeiculo').hide();
-                    $('#upCRLV').hide();
-                    $('#upDut').hide();
-                    $('#InfoVeiculo').hide();
-
-
-                    $("#txtMarca").Attr('required', 'required');
-                    $("#txtModelo").Attr('required', 'required');
-                    $("#txtNumeroNota").Attr('required', 'required');
-                    $("#txtValorNota").Attr('required', 'required');
-                    $("#txtDataEmissao").Attr('required', 'required');
-                    $("#txtFornecedor").Attr('required', 'required');
-                    $("#txtCnpj").Attr('required', 'required');
-                }*/
-
-                if (result.imagens != null)
-                    MostraImagens(result.imagens);
-
-                if (result.anexo != null)
-                {
-                    $("#nomeAnexo").val(result.anexo.nome);
-                    $('#linkAnexo').attr('href', '/Ativo/BaixarAnexo/' + result.codigo);
-                    $("#anexo").show(300);
-                }
-
-                if (result.notaFiscal.codigo > 0) {
-                    $("#txtFornecedor").val(result.notaFiscal.fornecedor);
-                    document.getElementById('txtDataEmissao').value = ObterDataInput(result.notaFiscal.dataEmissao);
-                    $("#txtValorNota").val(result.notaFiscal.valorNota);
-                    $("#txtNumeroNota").val(result.notaFiscal.codigoNota);
-                    //$("#txtValor").val(result.notaFiscal.valorNota);
-                }
-                else {
-                    $("#txtValorNota").val(result.valor);
-
-                }
-
-                $("#divLoading").hide(400);
-
-            }
-
-        },
-        error: function (XMLHttpRequest, txtStatus, errorThrown) {
-            alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(400);
-        }
-    });
-};
 function ObterDataInput(Data) {
     var split = Data.split('-');
     if (split.length > 2) {
@@ -1968,7 +1470,7 @@ function GravarInventario() {
                 type: 'POST',
                 url: '/Ativo/Inventariar',
                 data: {
-                    Codigo: Codigo, Observacao: Observacao, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude
+                    Codigo: ativo, Observacao: obs, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude
                 },
                 success: function (result) {
                     $('#inventario').modal('hide');
@@ -2015,3 +1517,44 @@ function GravarInventario() {
 
     });
 }
+
+function ObterInventario() {
+    $("#divLoading").show(300);
+    document.getElementById('btnPesquisar').disabled = true;
+
+    var dtIni = $("#txtDtIni").val();    
+    var dtFim = $("#txtDtFim").val();    
+    var regiao = parseInt($("#cbbRegiaoPesq").val());
+    var filial = parseInt($("#cbbFilialPesq").val());
+
+    var Texto = "";
+
+    $.ajax({
+        type: 'POST',
+        url: '/Inventario/Buscar',
+        data: { DtIni: dtIni, DtFim: dtFim, Regiao: regiao, Filial: filial },
+        success: function (result) {
+            if (result != null && result.length > 0) {
+                PreencherTabela(result);
+            }
+            else {
+               
+                Texto = "Nenhum Item Encontrado!";
+
+               
+                $("#tbbAtivo").hide(0);
+                
+                LimparTabela();
+            }
+            $("#divLoading").hide(300);
+            document.getElementById('btnPesquisar').disabled = false;
+
+        },
+        error: function (XMLHttpRequest, txtStatus, errorThrown) {
+            alert("Status: " + txtStatus); alert("Error: " + errorThrown);
+            $("#divLoading").hide(300);
+            document.getElementById('btnPesquisar').disabled = false;
+
+        }
+    });
+};

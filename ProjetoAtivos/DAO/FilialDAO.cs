@@ -313,7 +313,7 @@ namespace ProjetoAtivos.DAO
         {
             b.getComandoSQL().Parameters.Clear();
 
-            b.getComandoSQL().CommandText = @"select f.fil_codigo, f.fil_razao, f.fil_cnpj, f.fil_stativo,e.end_codigo, e.end_logradouro, e.end_numero, e.end_referencia,  e.end_bairro,  e.end_cep,                                          e.end_cidade, e.end_estado, p.pes_codigo, p.pes_nome, r.reg_codigo, r.reg_descricao
+            b.getComandoSQL().CommandText = @"select f.fil_codigo, f.fil_razao, f.fil_cnpj, f.fil_stativo,e.end_codigo, e.end_logradouro, e.end_numero, e.end_referencia,  e.end_bairro,  e.end_cep, e.end_cidade, e.end_estado, p.pes_codigo, p.pes_nome, r.reg_codigo, r.reg_descricao, reg_stativo
                                               from Filial f 
                                               inner join Endereco e on f.end_codigo = e.end_codigo
                                               inner join Pessoa p on f.pes_codigo = p.pes_codigo

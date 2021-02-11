@@ -30,5 +30,10 @@ namespace ProjetoAtivos.Models
 
         }
 
+        internal List<object> Buscar(string dtIni, string dtFim, int regiao, int filial)
+        {
+            return new InventarioDAO().Buscar(dtIni, dtFim, regiao, filial);
+        }
+
     }
 }

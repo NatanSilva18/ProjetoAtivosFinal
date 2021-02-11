@@ -1960,15 +1960,15 @@ function GravarInventario() {
         var ativo = $('#idAtivoInventario').val();
         var obs = $('#txtObservacaoInv').val();
 
-        var VerificaImagem = $('#minhaImagemHidden').val();
+        var VerificaImagem = $('#minhaImagemHiddenInventario').val();
         if (VerificaImagem != "") {
-            var Imagem = $('#minhaImagemHidden').val();
+            var Imagem = $('#minhaImagemHiddenInventario').val();
 
             $.ajax({
                 type: 'POST',
                 url: '/Ativo/Inventariar',
                 data: {
-                    Codigo: Codigo, Observacao: Observacao, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude
+                    Codigo: ativo, Observacao: obs, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude
                 },
                 success: function (result) {
                     $('#inventario').modal('hide');
