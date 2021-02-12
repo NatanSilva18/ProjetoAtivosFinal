@@ -47,11 +47,11 @@ namespace ProjetoAtivos.DAO
                     Dados.Add(new
                     {
                         Codigo = Convert.ToInt32(dt.Rows[i]["iv_codigo"]),
-                        Data = Convert.ToDateTime(dt.Rows[i]["iv_data"]),
+                        Data = Convert.ToDateTime(dt.Rows[i]["iv_data"]).ToString("dd/MM/yyyy"),
                         Filial = new FilialDAO().BuscarFilial(Convert.ToInt32(dt.Rows[i]["fil_codigo"])),
-                        Ativo = new AtivoDAO().BuscarAtivo(Convert.ToInt32(dt.Rows[i]["ati_codigo"])),
+                        Ativo = new AtivoDAO().BuscarObject(Convert.ToInt32(dt.Rows[i]["ati_codigo"])),
                         Obs = dt.Rows[i]["iv_obs"].ToString(),
-                        Imagem = new ImagemDAO().Buscar(Convert.ToInt32(dt.Rows[i]["img_codigo"]))                        
+                        Imagem = new ImagemDAO().Buscar(Convert.ToInt32(dt.Rows[i]["img_codigo"])).GetFoto()                        
                     });
                 }
             }
@@ -72,28 +72,29 @@ namespace ProjetoAtivos.DAO
                 b.getComandoSQL().Parameters.AddWithValue("@fil", filial);
             }
 
-            if(dtIni != "")
+            if(dtIni != null)
             {
-                if(dtFim != "")
+                if(dtFim != null)
                 {
-                    where += " and iv_date between @dtIni and @dtFim";
+                    where += " and iv_data between @dtIni and @dtFim";
                     b.getComandoSQL().Parameters.AddWithValue("@dtFim", dtFim);
                 }
                 else
                 {
-                    where += " and iv_date >= @dtIni";
+                    where += " and iv_data >= @dtIni";
                 }
                 b.getComandoSQL().Parameters.AddWithValue("@dtIni", dtIni);
             }
             else
+            if (dtFim != null)
             {
-                where += " and iv_date <= @dtFim";
+                where += " and iv_data <= @dtFim";
                 b.getComandoSQL().Parameters.AddWithValue("@dtFim", dtFim);
             }
 
             b.getComandoSQL().CommandText = @"select * from inventario i
                                                inner join filial f on f.fil_codigo = i.fil_codigo
-                                               where "+ where + " order by fil_codigo, iv_date";
+                                               where "+ where + " order by i.fil_codigo, iv_data";
 
             b.getComandoSQL().Parameters.AddWithValue("@reg", regiao);
 
@@ -143,6 +144,7 @@ namespace ProjetoAtivos.DAO
 
             }
 
+            b.FinalizaTransacao(ok);
             return ok;
         }
     }

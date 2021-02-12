@@ -3,6 +3,10 @@
     ViewData["Title"] = "Index";
 }
 
+@section tittle{
+    Inventário
+}
+
 @section scripts{
     <script type="text/javascript" src="js/Inventario/Index.js?@DateTime.Now"></script>
     <script type="text/javascript" src="~/js/Inventario/Index.js?@DateTime.Now"></script>
@@ -40,7 +44,7 @@
                                 <div class="input-group-append">
                                     <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
                                 </div>
-                                <input type="date" name="txtDtIni" id="txtDtIni" class="form-control" placeholder="Data Início" value="" required autofocus autocomplete="off" />
+                                <input type="date" name="txtDtIni" id="txtDtIni" class="form-control" placeholder="Data Início" value="" autofocus autocomplete="off" />
 
                             </div>
                         </div>
@@ -53,7 +57,7 @@
                                 <div class="input-group-append">
                                     <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
                                 </div>
-                                <input type="date" name="txtDtFim" id="txtDtFim" class="form-control" placeholder="Data Fim" value="" required autocomplete="off" />
+                                <input type="date" name="txtDtFim" id="txtDtFim" class="form-control" placeholder="Data Fim" value="" autocomplete="off" />
 
                             </div>
                         </div>
@@ -91,12 +95,12 @@
                             <label for="btnPesquisar" style="color: white">.</label>
                             <div class="input-group">
                                 <div class="input-group-append">
-                                     </div>
+                                </div>
                                 <button type="submit" id="btnPesquisar" name="btnPesquisar" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Pesquisar Regionais"><i class="fas fa-search"></i> <span>Buscar</span></button>
                             </div>
                         </div>
                     </div>
-                </div>                
+                </div>
 
             </div>
         </form>
@@ -116,3 +120,64 @@
     </div>
 </div>
 
+<div id="modalLocalizacao" class="modal fade bd-example-modal-lg" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="localizacaoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Localização Ativo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="form-group">
+                        <div id="map" style="height: 400px">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-outline-info btn-md" data-dismiss="modal">Fechar <i class="fas fa-times ml-1"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="galeria" class="modal fade bd-example-modal-lg" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="localizacaoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Galeria Ativo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="form-group">
+                        <div id="carouselExampleIndicators" class="carousel carousel-dark slide " data-ride="carousel">
+
+                            <ol class="carousel-indicators" id="headerGaleria">
+                            </ol>
+                            <div class="carousel-inner" id="corpoGaleria">
+                            </div>
+                            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true" style="color:black;"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true" style="color:black;"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-outline-info btn-md" data-dismiss="modal">Fechar <i class="fas fa-times ml-1"></i></button>
+            </div>
+        </div>
+    </div>
+</div>

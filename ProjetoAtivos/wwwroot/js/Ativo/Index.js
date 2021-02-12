@@ -1982,22 +1982,14 @@ function GravarInventario() {
                         })
                     }
                     else {
-                        if (Codigo == 0) {
+                       
                             Swal.fire({
                                 title: 'Sucesso',
                                 type: 'success',
                                 text: 'Ativo Inventariado com Sucesso',
                                 timer: 5000
                             })
-                        }
-                        else {
-                            Swal.fire({
-                                title: 'Sucesso',
-                                type: 'success',
-                                text: 'Ativo Inventariado com Sucesso',
-                                timer: 5000
-                            })
-                        }
+                        
                     }                   
 
                     $("#divLoading").hide();

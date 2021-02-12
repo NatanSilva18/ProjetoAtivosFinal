@@ -1139,5 +1139,36 @@ select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_plac
                 return null;
 
         }
+
+        public object BuscarObject(int cod)
+        {
+            string Txt = "";
+
+            b.getComandoSQL().CommandTimeout = 0;
+            b.getComandoSQL().Parameters.Clear();
+
+
+
+
+            b.getComandoSQL().CommandText = @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                   from Ativos a 
+                   LEFT join imagem i on a.ati_codigo = i.ati_codigo
+                   LEFT join localizacao l on l.img_codigo = i.img_codigo
+                   left outer join Sala s on s.sal_codigo = a.sal_codigo
+                   inner join Filial f on s.fil_codigo = f.fil_codigo
+                   inner join Regional r on r.reg_codigo = f.reg_codigo
+                   left outer join nota_fiscal nf on nf.nt_codigo = a.nt_codigo  
+                   where a.ati_codigo = @cod
+                   group by a.ati_codigo";
+                     
+            b.getComandoSQL().Parameters.AddWithValue("@cod", cod);
+
+            DataTable dt = b.ExecutaSelect();
+
+            if (dt.Rows.Count > 0)
+                return TableToListAtivos(dt).FirstOrDefault();
+            else
+                return null;
+        }
     }
 }

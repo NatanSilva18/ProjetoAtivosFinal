@@ -419,7 +419,7 @@ function funcaoTable(NameTable) {
                         if (rowData[7] == 1)
                             $(td).css('border-left', '4px solid green');
                         else
-                            $(td).css('border-left', '4px solid red');
+                            $(td).css('border-left', '4px solid green');
 
                     }
                 }
@@ -485,7 +485,7 @@ function funcaoTable(NameTable) {
                         if (rowData[7] == 1)
                             $(td).css('border-left', '4px solid green');
                         else
-                            $(td).css('border-left', '4px solid red');
+                            $(td).css('border-left', '4px solid green');
                     }
                 }
             ]
@@ -511,7 +511,8 @@ function PreencherTabela(dados) {
                 <th scope="col">Valor</th>\
                 <th scope="col">Estado</th>\
                 <th scope="col">Filial</th>\
-                <th scope="col" style="width: 6%;">Status</th>\
+                <th scope="col" >Data Inventário</th>\
+                <th scope="col">Obs</th>\
                 <th scope="col" style="display:none;"></th>\
                 <th scope="col"></th>\
             </tr>\
@@ -519,39 +520,33 @@ function PreencherTabela(dados) {
         <tbody>';
     $.each(dados, function () {
         if (this.notaFiscal == "") 
-            ValorAtivo = this.valorAtivo;
+            ValorAtivo = this.ativo.valorAtivo;
         else
-            ValorAtivo = this.valorNota;
+            ValorAtivo = this.ativo.valorNota;
 
-        if (this.ativo.status == 1) {
-            if (this.imagem != "") {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td onclick="javascript:ObterImagens(' + this.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem.foto + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.ativo.placa + '</td><td>' + this.ativo.descricao + '</td><td>R$' + this.ativo.Valor + '</td><td>' + this.ativo.estado + '</td><td>' + this.ativo.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
-                txt += '<a role="button" class="btn btn-warning" href="javascript:UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>';
-                txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
-                txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>&nbsp;';
-                txt += '<a role="button" class="btn btn-info" href="javascript: Inventariar(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
-            }
+       /* if (this.ativo.status == 1) {
+            if (this.imagem != "") {*/
+        txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td onclick="javascript:ObterImagens(' + this.ativo.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.ativo.placa + '</td><td>' + this.ativo.descricao + '</td><td>R$' + ValorAtivo + '</td><td>' + this.ativo.estado + '</td><td>' + this.ativo.razao + '</td><td>' + this.data + '</td><td>' + this.obs + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
+               // txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
+                txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.ativo.latitude + ',' + this.ativo.longitude + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>&nbsp;';
+                
+        /*    }
             else {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.ativo.placa + '</td><td>' + this.ativo.descricao + '</td><td>R$' + ativo.valor + '</td><td>' + this.ativo.estado + '</td><td>' + this.ativo.razao + '</td><td>' + Status(this.ativo.status) + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
-                txt += '<a role="button" class="btn btn-warning" href="javascript:UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
+                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.ativo.placa + '</td><td>' + this.ativo.descricao + '</td><td>R$' + ativo.valor + '</td><td>' + this.ativo.estado + '</td><td>' + this.ativo.razao + '</td><td>' + this.data + '</td><td>' + this.obs + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
                 txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>&nbsp;';
-                txt += '<a role="button" class="btn btn-info" href="javascript: Inventariar(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
+                
             }
         }
         else {
             if (this.imagem != "") {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td onclick="javascript:ObterImagens(' + this.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
-                txt += '<a role="button" class="btn btn-success" href="javascript:Ativar(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>';
-                txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>&nbsp;';
-                txt += '<a role="button" class="btn btn-info" href="javascript: Inventariar(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
+                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td onclick="javascript:ObterImagens(' + this.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.ativo.placa + '</td><td>' + this.ativo.descricao + '</td><td>R$' + ValorAtivo + '</td><td>' + this.ativo.estado + '</td><td>' + this.ativo.razao + '</td><td>' + this.data + '</td><td>' + this.obs + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
+                txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.ativo.latitude + ',' + this.ativo.longitude + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>&nbsp;';
             }
             else {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
-                txt += '<a role="button" class="btn btn-success" href="javascript:Ativar(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>&nbsp;';
-                txt += '<a role="button" class="btn btn-info" href="javascript: Inventariar(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
+                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.ativo.placa + '</td><td>' + this.ativo.descricao + '</td><td>R$' + ValorAtivo + '</td><td>' + this.ativo.estado + '</td><td>' + this.ativo.razao + '</td><td>' + this.data + '</td><td>' + this.obs + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
 
             }
-        }
+        }*/
         txt += '</td></tr>';
         i++;
     });
@@ -568,8 +563,8 @@ function ObterDataInput(Data) {
         return NovaData;
     }
 }
-function BuscarLocalizacao(Codigo) {
-    $.ajax({
+function BuscarLocalizacao(latitude, longitude) {
+    /*$.ajax({
         type: 'POST',
         url: '/Ativo/BuscarLocalizacao',
         data: { Codigo: Codigo },
@@ -584,7 +579,9 @@ function BuscarLocalizacao(Codigo) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
             $("#divLoading").hide(300);
         }
-    });
+    });*/
+
+    Mapa(latitude, longitude);
 }
 function Mapa(latitude, longitude) {
     $('#modalLocalizacao').modal('show');
