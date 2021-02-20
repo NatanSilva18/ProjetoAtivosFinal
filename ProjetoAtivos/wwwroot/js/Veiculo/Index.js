@@ -1,10 +1,4 @@
-﻿$(document).ready(function () {
-    CarregarRegionais();
-    CarregarTiposAtivo();
-    CarregarRegionaisPesq();
-    $('.money').mask('000.000.000.000.000,00', { reverse: true });
-
-});
+﻿
 function LimparCombo(Name) {
     var select = document.getElementById(Name);
     var length = select.options.length;
@@ -14,7 +8,7 @@ function LimparCombo(Name) {
         }
     }
 };
-function CarregarTiposAtivo() {
+function CarregarTiposVeiculo() {
     var cbbTpAtivo = document.getElementById("cbbTpAtivo");
     if (cbbTpAtivo != null) {
         var Chave = "";
@@ -81,13 +75,13 @@ function CarregarRegionaisPesq() {
 }
 
 
-function CarregarRegionais() {
+function CarregarRegionaisVeiculo() {
     var regiao = parseInt($("#regional").val());
     var filial = parseInt($("#filial").val());
     var regiaoFilial = parseInt($("#regiaoFilial").val());
 
-    $("#cbbRegional").html('<option value="" selected>Regionais</option>');
-    var cbbRegional = document.getElementById("cbbRegional");
+    $("#cbbRegionalVeiculo").html('<option value="" selected>Regionais</option>');
+    var cbbRegional = document.getElementById("cbbRegionalVeiculo");
     if (cbbRegional != null) {
         var Chave = "";
         var Filtro = "Descricao";
@@ -109,18 +103,18 @@ function CarregarRegionais() {
                     }
 
                     if (filial != 0) {
-                        $("#cbbRegional").val(regiaoFilial).change();;
-                        $("#cbbRegional").attr('disabled', 'disabled');
-                        CarregarFiliais(cbbRegional);
+                        $("#cbbRegionalVeiculo").val(regiaoFilial).change();;
+                        $("#cbbRegionalVeiculo").attr('disabled', 'disabled');
+                        CarregarFiliaisVeiculo(cbbRegional);
                     }
                     else
                         if (regiao != 0) {
-                            $("#cbbRegional").val(regiao).change();
-                            $("#cbbRegional").attr('disabled', 'disabled');
-                            CarregarFiliais(cbbRegional);
+                            $("#cbbRegionalVeiculo").val(regiao).change();
+                            $("#cbbRegionalVeiculo").attr('disabled', 'disabled');
+                            CarregarFiliaisVeiculo(cbbRegional);
                         }
                         else {
-                            $("#cbbRegional").removeAttr('disabled');
+                            $("#cbbRegionalVeiculo").removeAttr('disabled');
                         }
                 }
             },
@@ -130,7 +124,7 @@ function CarregarRegionais() {
             }
         });
     }
-    $('#cbbRegional').selectpicker('refresh');
+    $('#cbbRegionalVeiculo').selectpicker('refresh');
 
 };
 
@@ -174,16 +168,15 @@ function CarregarFiliaisPesq(regiao) {
 };
 
 
-function CarregarFiliais(Combo) {
-    document.getElementById("cbbFilial").required = true;
-
+function CarregarFiliaisVeiculo(Combo) {
+    document.getElementById("cbbFilialVeiculo").required = true;
     var filial = parseInt($("#filial").val());
 
     var Codigo = Combo.value;
-    var cbbFilial = document.getElementById("cbbFilial");
-    if (cbbFilial != null) {
-        document.getElementById('linhaFilial').style.display = "block ";
-        document.getElementById("cbbFilial").required = true;
+    var cbbFilialVeiculo = document.getElementById("cbbFilialVeiculo");
+    if (cbbFilialVeiculo != null) {
+        document.getElementById('linhaFilialVeiculo').style.display = "block ";
+        document.getElementById("cbbFilialVeiculo").required = true;
 
         $.ajax({
             type: 'POST',
@@ -197,16 +190,16 @@ function CarregarFiliais(Combo) {
                         var opt = document.createElement("option");
                         opt.value = result[i].codigo;
                         opt.text = result[i].razao;
-                        cbbFilial.add(opt, cbbFilial.options[i + 1]);
+                        cbbFilialVeiculo.add(opt, cbbFilialVeiculo.options[i + 1]);
                     }
 
                     if (filial != 0) {
-                        $("#cbbFilial").val(filial).change();
-                        $("#cbbFilial").attr('disabled', 'disabled');
-                        BuscarSalas(cbbFilial);
+                        $("#cbbFilialVeiculo").val(filial).change();
+                        $("#cbbFilialVeiculo").attr('disabled', 'disabled');
+                        //BuscarSalas(cbbFilialVeiculo);
                     }
                     else
-                        $("#cbbFilial").removeAttr('disabled');
+                        $("#cbbFilialVeiculo").removeAttr('disabled');
 
                 }
             },
@@ -216,7 +209,7 @@ function CarregarFiliais(Combo) {
             }
         });
     }
-    $('#cbbFilial').selectpicker('refresh');
+    $('#cbbFilialVeiculo').selectpicker('refresh');
 
 
 };
@@ -274,7 +267,7 @@ function LimparTabela() {
     var Radio = document.getElementsByName("rdAtivo"); Radio[0].checked = true;
 };
 
-function LimparCampos() {
+function LimparCamposVeiculo() {
     $("#txtId").val("0");
     $("#txtPlaca").val("");
     //$("#txtTag").val("");
@@ -294,25 +287,25 @@ function LimparCampos() {
 
     $("#imagem").html("");
     $("#minhaImagemHidden").val("");
-    document.getElementById("fuArquivo").value = "";
+    document.getElementById("fuArquivoVeiculo").value = "";
     document.getElementById("labelFoto").innerHTML = 'Selecione uma Foto';
     $("#cardRegional").show();
     $("#modalArquivo").show();
 
-    document.getElementById("staticBackdropLabel").innerHTML = "Cadastro de Ativos";
+    document.getElementById("staticBackdropLabel").innerHTML = "Cadastro de Veículo";
 
-    document.getElementById("fuArquivo").required = true;
+    document.getElementById("fuArquivoVeiculo").required = true;
 
     $("#txtFornecedor").val("");
     $("#txtDataEmissao").val("");
     $("#txtValorNota").val("");
     $("#txtCnpj").val("");
     $("#txtNumeroNota").val("");
-    $("#hdAnexo").val("");
-    $("#nomeAnexo").val("");
-    $('#linkAnexo').attr('href', '');
+    $("#hdAnexoVeiculo").val("");
+    $("#nomeAnexoVeiculo").val("");
+    $('#linkAnexoVeiculo').attr('href', '');
 
-    $("#anexo").hide();
+    $("#anexoVeiculo").hide();
 
     $('#sala').hide();
     $('#marcaMod').hide();
@@ -540,26 +533,26 @@ function PreencherTabela(dados) {
 
         if (this.stAtivo == 1) {
             if (this.imagem != "") {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td onclick="javascript:ObterImagens(' + this.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo+'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
-                txt += '<a role="button" class="btn btn-warning" href="javascript:UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
-                txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
-                txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>';
+                txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(); mostraDivAtivo(false); UnlockFieldsVeiculo(); AlterarVeiculo(' + this.codigo + ');"><td onclick="javascript:ObterImagensVeiculo(' + this.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo+'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
+                txt += '<a role="button" class="btn btn-warning" href="javascript: mostraDivVeiculo(); mostraDivAtivo(false); UnlockFieldsVeiculo(); AlterarVeiculo(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
+                txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogicoVeiculo(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
+                txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacaoVeiculo(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>';
             }
             else {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
-                txt += '<a role="button" class="btn btn-warning" href="javascript:UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
-                txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
+                txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(); mostraDivAtivo(false);UnlockFieldsVeiculo(); AlterarVeiculo(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
+                txt += '<a role="button" class="btn btn-warning" href="javascript: mostraDivVeiculo(); mostraDivAtivo(false); UnlockFieldsVeiculo(); AlterarVeiculo(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
+                txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogicoVeiculo(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
             }
         }
         else {
             if (this.imagem != "") {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td onclick="javascript:ObterImagens(' + this.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
-                txt += '<a role="button" class="btn btn-success" href="javascript:Ativar(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>';
-                txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>';
+                txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(); mostraDivAtivo(false);UnlockFieldsVeiculo(); AlterarVeiculo(' + this.codigo + ');"><td onclick="javascript:ObterImagensVeiculo(' + this.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
+                txt += '<a role="button" class="btn btn-success" href="javascript:AtivarVeiculo(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>';
+                txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacaoVeiculo(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>';
             }
             else {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
-                txt += '<a role="button" class="btn btn-success" href="javascript:Ativar(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>';
+                txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(); mostraDivAtivo(false);UnlockFieldsVeiculo(); AlterarVeiculo(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
+                txt += '<a role="button" class="btn btn-success" href="javascript:AtivarVeiculo(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>';
 
             }
         }
@@ -571,7 +564,7 @@ function PreencherTabela(dados) {
     funcaoTable("#tableAtivo");
     Rolagem();
 }
-function ObterAtivos() {
+function ObterVeiculos() {
     $("#divLoading").show(300);
     document.getElementById('btnPesquisar').disabled = true;
 
@@ -653,7 +646,7 @@ function AvaliarValorAtivo() {
         document.getElementById('').value = 0; //valor tipo ativo
     }
 }
-function Gravar() {
+function GravarVeiculo() {
     $("#divLoading").show();
     document.getElementById('btnConfirmar').disabled = true;
 
@@ -664,8 +657,8 @@ function Gravar() {
 
             var TipoAtivo = 3;
             var Codigo = $('#txtId').val();
-            var Regional = $('#cbbRegional').val();
-            var Filial = $('#cbbFilial').val();
+            var Regional = $('#cbbRegionalVeiculo').val();
+            var Filial = $('#cbbFilialVeiculo').val();
             
             var Placa = $('#txtPlaca').val();
             var Tag = '';
@@ -685,8 +678,8 @@ function Gravar() {
             var Cnpj = document.getElementById('txtCnpj').value;
             var VerificaImagem = $('#minhaImagemHidden').val();
 
-            var anexo = $("#hdAnexo").val();
-            var nomeAnexo = $("#nomeAnexo").val();            
+            var anexo = $("#hdAnexoVeiculo").val();
+            var nomeAnexoVeiculo = $("#nomeAnexoVeiculo").val();            
             
 
             if (VerificaImagem != "") {
@@ -704,10 +697,10 @@ function Gravar() {
                         data: {
                             Codigo: Codigo, Regional: Regional, Filial: Filial, Sala: Sala, Placa: Placa, Tag: Tag, Estado: Estado, Observacao: Observacao,
                             Descricao: Descricao, TipoAtivo: TipoAtivo, Marca: Marca, NumeroSerie: NumeroSerie, Modelo: Modelo, Valor: Valor, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude,
-                            CodigoNota: CodigoNota, NumeroNota: NumeroNota, ValorNota: ValorNota, DataEmissao: DataEmissao, Fornecedor: Fornecedor, Cnpj: Cnpj, NomeAnexo: nomeAnexo, Anexo: anexo
+                            CodigoNota: CodigoNota, NumeroNota: NumeroNota, ValorNota: ValorNota, DataEmissao: DataEmissao, Fornecedor: Fornecedor, Cnpj: Cnpj, nomeAnexoVeiculo: nomeAnexoVeiculo, Anexo: anexo
                         },
                         success: function (result) {
-                            $('#novoAtivo').modal('hide');
+                            $('#novoVeiculo').modal('hide');
 
                             if (result.length > 0) {
                                 Swal.fire({
@@ -737,7 +730,7 @@ function Gravar() {
                             }
                             document.getElementById('btnConfirmar').disabled = false;
                             if ($("#cbbRegiaoPesq").val() != "")
-                                ObterAtivos();
+                                ObterVeiculos();
 
                             $("#divLoading").hide();
                         },
@@ -782,11 +775,11 @@ function Gravar() {
                         data: {
                             Codigo: Codigo, Regional: Regional, Filial: Filial, Placa: Placa, Tag: Tag, Estado: Estado, Observacao: Observacao,
                             Descricao: Descricao, TipoAtivo: TipoAtivo, Marca: Marca, NumeroSerie: NumeroSerie, Modelo: Modelo, Valor: Valor, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude,
-                            CodigoNota: CodigoNota, NumeroNota: NumeroNota, ValorNota: ValorNota, DataEmissao: DataEmissao, Fornecedor: Fornecedor, Cnpj: Cnpj, NomeAnexo: nomeAnexo, Anexo: anexo,
+                            CodigoNota: CodigoNota, NumeroNota: NumeroNota, ValorNota: ValorNota, DataEmissao: DataEmissao, Fornecedor: Fornecedor, Cnpj: Cnpj, nomeAnexoVeiculo: nomeAnexoVeiculo, Anexo: anexo,
                             Cor: cor, PlacaVeiculo: placaVeiculo, CRLV: crlv, DUT: dut, FIPE: fipe, ModeloV: modeloV
                         },
                         success: function (result) {
-                            $('#novoAtivo').modal('hide');
+                            $('#novoVeiculo').modal('hide');
 
                             if (result.length > 0) {
                                 Swal.fire({
@@ -816,7 +809,7 @@ function Gravar() {
                             }
                             document.getElementById('btnConfirmar').disabled = false;
                             if ($("#cbbRegiaoPesq").val() != "")
-                                ObterAtivos();
+                                ObterVeiculos();
 
                             $("#divLoading").hide();
                         },
@@ -839,7 +832,7 @@ function Gravar() {
         document.getElementById('btnConfirmar').disabled = false;
   
 };
-function ExcluirLogico(Codigo) {
+function ExcluirLogicoVeiculo(Codigo) {
     Swal.fire({
         title: 'Você tem Certeza?',
         text: "Você não poderá reverter isso!",
@@ -868,7 +861,7 @@ function ExcluirLogico(Codigo) {
                             text: result,
                             timer: 5000
                         })
-                        ObterAtivos();
+                        ObterVeiculos();
                     }
                     else {
                         Swal.fire({
@@ -880,7 +873,7 @@ function ExcluirLogico(Codigo) {
                             confirmButtonColor: '#3085d6',
                         }).then((result) => {
                             if (result.value) {
-                                ObterAtivos();
+                                ObterVeiculos();
                             }
                         })
                     }
@@ -894,7 +887,7 @@ function ExcluirLogico(Codigo) {
     })
 };
 
-function Ativar(Codigo) {
+function AtivarVeiculo(Codigo) {
 
     $.ajax({
         type: 'POST',
@@ -914,7 +907,7 @@ function Ativar(Codigo) {
                     text: result,
                     timer: 5000
                 })
-                ObterAtivos();
+                ObterVeiculos();
             }
             else {
                 var Radio = document.getElementsByName("rdAtivo"); Radio[0].checked = true;
@@ -927,7 +920,7 @@ function Ativar(Codigo) {
                     confirmButtonColor: '#3085d6'
                 }).then((result) => {
                     if (result.value) {
-                        ObterAtivos();
+                        ObterVeiculos();
                     }
                 })
             }
@@ -940,16 +933,15 @@ function Ativar(Codigo) {
     });
 };
 
-function Alterar(Codigo) {
+function AlterarVeiculo(Codigo) {
     $("#divLoading").show();
-
-    LimparCampos();
-    document.getElementById("cbbRegional").removeAttribute("required");
-    document.getElementById("cbbFilial").removeAttribute("required");
+    LimparCamposVeiculo();
+    document.getElementById("cbbRegionalVeiculo").removeAttribute("required");
+    document.getElementById("cbbFilialVeiculo").removeAttribute("required");
     //document.getElementById("cbbSala").removeAttribute("required");
-    document.getElementById("fuArquivo").removeAttribute("required");
+    document.getElementById("fuArquivoVeiculo").removeAttribute("required");
 
-    document.getElementById("staticBackdropLabel").innerHTML = "Alteração de Ativos";
+    document.getElementById("staticBackdropLabel").innerHTML = "Alteração de Veículo";
     $("#cardRegional").hide();
     //$("#modalArquivo").hide();
 
@@ -965,7 +957,7 @@ function Alterar(Codigo) {
 
             if (result != null) {
 
-                $('#novoAtivo').modal('show');
+                $('#novoVeiculo').modal('show');
 
                 $("#txtId").val(result.codigo);
                 $("#txtIdNotaFiscal").val(result.notaFiscal.codigo);
@@ -996,7 +988,8 @@ function Alterar(Codigo) {
                     $("#txtDataEmissao").removeAttr('required');
                     $("#txtFornecedor").removeAttr('required');
                     $("#txtCnpj").removeAttr('required');
-
+                    $("#txtCnpj").val(result.notaFiscal.cnpj);
+                
                     $('#txtCor').val(result.veiculo.cor);
                     $('#txtPlavaV').val(result.veiculo.placa);
                     $('#codFipe').val(result.veiculo.fipe.codigo); 
@@ -1059,9 +1052,10 @@ function Alterar(Codigo) {
 
                 if (result.anexo != null)
                 {
-                    $("#nomeAnexo").val(result.anexo.nome);
-                    $('#linkAnexo').attr('href', '/Ativo/BaixarAnexo/' + result.codigo);
-                    $("#anexo").show(300);
+                    $("#nomeAnexoVeiculo").val(result.anexo.nome);
+                    $('#linkAnexoVeiculo').attr('href', '/Ativo/BaixarAnexo/' + result.codigo);
+                    $('#hdAnexoVeiculo').val(result.anexo.base64);
+                    $("#anexoVeiculo").show(300);
                 }
 
                 if (result.notaFiscal.codigo > 0) {
@@ -1094,7 +1088,7 @@ function ObterDataInput(Data) {
         return NovaData;
     }
 }
-function BuscarLocalizacao(Codigo) {
+function BuscarLocalizacaoVeiculo(Codigo) {
     $.ajax({
         type: 'POST',
         url: '/Ativo/BuscarLocalizacao',
@@ -1140,7 +1134,7 @@ function Mapa(latitude, longitude) {
     });
 };
 document.querySelector('.custom-file-input').addEventListener('change', function (e) {
-    var fileName = document.getElementById("fuArquivo").files[0].name;
+    var fileName = document.getElementById("fuArquivoVeiculo").files[0].name;
     var nextSibling = e.target.nextElementSibling;
     nextSibling.innerText = fileName;
 });
@@ -1206,7 +1200,7 @@ function MostraImagens(imgs) {
 
 function SalvarFotos() {
 
-    var arquivos = document.getElementById("fuArquivo");
+    var arquivos = document.getElementById("fuArquivoVeiculo");
     if (arquivos.files.length > 0) {
         $("#divLoading").show(0);
 
@@ -1295,7 +1289,7 @@ function ExcluirFoto(Codigo) {
         Foto.remove();
         $("#txtQtd").val(parseInt($("#txtQtd").val()) - 1);
 
-        document.getElementById("fuArquivo").value = "";
+        document.getElementById("fuArquivoVeiculo").value = "";
         document.getElementById("labelFoto").innerHTML = 'Selecione uma Foto';
 
         var bases = $("#minhaImagemHidden").val().split("**Separdor Imagem**");
@@ -1328,7 +1322,7 @@ function Mensagem(div, msg) {
     $("#" + div).hide(300);
 };
 
-function UnlockFields() {
+function UnlockFieldsVeiculo() {
     //document.getElementById('txtTag').disabled = false;
     document.getElementById('txtObservacao').disabled = false;
     document.getElementById('txtDescricao').disabled = false;
@@ -1338,11 +1332,11 @@ function UnlockFields() {
     //document.getElementById('txtMarca').disabled = false;
     //document.getElementById('txtNumSerie').disabled = false;
     //document.getElementById('txtModelo').disabled = false;
-    document.getElementById('fuArquivo').disabled = false;
+    document.getElementById('fuArquivoVeiculo').disabled = false;
     document.getElementById('cbbEstado').disabled = false;
 };
 
-function LockFields() {
+function LockFieldsVeiculo() {
     //document.getElementById('txtTag').disabled = true;
     document.getElementById('txtObservacao').disabled = true;
     document.getElementById('txtDescricao').disabled = true;
@@ -1351,13 +1345,13 @@ function LockFields() {
     //document.getElementById('txtNumSerie').disabled = true;
     //document.getElementById('txtModelo').disabled = true;
     //document.getElementById('txtValor').disabled = true;
-    document.getElementById('fuArquivo').disabled = true;
+    document.getElementById('fuArquivoVeiculo').disabled = true;
     //$("#cbbTpAtivo").attr("disabled", true);
     $('.selectpicker').selectpicker('refresh');
 
 };
 
-function ValidarPlaca() {
+function ValidarPlacaVeiculo() {
     $("#divLoading").show();
 
     var Placa = document.getElementById('txtPlaca').value;
@@ -1383,7 +1377,7 @@ function ValidarPlaca() {
                 document.getElementById('validaPlaca').value = "1";
             }
             else {
-                UnlockFields();
+                UnlockFieldsVeiculo();
                 document.getElementById('validaPlaca').value = "0";
                 $('#txtDescricao').focus();
             }
@@ -1444,6 +1438,7 @@ function PreencherValor(Combo) {
         success: function (result) {
             if (result != null) {
                 $("#txtValorNota").val(result.valor);
+
             }
             
         },
@@ -1455,12 +1450,12 @@ function PreencherValor(Combo) {
 };
 
 function ModalTipoAtivo() {
-    $('#novoAtivo').modal('hide');
+    $('#novoVeiculo').modal('hide');
     $('#novaTipoAtivo').modal('show');
 }
 function CancelarTipoAtivo() {
     $('#novaTipoAtivo').modal('hide');
-    $('#novoAtivo').modal('show');
+    $('#novoVeiculo').modal('show');
 }
 function LimparCampoTipoAtivo() {
     $("#txtIdTpAtivo").val("0");
@@ -1494,7 +1489,7 @@ function GravarTipoAtivo() {
                     confirmButtonColor: '#3085d6',
                 }).then((result) => {
                     if (result.value) {
-                        $('#novoAtivo').modal('show');
+                        $('#novoVeiculo').modal('show');
                     }
                 })
             }
@@ -1508,9 +1503,9 @@ function GravarTipoAtivo() {
                     confirmButtonColor: '#3085d6',
                 }).then((result) => {
                     if (result.value) {
-                        $('#novoAtivo').modal('show');
+                        $('#novoVeiculo').modal('show');
                         LimparCombo("cbbTpAtivo");
-                        CarregarTiposAtivo();
+                        CarregarTiposVeiculo();
                     }
                 })
 
@@ -1538,7 +1533,7 @@ function AlterarRequeridoPlaca() {
     document.getElementById("cbbRegiaoPesq").required = false;
     document.getElementById("txtPesquisar").required = true;
 };
-function ObterImagens(Codigo) {
+function ObterImagensVeiculo(Codigo) {
     $("#divLoading").show();
 
     $.ajax({
@@ -1575,7 +1570,8 @@ function MontarGaleriaAtivo(dados) {
     $("#divLoading").hide(400);
 };
 
-function LimparAnexo(sulf = "Anexo", dest = "anexo", button ="btnSalvarDoc") {
+function LimparAnexoVeiculo(sulf = "AnexoVeiculo", dest = "anexoVeiculo", button = "btnSalvarDocVeiculo") {
+    
     $("#hd" + sulf).val('');
     $("#nome" + sulf).val('');
 
@@ -1586,8 +1582,9 @@ function LimparAnexo(sulf = "Anexo", dest = "anexo", button ="btnSalvarDoc") {
     $("#" + dest).hide();
 }
 
-function SalvarAnexo(input = "fuDoc", button = 'btnSalvarDoc', sulf = 'Anexo', dest ="anexo", apenaImagens = false) {
+function SalvarAnexoVeiculo(input = "fuDocVeiculo", button = 'btnSalvarDocVeiculo', sulf = 'AnexoVeiculo', dest ="anexoVeiculo", apenaImagens = false) {
 
+    
     var arquivos = document.getElementById(input);
     if (arquivos.files.length > 0) {
         $("#divLoading").show(0);
@@ -1620,10 +1617,10 @@ function SalvarAnexo(input = "fuDoc", button = 'btnSalvarDoc', sulf = 'Anexo', d
                     if (this.id >= 0) {
                         
 
-                        $("#hd" + sulf).val(this.dados);
+                        $("#hd" + sulf+'Veiculo').val(this.dados);
 
                         if (apenaImagens)
-                            $("#nome" + sulf).attr('src', this.dados)
+                            $("#nome" + sulf + 'Veiculo').attr('src', this.dados)
                         else
                             $("#nome" + sulf).val(this.nome);
                         
@@ -1855,7 +1852,7 @@ function registraFipe(x, parts = null, mod = null) {
 
 function SalvarFotosInventario() {
 
-    var arquivos = document.getElementById("fuArquivoInventario");
+    var arquivos = document.getElementById("fuArquivoVeiculoInventario");
     if (arquivos.files.length > 0) {
         $("#divLoading").show(0);
 
@@ -1910,7 +1907,7 @@ function SalvarFotosInventario() {
 
                         $("#imagemInventario").append(txt)
                         //document.getElementById("imagem").innerHTML = txt;
-                        $('#fuArquivoInventario').attr('disabled', 'disabled');
+                        $('#fuArquivoVeiculoInventario').attr('disabled', 'disabled');
                     }
                     if (this.id == -1) {
                         Mensagem("divAlertaInventario", this.dados);
@@ -1945,7 +1942,7 @@ function ExcluirFotoInventario(Codigo) {
         Foto.remove();
         $("#txtQtdInventario").val(parseInt($("#txtQtdInventario").val()) - 1);
 
-        document.getElementById("fuArquivoInventario").value = "";
+        document.getElementById("fuArquivoVeiculoInventario").value = "";
         document.getElementById("labelFotoInventario").innerHTML = 'Selecione uma Foto';
 
         var bases = $("#minhaImagemHiddenInventario").val().split("**Separdor Imagem**");
@@ -1971,7 +1968,7 @@ function ExcluirFotoInventario(Codigo) {
     if (Imagem.childElementCount == 0)
         $("#modalFotosInventario").hide();
 
-    $('#fuArquivoInventario').removeAttr('disabled');
+    $('#fuArquivoVeiculoInventario').removeAttr('disabled');
 };
 
 function Inventariar(x) {
@@ -2043,4 +2040,454 @@ function GravarInventario() {
         }
 
     });
+}
+
+function mostraDivVeiculo(mostrar = true) {
+    let txt = '<div class="modal-dialog modal-xl" role="document">\
+        <div class="modal-content" >\
+                <div class="modal-header">\
+                    <h5 class="modal-title" id="staticBackdropLabel">Cadastrar Veículo</h5>\
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">\
+                        <span aria-hidden="true">&times;</span>\
+                    </button>\
+                </div>\
+                <div class="modal-body">\
+                    <div class="container-fluid">\
+        \
+                        <form name="formRegional" id="formRegional" action="javascript: GravarVeiculo();" method="post">\
+                            <input type="hidden" id="minhaImagemHidden" name="minhaImagemHidden" value="" />\
+                            <input type="hidden" id="validaPlaca" name="validaPlaca" value="0" />\
+        \
+                            <div class="form-group">\
+                                <input type="hidden" name="txtId" id="txtId" value="0" />\
+\
+                                <div class="card mb-4 shadow p-3 mb-5 bg-white rounded" id="cardRegional">\
+                                    <div class="card-header">\
+                                        <i class="fa fa-table"></i>\
+                                        <span><b>Regional e Filial</b></span>\
+                                    </div>\
+                                    <div class="card-body">\
+                                        <div class="row">\
+                                            <div class="col-lg-4">\
+                                                <div class="form-group">\
+                                                    <label for="cbbRegional">Regional <label style="color:red">*</label></label>\
+                                                    <div class="input-group">\
+                                                        <div class="input-group-append">\
+                                                            <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                        </div>\
+                                                        <select id="cbbRegionalVeiculo" name="cbbRegionalVeiculo" class="form-control selectpicker" data-live-search="true" required onchange="javascript:LimparCombo(\'cbbFilialVeiculo\'); CarregarFiliaisVeiculo(this); ">\
+                                                            <option value="" selected>Regionais</option>\
+                                                        </select>\
+                                                    </div>\
+                                                </div>\
+                                            </div>\
+                                            <div class="col-lg-4" id="linhaFilialVeiculo" style="display:none">\
+                                                <div class="form-group">\
+                                                    <label for="cbbFilialVeiculo">Filial <label style="color:red">*</label></label>\
+                                                    <div class="input-group">\
+                                                        <div class="input-group-append">\
+                                                            <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                        </div>\
+                                                        <select id="cbbFilialVeiculo" name="cbbFilialVeiculo" class="form-control selectpicker" data-live-search="true">\
+                                                            <option value="" selected>Filiais da Regional</option>\
+                                                        </select>\
+                                                    </div>\
+                                                </div>\
+                                            </div>\
+\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                <div class="row">\
+                                    <div id="divAlertaPlaca" class="alert alert-danger col-lg-8" role="alert" style="display:none"></div>\
+\
+                                </div>\
+                                <input type="hidden" name="txtIdNotaFiscal" id="txtIdNotaFiscal" value="0" />\
+\
+                                <div class="card card-body" style="border-radius: 4px; border-left: 4px solid blue;">\
+                                    <div class="d-sm-flex align-items-center justify-content-between mb-0">\
+                                        <h1 class="h6 mb-0 text-gray-800">Dados Fiscais</h1>\
+                                    </div>\
+                                    <hr />\
+                                    <div class="row">\
+                                        <div class="col-lg-4">\
+                                            <div class="form-group">\
+                                                <label for="txtNumeroNota">Nº Nota <label style="color:red">*</label></label>\
+                                                <div class="input-group">\
+                                                    <div class="input-group-append">\
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                    </div>\
+                                                    <input class="form-control" type="number" name="txtNumeroNota" id="txtNumeroNota" autocomplete="off" maxlength="30" required />\
+                                                </div>\
+\
+                                            </div>\
+                                        </div>\
+                                        <div class="col-lg-4">\
+                                            <div class="form-group">\
+                                                <label for="txtValorNota">Valor <label style="color:red">*</label></label>\
+                                                <div class="input-group">\
+                                                    <div class="input-group-append">\
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-dollar-sign"></i></div>\
+                                                    </div>\
+                                                    <input class="form-control money" type="text" name="txtValorNota" id="txtValorNota" autocomplete="off" maxlength="30" required />\
+                                                </div>\
+\
+                                            </div>\
+                                        </div>\
+                                        <div class="col-lg-4">\
+                                            <div class="form-group">\
+                                                <label for="txtDataEmissao">Data Emissão <label style="color:red">*</label></label>\
+                                                <div class="input-group">\
+                                                    <div class="input-group-append">\
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-dollar-sign"></i></div>\
+                                                    </div>\
+                                                    <input class="form-control" type="date" name="txtDataEmissao" id="txtDataEmissao" autocomplete="off" maxlength="30" required />\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                    <div class="row">\
+                                        <div class="col-lg-4">\
+                                            <div class="form-group">\
+                                                <label for="txtFornecedor">Fornecedor <label style="color:red">*</label></label>\
+                                                <div class="input-group">\
+                                                    <div class="input-group-append">\
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-dollar-sign"></i></div>\
+                                                    </div>\
+                                                    <input class="form-control" type="text" name="txtFornecedor" id="txtFornecedor" autocomplete="off" maxlength="30" required />\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+                                        <div class="col-lg-4">\
+                                            <div class="form-group">\
+                                                <label for="txtCnpj">CNPJ <label style="color:red">*</label></label>\
+                                                <div class="input-group">\
+                                                    <div class="input-group-append">\
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                    </div>\
+                                                    <input class="form-control" type="text" name="txtCnpj" id="txtCnpj" autocomplete="off" maxlength="30" required data-mask="00.000.000/0000-00" />\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+\
+                                        <div class="col-lg-6">\
+                                            <div class="form-group">\
+                                                <label for="fuDocVeiculo">Documento</label>\
+                                                <div class="input-group">\
+                                                    <div class="custom-file" id="customFile" lang="pt-br">\
+                                                        <input type="file" class="custom-file-input" id="fuDocVeiculo" aria-describedby="fileHelp" onchange="SalvarAnexoVeiculo()">\
+                                                        <label class="custom-file-label" for="fuDocVeiculo" id="labelDocVeiculo">\
+                                                            Selecione o Documento\
+                                                        </label>\
+                                                    </div>\
+                                                    <div class="input-group-append">\
+                                                        <button class="btn btn-success" type="button" id="btnSalvarDocVeiculo" onclick="javascript: SalvarAnexoVeiculo();">Anexar</button>\
+                                                    </div>\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+\
+                                        <div class="col-lg-6" id="anexoVeiculo" style="display:none">\
+                                            <div class="form-group">\
+                                                <label for="nomeAnexoVeiculo" style="color:white">.</label>\
+                                                <input type="hidden" id="hdAnexoVeiculo" name="hdAnexoVeiculo" value="" />\
+\
+                                                <div class="input-group-append">\
+                                                    <a id="linkAnexoVeiculo" href="#" target="_blank" class="stretched-link" style="width: 100%;">\
+                                                        <input class="form-control" type="text" id="nomeAnexoVeiculo" disabled />\
+                                                    </a>\
+                                                    <button class="btn btn-danger" type="button" onclick="javascript: LimparAnexoVeiculo();">X</button>\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+\
+                                        <div id="divAlertaAnexoVeiculo" class="alert alert-danger col-lg-6" role="alert" style="display:none"></div>\
+\
+                                    </div>\
+                                </div>\
+                                <div class="row">\
+                                    <div class="col-lg-4">\
+                                        <div class="form-group">\
+                                            <label for="txtPlaca">Placa <label style="color:red">*</label></label>\
+                                            <div class="input-group">\
+                                                <div class="input-group-append">\
+                                                    <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                </div>\
+                                                <input class="form-control" type="number" name="txtPlaca" id="txtPlaca" required autocomplete="off" maxlength="30" onchange="javascript: ValidarPlacaVeiculo(this);" />\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                    <div class="col-lg-4">\
+                                        <div class="form-group">\
+                                            <label for="txtDescricao">Descricao <label style="color:red">*</label></label>\
+                                            <div class="input-group">\
+                                                <div class="input-group-append">\
+                                                    <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                </div>\
+                                                <input class="form-control" type="text" name="txtDescricao" id="txtDescricao" required autocomplete="off" maxlength="30" disabled />\
+                                            </div>\
+\
+                                        </div>\
+                                    </div>\
+\
+                                    <div class="col-lg-4">\
+                                        <div class="form-group">\
+                                            <label for="cbbEstado">Estado <label style="color:red">*</label></label>\
+                                            <div class="input-group">\
+                                                <div class="input-group-append">\
+                                                    <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-map"></i></div>\
+                                                </div>\
+                                                <select id="cbbEstado" name="cbbEstado" class="form-control" required>\
+                                                    <option value="" selected>Estado</option>\
+                                                    <option value="Novo" selected>Novo</option>\
+                                                    <option value="Usado">Usado</option>\
+                                                </select>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+\
+                                </div>\
+\
+                                <div class="row">\
+                                    <div class="col-lg-12">\
+                                        <div class="form-group">\
+                                            <label for="txtObservacao">Observacao </label>\
+                                            <div class="input-group">\
+                                                <div class="input-group-append">\
+                                                    <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                </div>\
+                                                <input class="form-control" type="text" name="txtObservacao" id="txtObservacao" autocomplete="off" maxlength="30" disabled />\
+                                            </div>\
+\
+                                        </div>\
+                                    </div>\
+\
+\
+                                </div>\
+\
+\
+                                <div class="row" id="marcaModV">\
+                                    <input type="hidden" id="codFipe" name="codFipe" value="" />\
+                                    <div class="col-lg-4">\
+                                        <div class="form-group">\
+                                            <label for="cbbtpVeiculo">Tipo de Veículo <label style="color:red">*</label></label>\
+                                            <div class="input-group">\
+                                                <div class="input-group-append">\
+                                                    <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                </div>\
+                                                <select onchange="buscaMarcas(this.value)" id="cbbtpVeiculo" name="cbbtpVeiculo" class="form-control selectpicker" data-live-search="true" required>\
+                                                    <option value="" selected>Tipo de Veículo</option>\
+                                                    <option value="caminhoes">Caminhão</option>\
+                                                    <option value="carros">Carro</option>\
+                                                    <option value="motos">Moto</option>\
+                                                </select>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                    <div class="col-lg-4">\
+                                        <div class="form-group">\
+                                            <label for="cbbMarcaV">Marca do Veículo <label style="color:red">*</label></label>\
+                                            <div class="input-group">\
+                                                <div class="input-group-append">\
+                                                    <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                </div>\
+                                                <select onchange="buscaModelos(this.value)" id="cbbMarcaV" disabled name="cbbMarcaV" class="form-control selectpicker" data-live-search="true" required>\
+                                                    <option value="" selected>Marca do Veículo</option>\
+                                                </select>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                    <div class="col-lg-4">\
+                                        <div class="form-group">\
+                                            <label for="cbbModeloV">Modelo do Veículo <label style="color:red">*</label></label>\
+                                            <div class="input-group">\
+                                                <div class="input-group-append">\
+                                                    <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                </div>\
+                                                <select onchange="buscaVersoes(this.value)" id="cbbModeloV" disabled name="cbbModeloV" class="form-control selectpicker" data-live-search="true" required>\
+                                                    <option value="" selected>Modelo do Veículo</option>\
+                                                </select>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                <div class="row" id="AnoVeiculo">\
+                                    <div class="col-lg-4">\
+                                        <div class="form-group">\
+                                            <label for="cbbAnoVeiculo">Versão Veículo <label style="color:red">*</label></label>\
+                                            <div class="input-group">\
+                                                <div class="input-group-append">\
+                                                    <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                </div>\
+                                                <select onchange="registraFipe(this.value)" disabled id="cbbAnoVeiculo" name="cbbAnoVeiculo" class="form-control selectpicker" data-live-search="true" required>\
+                                                    <option value="" selected>Versão Veículo</option>\
+                                                </select>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                    <div class="col-lg-4">\
+                                        <div class="form-group">\
+                                            <label for="txtCor">Cor do Veículo <label style="color:red">*</label></label>\
+                                            <div class="input-group">\
+                                                <div class="input-group-append">\
+                                                    <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                </div>\
+                                                <input class="form-control" type="text" name="txtCor" id="txtCor" required autocomplete="off" maxlength="30" disabled />\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                    <div class="col-lg-4">\
+                                        <div class="form-group">\
+                                            <label for="txtPlavaV">Placa do Veículo <label style="color:red">*</label></label>\
+                                            <div class="input-group">\
+                                                <div class="input-group-append">\
+                                                    <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                </div>\
+                                                <input class="form-control" type="text" name="txtPlavaV" id="txtPlavaV" required autocomplete="off" maxlength="30" disabled />\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                <div class="row" id="InfoVeiculo">\
+                                    <div class="col-lg-4">\
+                                        <div class="form-group">\
+                                            <label for="txtPrecoV">Valor FIPE<label style="color:red"></label></label>\
+                                            <div class="input-group">\
+                                                <div class="input-group-append">\
+                                                    <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                </div>\
+                                                <input class="form-control" type="text" name="txtPrecoV" id="txtPrecoV" autocomplete="off" maxlength="30" disabled />\
+\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+\
+                                <div class="row" id="upCRLV">\
+                                    <div class="col-lg-6">\
+                                        <div class="form-group">\
+                                            <label for="fuCRLV">CRLV</label>\
+                                            <div class="input-group">\
+                                                <div class="custom-file" id="customFile" lang="pt-br">\
+                                                    <input type="file" class="custom-file-input" id="fuCRLV" aria-describedby="fileHelp" onchange=\'SalvarAnexo("fuCRLV", "btnCRLV", "CRLV", "CRLV", true)\'>\
+                                                    <label class="custom-file-label" for="fuCRLV" id="labelDoc">\
+                                                            Selecione o Documento\
+                                                    </label>\
+                                                </div>\
+                                                <div class="input-group-append">\
+                                                    <button class="btn btn-success" type="button" id="btnCRLV" onclick=\'javascript: SalvarAnexo("fuCRLV", "btnCRLV", "CRLV", "CRLV", true);\'>Anexar</button>\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+\
+                                    <div class="col-lg-6" id="CRLV" style="display:none">\
+                                        <div class="form-group">\
+                                            <label for="nomeCRLV" style="color:white">.</label>\
+                                            <input type="hidden" id="hdCRLV" name="hdCRLV" value="" />\
+\
+                                            <div class="input-group-append">\
+                                                <a id="linkAnexo" href="#" target="_blank" class="stretched-link" style="width: 30%;">\
+                                                    <img style="width: 100%;" id="nomeCRLV" />\
+                                                </a>\
+                                                <button class="btn btn-danger" type="button" onclick="javascript: LimparAnexo(\'CRLV\', \'CRLV\', \'btnCRLV\');">X</button>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                    <div id="divAlertaCRLV" class="alert alert-danger col-lg-6" role="alert" style="display:none"></div>\
+                                </div>\
+\
+                                <div class="row" id="upDut">\
+                                    <div class="col-lg-6">\
+                                        <div class="form-group">\
+                                            <label for="fuDUT">DUT</label>\
+                                            <div class="input-group">\
+                                                <div class="custom-file" id="customFile" lang="pt-br">\
+                                                    <input type="file" class="custom-file-input" id="fuDUT" aria-describedby="fileHelp" onchange=\'SalvarAnexo("fuDUT", "btnDUT", "DUT", "DUT", true)\'>\
+                                                    <label class="custom-file-label" for="fuDUT" id="labelDoc">\
+                                                                Selecione o Documento\
+                                                    </label>\
+                                                </div>\
+                                                <div class="input-group-append">\
+                                                    <button class="btn btn-success" type="button" id="btnDUT" onclick=\'javascript: SalvarAnexo("fuDUT", "btnDUT", "DUT", "DUT", true);\'>Anexar</button>\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+\
+                                    <div class="col-lg-6" id="DUT" style="display:none">\
+                                        <div class="form-group">\
+                                            <label for="nomeDUT" style="color:white">.</label>\
+                                            <input type="hidden" id="hdDUT" name="hdDUT" value="" />\
+\
+                                            <div class="input-group-append">\
+                                                <a id="linkAnexo" href="#" target="_blank" class="stretched-link" style="width: 30%;">\
+                                                    <img style="width: 100%;" id="nomeDUT" />\
+                                                </a>\
+                                                <button class="btn btn-danger" type="button" onclick="javascript: LimparAnexo(\'DUT\', \'DUT\', \'btnDUT\');">X</button>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                    <div id="divAlertaDUT" class="alert alert-danger col-lg-6" role="alert" style="display:none"></div>\
+                                </div>\
+                                <hr />\
+                                <div class="row" id="modalArquivo">\
+                                    <div class="col-lg-6">\
+                                        <div class="form-group">\
+                                            <label for="fuArquivoVeiculo">Fotos do Veículo</label>\
+                                            <div class="input-group">\
+                                                <div class="custom-file" id="customFile" lang="pt-br">\
+                                                    <input type="file" class="custom-file-input" id="fuArquivoVeiculo" aria-describedby="fileHelp" required disabled>\
+                                                    <label class="custom-file-label" for="fuArquivoVeiculo" id="labelFoto">\
+                                                                    Selecione a Foto\
+                                                    </label>\
+                                                </div>\
+                                                <div class="input-group-append">\
+                                                    <button class="btn btn-success" type="button" onclick="javascript: SalvarFotos();" id="btnSalvarFotos">Adicionar</button>\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+\
+                                    <div id="divAlerta" class="alert alert-danger col-lg-6" role="alert" style="display:none"></div>\
+                                </div>\
+                                <hr />\
+                                <div class="card mb-4 shadow p-3 mb-5 bg-white rounded" style="display:none" id="modalFotos">\
+                                    <div class="card-header">\
+                                        <i class="fa fa-table"></i>\
+                                        <span><b>Fotos Adiconadas</b></span>\
+                                    </div>\
+                                    <input id="txtQtd" value="0" hidden />\
+                                    <div class="card-body" id="cardFotos">\
+                                        <div class="row" id="imagem">\
+\
+                                        </div>\
+                                    </div>\
+                                </div>\
+\
+                                <div class="row">\
+                                    <div class="col-8">\
+                                                    (*) - Campos Obrigatórios\
+                                    </div>\
+                                </div><br />\
+\
+                                <div class="d-inline">\
+                                    <button type="submit" name="btnConfirmar" id="btnConfirmar" class="btn btn-success"><i class="fas fa-check"></i> Confirmar</button>\
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-ban"></i> Cancelar</button>\
+                                </div>\
+                            </div>\
+                        </form>\
+                    </div>\
+                </div>\
+\
+            </div>\
+        </div>';
+
+    if (!mostrar)
+        txt = '';
+
+    $('#novoVeiculo').html(txt);
+    
+    $('.money').mask('000.000.000.000.000,00', { reverse: true });
+    $('#txtCnpj').mask('00.000.000/0000-00', { reverse: true });
 }

@@ -47,8 +47,8 @@ namespace Survey.DAL
 
         private Banco()
         {
-            //_strConexao = @"Server=localhost;Port=3306;Database=16440_parebemativos;Uid=root;Pwd=";
-            _strConexao = @"Server=bd.asp.hostazul.com.br;Port=4406;Database=16440_parebemativos;Uid=16440_prod;Pwd=pundvlbk2imgjth;";
+            _strConexao = @"Server=localhost;Port=3306;Database=16440_parebemativos;Uid=root;Pwd=";
+            //_strConexao = @"Server=bd.asp.hostazul.com.br;Port=4406;Database=16440_parebemativos;Uid=16440_prod;Pwd=pundvlbk2imgjth;";
             //_strConexao = @"Data Source=bd.asp.hostazul.com.br; Initial Catalog=16440_parebemativos;User Id=16440_prod;Password=pundvlbk2imgjth";
             _conn = new MySqlConnection(_strConexao);
             _ComandoSQL = new MySqlCommand();
@@ -76,13 +76,14 @@ namespace Survey.DAL
         internal bool AbreConexao(bool transacao)
         {
             try
-            {
-                _conn.Open();
-                if (transacao)
-                {
-                    _transacao = _conn.BeginTransaction();
-                    _ComandoSQL.Transaction = _transacao;
-                }
+            {                
+                    _conn.Open();
+                    if (transacao)
+                    {
+                        _transacao = _conn.BeginTransaction();
+                        _ComandoSQL.Transaction = _transacao;
+                    }
+                
                 return true;
             }
             catch
@@ -165,7 +166,9 @@ namespace Survey.DAL
 
             int retorno;
             ultimoCodigo = 0;
-            AbreConexao(transacao);
+
+            if (_conn.State != ConnectionState.Open)
+                AbreConexao(transacao);
             try
             {
                 //Executa o comando de insert e já retorna o @@IDENTITY
@@ -193,7 +196,8 @@ namespace Survey.DAL
             if (_ComandoSQL.CommandText.Trim() == string.Empty)
                 throw new Exception("Não há instrução SQL a ser executada.");
 
-            AbreConexao(transacao);
+            if (_conn.State != ConnectionState.Open)
+                AbreConexao(transacao);
             DataTable dt = new DataTable();
             try
             {

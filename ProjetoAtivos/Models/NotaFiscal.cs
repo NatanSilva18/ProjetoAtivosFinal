@@ -22,6 +22,7 @@ namespace ProjetoAtivos.Models
             this.ValorNota = 0;
             this.DataEmissao = DateTime.Now;
             this.Fornecedor = "";
+            Cnpj = "";
         }
         public NotaFiscal(int Codigo)
         {
