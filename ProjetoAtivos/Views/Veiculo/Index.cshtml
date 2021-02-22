@@ -7,7 +7,7 @@
     <script type="text/javascript" src="js/Veiculo/Index.js?@DateTime.Now"></script>
     <script type="text/javascript" src="~/js/Veiculo/Index.js?@DateTime.Now"></script>
     <script src="https://unpkg.com/jspdf-autotable"></script>
-    <script src="//maps.google.com/maps/api/js?key=AIzaSyDcTq_bPe_rXv4LSs9j8m9ZnN7oFT8sXs4&sensor=false"></script>
+    @*<script src="//maps.google.com/maps/api/js?key=AIzaSyDcTq_bPe_rXv4LSs9j8m9ZnN7oFT8sXs4&sensor=false"></script>*@
 
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.bootstrap4.min.js"></script>
@@ -17,6 +17,16 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.print.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.colVis.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        //CarregarRegionais();
+        CarregarTiposAtivo();
+        CarregarRegionaisPesq();
+        $('.money').mask('000.000.000.000.000,00', { reverse: true });
+
+    });
+</script>
 }
 
 @*Pesquisar Ativos*@
@@ -27,7 +37,7 @@
 
 <div class="card mb-4 shadow p-3 mb-5 bg-white rounded">
     <div class="card-body">
-        <form action="javascript:ObterAtivos()">
+        <form action="javascript:ObterVeiculos()">
             <input type="hidden" id="regional" value="@Context.Request.Cookies["Regiao"].ToString()" />
             <input type="hidden" id="filial" value="@Context.Request.Cookies["Filial"].ToString()" />
             <input type="hidden" id="regiaoFilial" value="@Context.Request.Cookies["RegiaoFilial"].ToString()" />
@@ -72,7 +82,7 @@
 
                     <div class="col-lg-4 col-md-4 col-xl-4 d-inline">
                         <button type="submit" id="btnPesquisar" name="btnPesquisar" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Pesquisar Regionais"><i class="fas fa-search"></i> <span>Pesquisar</span></button>
-                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#novoAtivo" onclick="javascript: LimparCampos(); LockFields();" title="Novo Veículo"><i class="fas fa-plus"></i> <span>Veículo</span></button>
+                        @*<button type="button" class="btn btn-success" data-toggle="modal" data-target="#novoAtivo" onclick="javascript: LimparCampos(); LockFields();" title="Novo Veículo"><i class="fas fa-plus"></i> <span>Veículo</span></button>*@
                         <button type="button" class="btn btn-danger" onclick="javascript:LimparTabela()" title="Limpar Tabela Regionais"><i class="fas fa-ban"></i> <span>Cancelar</span></button>
                     </div>
                 </div>
@@ -123,7 +133,7 @@
 
 
 @*Novo Ativo*@
-<div id="novoAtivo" class="modal fade bd-example-modal-xl" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="novoAtivoLabel" aria-hidden="true">
+@*<div id="novoAtivo" class="modal fade bd-example-modal-xl" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="novoAtivoLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -134,8 +144,8 @@
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
-                    
-                    <form name="formRegional" id="formRegional" action="javascript: Gravar();" method="post" >
+
+                    <form name="formRegional" id="formRegional" action="javascript: Gravar();" method="post">
                         <input type="hidden" id="minhaImagemHidden" name="minhaImagemHidden" value="" />
                         <input type="hidden" id="validaPlaca" name="validaPlaca" value="0" />
 
@@ -169,13 +179,13 @@
                                                     <div class="input-group-append">
                                                         <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
                                                     </div>
-                                                    <select id="cbbFilial" name="cbbFilial" class="form-control selectpicker" data-live-search="true" >
+                                                    <select id="cbbFilial" name="cbbFilial" class="form-control selectpicker" data-live-search="true">
                                                         <option value="" selected>Filiais da Regional</option>
                                                     </select>
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -342,12 +352,12 @@
 
                                     </div>
                                 </div>
-                                
-                                
-                            </div>
-                            
 
-                            <div class="row" id="marcaModV" >
+
+                            </div>
+
+
+                            <div class="row" id="marcaModV">
                                 <input type="hidden" id="codFipe" name="codFipe" value="" />
                                 <div class="col-lg-4">
                                     <div class="form-group">
@@ -392,7 +402,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" id="AnoVeiculo" >
+                            <div class="row" id="AnoVeiculo">
                                 <div class="col-lg-4">
                                     <div class="form-group">
                                         <label for="cbbAnoVeiculo">Versão Veículo <label style="color:red">*</label></label>
@@ -429,7 +439,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" id="InfoVeiculo" >
+                            <div class="row" id="InfoVeiculo">
                                 <div class="col-lg-4">
                                     <div class="form-group">
                                         <label for="txtPrecoV">Valor <label style="color:red"></label></label>
@@ -437,14 +447,14 @@
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
                                             </div>
-                                            <input class="form-control" type="text" name="txtPrecoV" id="txtPrecoV"  autocomplete="off" maxlength="30" disabled />
+                                            <input class="form-control" type="text" name="txtPrecoV" id="txtPrecoV" autocomplete="off" maxlength="30" disabled />
 
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="row" id="upCRLV" >
+                            <div class="row" id="upCRLV">
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label for="fuCRLV">CRLV</label>
@@ -478,7 +488,7 @@
                                 <div id="divAlertaCRLV" class="alert alert-danger col-lg-6" role="alert" style="display:none"></div>
                             </div>
 
-                            <div class="row" id="upDut" >
+                            <div class="row" id="upDut">
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label for="fuDUT">DUT</label>
@@ -511,55 +521,55 @@
                                 </div>
                                 <div id="divAlertaDUT" class="alert alert-danger col-lg-6" role="alert" style="display:none"></div>
                             </div>
-                                <hr />
-                                <div class="row" id="modalArquivo">
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label for="fuArquivo">Fotos do Veículo</label>
-                                            <div class="input-group">
-                                                <div class="custom-file" id="customFile" lang="pt-br">
-                                                    <input type="file" class="custom-file-input" id="fuArquivo" aria-describedby="fileHelp" required disabled>
-                                                    <label class="custom-file-label" for="fuArquivo" id="labelFoto">
-                                                        Selecione a Foto
-                                                    </label>
-                                                </div>
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-success" type="button" onclick="javascript: SalvarFotos();" id="btnSalvarFotos">Adicionar</button>
-                                                </div>
+                            <hr />
+                            <div class="row" id="modalArquivo">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="fuArquivo">Fotos do Veículo</label>
+                                        <div class="input-group">
+                                            <div class="custom-file" id="customFile" lang="pt-br">
+                                                <input type="file" class="custom-file-input" id="fuArquivo" aria-describedby="fileHelp" required disabled>
+                                                <label class="custom-file-label" for="fuArquivo" id="labelFoto">
+                                                    Selecione a Foto
+                                                </label>
+                                            </div>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-success" type="button" onclick="javascript: SalvarFotos();" id="btnSalvarFotos">Adicionar</button>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div id="divAlerta" class="alert alert-danger col-lg-6" role="alert" style="display:none"></div>
-                                </div>
-                                <hr />
-                                <div class="card mb-4 shadow p-3 mb-5 bg-white rounded" style="display:none" id="modalFotos">
-                                    <div class="card-header">
-                                        <i class="fa fa-table"></i>
-                                        <span><b>Fotos Adiconadas</b></span>
-                                    </div>
-                                    <input id="txtQtd" value="0" hidden />
-                                    <div class="card-body" id="cardFotos">
-                                        <div class="row" id="imagem">
-
-                                        </div>
-                                    </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-8">
-                                        (*) - Campos Obrigatórios
-                                    </div>
-                                </div><br />
+                                <div id="divAlerta" class="alert alert-danger col-lg-6" role="alert" style="display:none"></div>
+                            </div>
+                            <hr />
+                            <div class="card mb-4 shadow p-3 mb-5 bg-white rounded" style="display:none" id="modalFotos">
+                                <div class="card-header">
+                                    <i class="fa fa-table"></i>
+                                    <span><b>Fotos Adiconadas</b></span>
+                                </div>
+                                <input id="txtQtd" value="0" hidden />
+                                <div class="card-body" id="cardFotos">
+                                    <div class="row" id="imagem">
 
-                                <div class="d-inline">
-                                    <button type="submit" name="btnConfirmar" id="btnConfirmar" class="btn btn-success"><i class="fas fa-check"></i> Confirmar</button>
-                                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-ban"></i> Cancelar</button>
+                                    </div>
                                 </div>
                             </div>
-</form>
-                    </div>
+
+                            <div class="row">
+                                <div class="col-8">
+                                    (*) - Campos Obrigatórios
+                                </div>
+                            </div><br />
+
+                            <div class="d-inline">
+                                <button type="submit" name="btnConfirmar" id="btnConfirmar" class="btn btn-success"><i class="fas fa-check"></i> Confirmar</button>
+                                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-ban"></i> Cancelar</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
+            </div>
 
         </div>
     </div>
@@ -588,6 +598,7 @@
         </div>
     </div>
 </div>
+    *@
 
 @*Nova TipoAtivo*@
 <div id="novaTipoAtivo" class="modal fade bd-example-modal-lg" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="novoTipoAtivoLabel" aria-hidden="true">
@@ -691,6 +702,92 @@
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-outline-info btn-md" data-dismiss="modal">Fechar <i class="fas fa-times ml-1"></i></button>
             </div>
+        </div>
+    </div>
+</div>
+
+
+@*Inventario*@
+<div id="inventario" class="modal fade bd-example-modal-xl" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="novoAtivoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Inventariar Ativo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+
+                    <form name="formInventario" id="formInventario" action="javascript: GravarInventario();" method="post">
+                        <input type="hidden" id="idAtivoInventario" name="idAtivoInventario" value="" />
+                        <input type="hidden" id="minhaImagemHiddenInventario" name="minhaImagemHiddenInventario" value="" />
+                        <div class="form-group">
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtObservacao">Observacao </label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
+                                            </div>
+                                            <input class="form-control" type="text" name="txtObservacaoInv" id="txtObservacaoInv" autocomplete="off" maxlength="30" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" id="modalArquivoInventario">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="fuArquivoInventario">Foto do Ativo</label>
+                                        <div class="input-group">
+                                            <div class="custom-file" id="customFile" lang="pt-br">
+                                                <input type="file" class="custom-file-input" id="fuArquivoInventario" aria-describedby="fileHelp" onchange="SalvarFotosInventario();" required>
+                                                <label class="custom-file-label" for="fuArquivoInventario" id="labelFotoInventario">
+                                                    Selecione a Foto
+                                                </label>
+                                            </div>
+                                            <div class="input-group-append">
+                                                @*<button class="btn btn-success" type="button" onclick="javascript: SalvarFotosInventario();" id="btnSalvarFotosInventario">Adicionar</button>*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="divAlertaInventario" class="alert alert-danger col-lg-6" role="alert" style="display:none"></div>
+                            </div>
+                            <hr />
+                            <div class="card mb-4 shadow p-3 mb-5 bg-white rounded" style="display:none" id="modalFotosInventario">
+                                <div class="card-header">
+                                    <i class="fa fa-table"></i>
+                                    <span><b>Foto Adiconada</b></span>
+                                </div>
+                                <input id="txtQtdInventario" value="0" hidden />
+                                <div class="card-body" id="cardFotosInventario">
+                                    <div class="row" id="imagemInventario">
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-8">
+                                    (*) - Campos Obrigatórios
+                                </div>
+                            </div><br />
+
+                            <div class="d-inline">
+                                <button type="submit" name="btnConfirmarInventario" id="btnConfirmarInventario" class="btn btn-success"><i class="fas fa-check"></i> Confirmar</button>
+                                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-ban"></i> Cancelar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

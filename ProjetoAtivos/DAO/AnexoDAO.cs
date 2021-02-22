@@ -29,7 +29,8 @@ namespace ProjetoAtivos.DAO
                              Local = row["aa_local"].ToString(),
                              Nome = row["aa_nmArquivo"].ToString(),
                              Type = row["aa_type"].ToString(),
-                             Ativo = new Ativo(Convert.ToInt32(row["ati_codigo"]))
+                             Ativo = new Ativo(Convert.ToInt32(row["ati_codigo"])),
+                             Base64 = Convert.ToBase64String(File.ReadAllBytes(row["aa_local"].ToString()))
                          }
                          ).ToList();
 
@@ -79,7 +80,7 @@ namespace ProjetoAtivos.DAO
 
         internal Boolean Excluir(int CodigoAtivo)
         {
-            Anexo a = Buscar(CodigoAtivo);
+            Anexo a = Buscar(CodigoAtivo, true);
 
             if (a != null)
             {

@@ -20,6 +20,23 @@ alter table ativos add ve_codigo int(11) null;
 
 ALTER TABLE `ativos` ADD CONSTRAINT `fk_veiculo` FOREIGN KEY ( `ve_codigo` ) REFERENCES `veiculos` ( `ve_codigo` ) ;
 
+CREATE TABLE `inventario` (
+  `iv_codigo` int(11) NOT NULL AUTO_INCREMENT,  
+  `iv_data` datetime not NULL,
+  `iv_obs` varchar(300)  NULL,
+  `ati_codigo` int(11) not NULL,  
+  `img_codigo` int(11) not NULL,
+  `fil_codigo` int(11) not NULL,
+  PRIMARY KEY (`iv_codigo`) ,
+  KEY `RefIvAtivo` (`ati_codigo`),
+  CONSTRAINT `RefIvAtivo` FOREIGN KEY (`ati_codigo`) REFERENCES `ativos` (`ati_codigo`),
+  KEY `RefIvImg` (`img_codigo`),
+  CONSTRAINT `RefIvImg` FOREIGN KEY (`img_codigo`) REFERENCES `imagem` (`img_codigo`),
+  KEY `RefIvFil` (`fil_codigo`),
+  CONSTRAINT `RefIvFil` FOREIGN KEY (`fil_codigo`) REFERENCES `filial` (`fil_codigo`)
+) ENGINE=InnoDB AUTO_INCREMENT=8455 DEFAULT CHARSET=latin1;
+
+
 
 
 

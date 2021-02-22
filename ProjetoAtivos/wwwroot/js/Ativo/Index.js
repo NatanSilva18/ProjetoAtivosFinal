@@ -1,10 +1,4 @@
-﻿$(document).ready(function () {
-    CarregarRegionais();
-    CarregarTiposAtivo();
-    CarregarRegionaisPesq();
-    $('.money').mask('000.000.000.000.000,00', { reverse: true });
-
-});
+﻿
 function LimparCombo(Name) {
     var select = document.getElementById(Name);
     var length = select.options.length;
@@ -81,7 +75,7 @@ function CarregarRegionaisPesq() {
 }
 
 
-function CarregarRegionais() {
+function CarregarRegionaisAtivo() {
     var regiao = parseInt($("#regional").val());
     var filial = parseInt($("#filial").val());
     var regiaoFilial = parseInt($("#regiaoFilial").val());
@@ -111,13 +105,13 @@ function CarregarRegionais() {
                     if (filial != 0) {
                         $("#cbbRegional").val(regiaoFilial).change();;
                         $("#cbbRegional").attr('disabled', 'disabled');
-                        CarregarFiliais(cbbRegional);
+                        CarregarFiliaisAtivo(cbbRegional);
                     }
                     else
                         if (regiao != 0) {
                             $("#cbbRegional").val(regiao).change();
                             $("#cbbRegional").attr('disabled', 'disabled');
-                            CarregarFiliais(cbbRegional);
+                            CarregarFiliaisAtivo(cbbRegional);
                         }
                         else {
                             $("#cbbRegional").removeAttr('disabled');
@@ -174,16 +168,16 @@ function CarregarFiliaisPesq(regiao) {
 };
 
 
-function CarregarFiliais(Combo) {
-    document.getElementById("cbbFilial").required = true;
-
+function CarregarFiliaisAtivo(Combo) {
+    document.getElementById("cbbFilialAtivo").required = true;
+    LimparCombo("cbbSalaAtivo");
     var filial = parseInt($("#filial").val());
 
     var Codigo = Combo.value;
-    var cbbFilial = document.getElementById("cbbFilial");
-    if (cbbFilial != null) {
+    var cbbFilialAtivo = document.getElementById("cbbFilialAtivo");
+    if (cbbFilialAtivo != null) {
         document.getElementById('linhaFilial').style.display = "block ";
-        document.getElementById("cbbFilial").required = true;
+        document.getElementById("cbbFilialAtivo").required = true;
 
         $.ajax({
             type: 'POST',
@@ -197,16 +191,16 @@ function CarregarFiliais(Combo) {
                         var opt = document.createElement("option");
                         opt.value = result[i].codigo;
                         opt.text = result[i].razao;
-                        cbbFilial.add(opt, cbbFilial.options[i + 1]);
+                        cbbFilialAtivo.add(opt, cbbFilialAtivo.options[i + 1]);
                     }
 
                     if (filial != 0) {
-                        $("#cbbFilial").val(filial).change();
-                        $("#cbbFilial").attr('disabled', 'disabled');
-                        BuscarSalas(cbbFilial);
+                        $("#cbbFilialAtivo").val(filial).change();
+                        $("#cbbFilialAtivo").attr('disabled', 'disabled');
+                        BuscarSalasAtivo(cbbFilialAtivo);
                     }
                     else
-                        $("#cbbFilial").removeAttr('disabled');
+                        $("#cbbFilialAtivo").removeAttr('disabled');
 
                 }
             },
@@ -216,21 +210,22 @@ function CarregarFiliais(Combo) {
             }
         });
     }
-    $('#cbbFilial').selectpicker('refresh');
-
+    $('#cbbFilialAtivo').selectpicker('refresh');
+    $('#cbbSalaAtivo').selectpicker('refresh');
+    
 
 };
-function BuscarSalas(Combo) {
+function BuscarSalasAtivo(Combo) {
 
-    if ($("#cbbTpAtivo").val() != 3) {
-        document.getElementById("cbbSala").required = true;
-
+    /*if ($("#cbbTpAtivo").val() != 3) {
+        document.getElementById("cbbSalaAtivo").required = true;
+        */
 
         var Codigo = Combo.value;
-        var cbbSala = document.getElementById("cbbSala");
-        if (cbbSala != null) {
+        var cbbSalaAtivo = document.getElementById("cbbSalaAtivo");
+        if (cbbSalaAtivo != null) {
             document.getElementById('sala').style.display = "block ";
-            document.getElementById("cbbSala").required = true;
+            document.getElementById("cbbSalaAtivo").required = true;
             $.ajax({
                 type: 'POST',
                 url: '/Sala/BuscarSalas',
@@ -243,7 +238,7 @@ function BuscarSalas(Combo) {
                             var opt = document.createElement("option");
                             opt.value = result[i].codigo;
                             opt.text = result[i].descricao;
-                            cbbSala.add(opt, cbbSala.options[i + 1]);
+                            cbbSalaAtivo.add(opt, cbbSalaAtivo.options[i + 1]);
                         }
                     }
                 },
@@ -254,12 +249,12 @@ function BuscarSalas(Combo) {
             });
 
         }
-        $('#cbbSala').selectpicker('refresh');
+        $('#cbbSalaAtivo').selectpicker('refresh');
         $('#sala').show();
-    }
+    /*}
     else {
         $('#sala').hide();
-    }
+    }*/
 };
 
 function LimparTabela() {
@@ -293,15 +288,15 @@ function LimparCampos() {
     $("#modalFotos").hide();
 
     $("#imagem").html("");
-    $("#minhaImagemHidden").val("");
-    document.getElementById("fuArquivo").value = "";
+    $("#minhaImagemHiddenAtivo").val("");
+    document.getElementById("fuArquivoAtivo").value = "";
     document.getElementById("labelFoto").innerHTML = 'Selecione uma Foto';
     $("#cardRegional").show();
     $("#modalArquivo").show();
 
     document.getElementById("staticBackdropLabel").innerHTML = "Cadastro de Ativos";
 
-    document.getElementById("fuArquivo").required = true;
+    document.getElementById("fuArquivoAtivo").required = true;
 
     $("#txtFornecedor").val("");
     $("#txtDataEmissao").val("");
@@ -498,20 +493,20 @@ function Status(Ativo) {
     else
         return '<span class="badge badge-danger">Inativo</span>';
 };
-function PreencherTabela(dados) {
+function PreencherTabelaAtivo(dados) {
     var i = 0;
     var ValorAtivo = 0;
 
     $("#tbbAtivo").show(300);
     var txt = '<thead>\
             <tr class="thead-light">\
-                <th scope="col" width="5T%">Ativo</th>\
+                <th scope="col" width="6%">Ativo</th>\
                 <th scope="col">Placa</th>\
                 <th scope="col">Descrição</th>\
                 <th scope="col">Valor</th>\
                 <th scope="col">Estado</th>\
                 <th scope="col">Filial</th>\
-                <th scope="col">Status</th>\
+                <th scope="col" style="width: 6%;">Status</th>\
                 <th scope="col" style="display:none;"></th>\
                 <th scope="col"></th>\
             </tr>\
@@ -525,26 +520,30 @@ function PreencherTabela(dados) {
 
         if (this.stAtivo == 1) {
             if (this.imagem != "") {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td onclick="javascript:ObterImagens(' + this.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo+'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
-                txt += '<a role="button" class="btn btn-warning" href="javascript:UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
+                txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(false); mostraDivAtivo(); UnlockFields(); Alterar(' + this.codigo + ');"><td onclick="javascript:ObterImagens(' + this.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo+'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
+                txt += '<a role="button" class="btn btn-warning" href="javascript: mostraDivVeiculo(false); mostraDivAtivo(); UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>';
                 txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
-                txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>';
+                txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>&nbsp;';
+                txt += '<a role="button" class="btn btn-info" href="javascript: Inventariar(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
             }
             else {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
-                txt += '<a role="button" class="btn btn-warning" href="javascript:UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
-                txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
+                txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(false); mostraDivAtivo();UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
+                txt += '<a role="button" class="btn btn-warning" href="javascript: mostraDivVeiculo(false); mostraDivAtivo(); UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
+                txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>&nbsp;';
+                txt += '<a role="button" class="btn btn-info" href="javascript: Inventariar(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
             }
         }
         else {
             if (this.imagem != "") {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td onclick="javascript:ObterImagens(' + this.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
+                txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(false); mostraDivAtivo();UnlockFields(); Alterar(' + this.codigo + ');"><td onclick="javascript:ObterImagens(' + this.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
                 txt += '<a role="button" class="btn btn-success" href="javascript:Ativar(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>';
-                txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>';
+                txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>&nbsp;';
+                txt += '<a role="button" class="btn btn-info" href="javascript: Inventariar(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
             }
             else {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
-                txt += '<a role="button" class="btn btn-success" href="javascript:Ativar(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>';
+                txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(false); mostraDivAtivo();UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
+                txt += '<a role="button" class="btn btn-success" href="javascript:Ativar(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>&nbsp;';
+                txt += '<a role="button" class="btn btn-info" href="javascript: Inventariar(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
 
             }
         }
@@ -567,7 +566,6 @@ function ObterAtivos() {
     var regiao = parseInt($("#cbbRegiaoPesq").val());
     var filial = parseInt($("#cbbFilialPesq").val());
 
-    var Texto = "";
 
     $.ajax({
         type: 'POST',
@@ -575,7 +573,7 @@ function ObterAtivos() {
         data: { Chave: Chave, Filtro: Filtro, Ativo: Ativo, Regiao: regiao, Filial: filial },
         success: function (result) {
             if (result != null && result.length > 0) {
-                PreencherTabela(result);
+                PreencherTabelaAtivo(result);
             }
             else {
                 if (Ativo == "1") {
@@ -638,7 +636,7 @@ function AvaliarValorAtivo() {
         document.getElementById('').value = 0; //valor tipo ativo
     }
 }
-function Gravar() {
+function GravarAtivo() {
     $("#divLoading").show();
     document.getElementById('btnConfirmar').disabled = true;
 
@@ -650,7 +648,7 @@ function Gravar() {
             var TipoAtivo = $('#cbbTpAtivo').val();
             var Codigo = $('#txtId').val();
             var Regional = $('#cbbRegional').val();
-            var Filial = $('#cbbFilial').val();
+            var Filial = $('#cbbFilialAtivo').val();
             
             var Placa = $('#txtPlaca').val();
             var Tag = $('#txtTag').val();
@@ -668,18 +666,18 @@ function Gravar() {
             var DataEmissao = document.getElementById('txtDataEmissao').value;
             var Fornecedor = document.getElementById('txtFornecedor').value;
             var Cnpj = document.getElementById('txtCnpj').value;
-            var VerificaImagem = $('#minhaImagemHidden').val();
+            
 
             var anexo = $("#hdAnexo").val();
             var nomeAnexo = $("#nomeAnexo").val();            
             
-
+            var VerificaImagem = $("#minhaImagemHiddenAtivo").val();
             if (VerificaImagem != "") {
-                var Imagem = $('#minhaImagemHidden').val();
+                var imagem = $("#minhaImagemHiddenAtivo").val();
 
                 /*if (TipoAtivo != 3) {*/
 
-                    var Sala = $('#cbbSala').val();
+                    var Sala = $('#cbbSalaAtivo').val();
                     var Marca = $('#txtMarca').val();
                     var Modelo = $('#txtModelo').val();
 
@@ -688,7 +686,7 @@ function Gravar() {
                         url: '/Ativo/Gravar',
                         data: {
                             Codigo: Codigo, Regional: Regional, Filial: Filial, Sala: Sala, Placa: Placa, Tag: Tag, Estado: Estado, Observacao: Observacao,
-                            Descricao: Descricao, TipoAtivo: TipoAtivo, Marca: Marca, NumeroSerie: NumeroSerie, Modelo: Modelo, Valor: Valor, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude,
+                            Descricao: Descricao, TipoAtivo: TipoAtivo, Marca: Marca, NumeroSerie: NumeroSerie, Modelo: Modelo, Valor: Valor, Imagem: imagem, Latitude: Latitude, Longitude: Longitude,
                             CodigoNota: CodigoNota, NumeroNota: NumeroNota, ValorNota: ValorNota, DataEmissao: DataEmissao, Fornecedor: Fornecedor, Cnpj: Cnpj, NomeAnexo: nomeAnexo, Anexo: anexo
                         },
                         success: function (result) {
@@ -722,7 +720,7 @@ function Gravar() {
                             }
                             document.getElementById('btnConfirmar').disabled = false;
                             if ($("#cbbRegiaoPesq").val() != "")
-                                ObterAtivos();
+                                //ObterAtivos();
 
                             $("#divLoading").hide();
                         },
@@ -914,9 +912,9 @@ function Alterar(Codigo) {
 
     LimparCampos();
     document.getElementById("cbbRegional").removeAttribute("required");
-    document.getElementById("cbbFilial").removeAttribute("required");
-    document.getElementById("cbbSala").removeAttribute("required");
-    document.getElementById("fuArquivo").removeAttribute("required");
+    document.getElementById("cbbFilialAtivo").removeAttribute("required");
+    document.getElementById("cbbSalaAtivo").removeAttribute("required");
+    document.getElementById("fuArquivoAtivo").removeAttribute("required");
 
     document.getElementById("staticBackdropLabel").innerHTML = "Alteração de Ativos";
     $("#cardRegional").hide();
@@ -948,6 +946,7 @@ function Alterar(Codigo) {
                 $("#txtMarca").val(result.marca);
                 $("#txtNumSerie").val(result.numeroSerie);
                 $("#txtModelo").val(result.modelo);
+                $("#txtCnpj").val(result.notaFiscal.cnpj);
                 //$("#txtValor").val(result.valor);
 
                 /*if (result.tpAtivoCodigo == 3 && result.veiculo != null) {
@@ -1023,12 +1022,13 @@ function Alterar(Codigo) {
                 }*/
 
                 if (result.imagens != null)
-                    MostraImagens(result.imagens);
+                    MostraImagensAtivo(result.imagens);
 
                 if (result.anexo != null)
                 {
                     $("#nomeAnexo").val(result.anexo.nome);
                     $('#linkAnexo').attr('href', '/Ativo/BaixarAnexo/' + result.codigo);
+                    $('#hdAnexo').val(result.anexo.base64);
                     $("#anexo").show(300);
                 }
 
@@ -1107,11 +1107,12 @@ function Mapa(latitude, longitude) {
 
     });
 };
+/*
 document.querySelector('.custom-file-input').addEventListener('change', function (e) {
-    var fileName = document.getElementById("fuArquivo").files[0].name;
+    var fileName = document.getElementById("fuArquivoAtivo").files[0].name;
     var nextSibling = e.target.nextElementSibling;
     nextSibling.innerText = fileName;
-});
+});*/
 
 function Data(data) {
     if (data != null && data != "") {
@@ -1128,7 +1129,7 @@ function Data(data) {
     }
     return 'Data Invalida';
 };
-function MostraImagens(imgs) {
+function MostraImagensAtivo(imgs) {
 
     var cont = 0;
     $.each(imgs, function () {
@@ -1138,13 +1139,13 @@ function MostraImagens(imgs) {
 
         txr2 = this.foto;
 
-        var imgs = $("#minhaImagemHidden").val();
+        var imgs = $("#minhaImagemHiddenAtivo").val();
 
         if (imgs != "")
             imgs += "**Separdor Imagem**";
 
         imgs += txr2;
-        $("#minhaImagemHidden").val(imgs);
+        $("#minhaImagemHiddenAtivo").val(imgs);
 
         var txt = '  <div class="col-lg-2" id="fotos' + cont+ '">\
                                         <div class="form-group">\
@@ -1152,7 +1153,7 @@ function MostraImagens(imgs) {
                                                 <img id="minhaImagem" src="'+ txr2 + '" class="card-img-top" alt="...">\
                                                      <p class="text-muted">Data: '+ Data(this.dataInsercao)+ '</p>\
                                                     <div class="card-body">\
-                                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="javascript: ExcluirFoto('+ $("#txtQtd").val() + ')"><i class="fas fa-trash"></i></button>\
+                                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="javascript: ExcluirFotoAtivo('+ $("#txtQtd").val() + ')"><i class="fas fa-trash"></i></button>\
                                                     </div>\
                                                 </div>\
                                             </div>\
@@ -1172,13 +1173,13 @@ function MostraImagens(imgs) {
 
 }
 
-function SalvarFotos() {
+function SalvarFotosAtivo() {
 
-    var arquivos = document.getElementById("fuArquivo");
+    var arquivos = document.getElementById("fuArquivoAtivo");
     if (arquivos.files.length > 0) {
         $("#divLoading").show(0);
 
-        document.getElementById('btnSalvarFotos').innerHTML = '<div class="spinner-border text-primary" role="status"><span class="sr-only" > Loading...</span></div>';
+        document.getElementById('btnSalvarFotosAtivo').innerHTML = '<div class="spinner-border text-primary" role="status"><span class="sr-only" > Loading...</span></div>';
         var txr2;
         var formData = new FormData();
         formData.append("id", $("#txtId").val());
@@ -1204,21 +1205,21 @@ function SalvarFotos() {
 
                         txr2 = 'data:image/jpg;base64, ' + this.dados;
 
-                        var imgs = $("#minhaImagemHidden").val();
+                        var imgs = $("#minhaImagemHiddenAtivo").val();
 
                         if (imgs != "")
                             imgs += "**Separdor Imagem**";
 
                         imgs += txr2;
 
-                        $("#minhaImagemHidden").val(imgs);
+                        $("#minhaImagemHiddenAtivo").val(imgs);
 
                         var txt = '  <div class="col-lg-2" id="fotos' + $("#txtQtd").val() + '">\
                                         <div class="form-group">\
                                             <div class="card " style="width: 10rem;">\
                                                 <img id="minhaImagem" src="'+ txr2 + '" class="card-img-top" alt="...">\
                                                     <div class="card-body">\
-                                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="javascript: ExcluirFoto('+ $("#txtQtd").val() + ')"><i class="fas fa-trash"></i></button>\
+                                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="javascript: ExcluirFotoAtivo('+ $("#txtQtd").val() + ')"><i class="fas fa-trash"></i></button>\
                                                     </div>\
                                                 </div>\
                                             </div>\
@@ -1239,7 +1240,7 @@ function SalvarFotos() {
                         Mensagem("divAlerta", this.dados);
                     }
 
-                    document.getElementById('btnSalvarFotos').innerHTML = 'Adicionar';
+                    document.getElementById('btnSalvarFotosAtivo').innerHTML = 'Adicionar';
                     $("#divLoading").hide(2000);
 
                 });
@@ -1256,17 +1257,17 @@ function SalvarFotos() {
     $("#divLoading").hide(2000);
 
 };
-function ExcluirFoto(Codigo) {   
+function ExcluirFotoAtivo(Codigo) {   
     var Foto = document.getElementById('fotos' + Codigo);
 
     if (Foto != null) {
         Foto.remove();
         $("#txtQtd").val(parseInt($("#txtQtd").val()) - 1);
 
-        document.getElementById("fuArquivo").value = "";
+        document.getElementById("fuArquivoAtivo").value = "";
         document.getElementById("labelFoto").innerHTML = 'Selecione uma Foto';
 
-        var bases = $("#minhaImagemHidden").val().split("**Separdor Imagem**");
+        var bases = $("#minhaImagemHiddenAtivo").val().split("**Separdor Imagem**");
         var novo = "";
 
         for (var i = 0; i < bases.length-1; i++) {
@@ -1282,7 +1283,7 @@ function ExcluirFoto(Codigo) {
         if (bases.length - 1 != Codigo - 1)
             novo += bases[bases.length - 1];
 
-        $("#minhaImagemHidden").val(novo);
+        $("#minhaImagemHiddenAtivo").val(novo);
     }
     var Imagem = document.getElementById('imagem');
 
@@ -1306,7 +1307,7 @@ function UnlockFields() {
     document.getElementById('txtMarca').disabled = false;
     document.getElementById('txtNumSerie').disabled = false;
     document.getElementById('txtModelo').disabled = false;
-    document.getElementById('fuArquivo').disabled = false;
+    document.getElementById('fuArquivoAtivo').disabled = false;
     document.getElementById('cbbEstado').disabled = false;
     document.getElementById('cbbTpAtivo').disabled = false;
 };
@@ -1321,7 +1322,7 @@ function LockFields() {
     document.getElementById('txtModelo').disabled = true;
     document.getElementById('cbbTpAtivo').disabled = true;
     //document.getElementById('txtValor').disabled = true;
-    document.getElementById('fuArquivo').disabled = true;
+    document.getElementById('fuArquivoAtivo').disabled = true;
     //$("#cbbTpAtivo").attr("disabled", true);
     $('.selectpicker').selectpicker('refresh');
 
@@ -1355,9 +1356,11 @@ function ValidarPlaca() {
             else {
                 UnlockFields();
                 document.getElementById('validaPlaca').value = "0";
+                $("#txtTag").focus();
             }
             $("#divLoading").hide(1000);
 
+            
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
@@ -1366,7 +1369,7 @@ function ValidarPlaca() {
     });
 };
 
-function PreencherValor(Combo) {
+function PreencherValorAtivo(Combo) {
     var Codigo = Combo.value;
 
     /*if (Codigo == 3) {
@@ -1817,4 +1820,545 @@ function registraFipe(x, parts = null, mod = null) {
             }
         });
     }
+}
+
+
+function SalvarFotosAtivoInventario() {
+
+    var arquivos = document.getElementById("fuArquivoAtivoInventario");
+    if (arquivos.files.length > 0) {
+        $("#divLoading").show(0);
+
+        //document.getElementById('btnSalvarFotosAtivoInventario').innerHTML = '<div class="spinner-border text-primary" role="status"><span class="sr-only" > Loading...</span></div>';
+        var txr2;
+        var formData = new FormData();
+        formData.append("id", $("#txtIdInventario").val());
+        formData.append("nome", $("#txtNomeInventario").val());
+        for (var i = 0; i < arquivos.files.length; i++) {
+            if (arquivos.files[i].size > 0) {
+                formData.append("arquivo" + i, arquivos.files[i]);
+            }
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/Ativo/ReceberDados',
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                var txt = "";
+                $.each(response, function () {
+                    if (this.id >= 0) {
+                        $("#txtQtdInventario").val(parseInt($("#txtQtdInventario").val()) + 1);
+
+                        txr2 = 'data:image/jpg;base64, ' + this.dados;
+
+                        var imgs = $("#minhaImagemHiddenInventario").val();
+
+                        if (imgs != "")
+                            imgs += "**Separdor Imagem**";
+
+                        imgs += txr2;
+
+                        $("#minhaImagemHiddenInventario").val(imgs);
+
+                        var txt = '  <div class="col-lg-2" id="fotosInventario' + $("#txtQtdInventario").val() + '">\
+                                        <div class="form-group">\
+                                            <div class="card " style="width: 10rem;">\
+                                                <img id="minhaImagemInventario" src="'+ txr2 + '" class="card-img-top" alt="...">\
+                                                    <div class="card-body">\
+                                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="javascript: ExcluirFotoAtivoInventario('+ $("#txtQtdInventario").val() + ')"><i class="fas fa-trash"></i></button>\
+                                                    </div>\
+                                                </div>\
+                                            </div>\
+                                        </div>';
+                        $("#fotosInventario").show();
+                        $("#modalFotosInventario").show();
+
+
+                        $("#imagemInventario").append(txt)
+                        //document.getElementById("imagem").innerHTML = txt;
+                        $('#fuArquivoAtivoInventario').attr('disabled', 'disabled');
+                    }
+                    if (this.id == -1) {
+                        Mensagem("divAlertaInventario", this.dados);
+                    }
+
+                    if (this.id == -2) {
+                        Mensagem("divAlertaInventario", this.dados);
+                    }
+
+                    //document.getElementById('btnSalvarFotosAtivoInventario').innerHTML = 'Adicionar';
+                    $("#divLoading").hide(2000);
+
+                });
+            },
+            error: function (error) {
+                alert(error);
+                $("#divLoading").hide(2000);
+            }
+        });
+    }
+    else {
+        Mensagem("divAlerta", 'Selecione um arquivo!');
+    }
+    $("#divLoading").hide(2000);
+
+};
+
+function ExcluirFotoAtivoInventario(Codigo) {
+    var Foto = document.getElementById('fotosInventario' + Codigo);
+
+    if (Foto != null) {
+        Foto.remove();
+        $("#txtQtdInventario").val(parseInt($("#txtQtdInventario").val()) - 1);
+
+        document.getElementById("fuArquivoAtivoInventario").value = "";
+        document.getElementById("labelFotoInventario").innerHTML = 'Selecione uma Foto';
+
+        var bases = $("#minhaImagemHiddenInventario").val().split("**Separdor Imagem**");
+        var novo = "";
+
+        for (var i = 0; i < bases.length - 1; i++) {
+            if (i != Codigo - 1) {
+
+                novo += bases[i];
+
+                if ($("#txtQtdInventario").val() > 1)
+                    novo += "**Separdor Imagem**";
+            }
+        }
+
+        if (bases.length - 1 != Codigo - 1)
+            novo += bases[bases.length - 1];
+
+        $("#minhaImagemHiddenInventario").val(novo);
+    }
+    var Imagem = document.getElementById('imagemInventario');
+
+    if (Imagem.childElementCount == 0)
+        $("#modalFotosInventario").hide();
+
+    $('#fuArquivoAtivoInventario').removeAttr('disabled');
+};
+
+function Inventariar(x) {
+    $('#idAtivoInventario').val(x);
+    $('#inventario').modal('show');
+}
+
+function GravarInventario() {
+    $("#divLoading").show();
+
+    navigator.geolocation.getCurrentPosition(function Responder(position) {
+        var Latitude = position.coords.latitude;
+        var Longitude = position.coords.longitude;
+
+        var ativo = $('#idAtivoInventario').val();
+        var obs = $('#txtObservacaoInv').val();
+
+        var VerificaImagem = $('#minhaImagemHiddenInventario').val();
+        if (VerificaImagem != "") {
+            var Imagem = $('#minhaImagemHiddenInventario').val();
+
+            $.ajax({
+                type: 'POST',
+                url: '/Ativo/Inventariar',
+                data: {
+                    Codigo: ativo, Observacao: obs, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude
+                },
+                success: function (result) {
+                    $('#inventario').modal('hide');
+
+                    if (result.length > 0) {
+                        Swal.fire({
+                            title: 'Oops...',
+                            type: 'error',
+                            text: result,
+                            timer: 5000
+                        })
+                    }
+                    else {
+                       
+                            Swal.fire({
+                                title: 'Sucesso',
+                                type: 'success',
+                                text: 'Ativo Inventariado com Sucesso',
+                                timer: 5000
+                            })
+                        
+                    }                   
+
+                    $("#divLoading").hide();
+                },
+                error: function (XMLHttpRequest, txtStatus, errorThrown) {
+                    alert("Status: " + txtStatus); alert("Error: " + errorThrown);
+                    $("#divLoading").hide(400);
+                }
+            });
+        }
+        else {
+            Mensagem("divAlertaInventario", 'Por favor Envie a Imagem');
+            $("#divLoading").hide();
+        }
+
+    });
+}
+
+function mostraDivAtivo(mostrar = true) {
+
+    let txt = '<div class="modal-dialog modal-xl" role ="document">\
+            <div class="modal-content">\
+                <div class="modal-header">\
+                    <h5 class="modal-title" id="staticBackdropLabel">Cadastrar Ativos</h5>\
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">\
+                        <span aria-hidden="true">&times;</span>\
+                    </button>\
+                </div>\
+                <div class="modal-body">\
+                    <div class="container-fluid">\
+                        <form name="formRegional" id="formRegional" action="javascript: GravarAtivo();" method="post">\
+                            <input type="hidden" id="regional" value="@Context.Request.Cookies[" Regiao"].ToString()" />\
+                            <input type="hidden" id="filial" value="@Context.Request.Cookies[" Filial"].ToString()" />\
+                            <input type="hidden" id="regiaoFilial" value="@Context.Request.Cookies[" RegiaoFilial"].ToString()" />\
+                            <input type="hidden" id="minhaImagemHiddenAtivo" name="minhaImagemHiddenAtivo" value="" />\
+                            <input type="hidden" id="validaPlaca" name="validaPlaca" value="0" />\
+                            <div class="form-group">\
+                                <input type="hidden" name="txtId" id="txtId" value="0" />\
+                                <div class="card mb-4 shadow p-3 mb-5 bg-white rounded" id="cardRegional">\
+                                    <div class="card-header">\
+                                        <i class="fa fa-table"></i>\
+                                        <span><b>Regionais, Filiais e Salas</b></span>\
+                                    </div>\
+                                    <div class="card-body">\
+                                        <div class="row">\
+                                            <div class="col-lg-4">\
+                                                <div class="form-group">\
+                                                    <label for="cbbRegional">Regional <label style="color:red">*</label></label>\
+                                                    <div class="input-group">\
+                                                        <div class="input-group-append">\
+                                                            <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                        </div>\
+                                                        <select id="cbbRegional" name="cbbRegional" class="form-control selectpicker" data-live-search="true" required onchange="javascript:LimparCombo(\'cbbFilialAtivo\');LimparCombo(\'cbbSalaAtivo\'); CarregarFiliaisAtivo(this); ">\
+                                                            <option value="" selected>Regionais</option>\
+                                                        </select>\
+                                                    </div>\
+                                                </div>\
+                                            </div>\
+                                            <div class="col-lg-4" id="linhaFilial" style="display:none">\
+                                                <div class="form-group">\
+                                                    <label for="\
+                                                           ">Filial <label style="color:red">*</label></label>\
+                                                    <div class="input-group">\
+                                                        <div class="input-group-append">\
+                                                            <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                        </div>\
+                                                        <select id="cbbFilialAtivo" name="cbbFilialAtivo" class="form-control selectpicker" data-live-search="true" onchange="javascript:LimparCombo(\'cbbSalaAtivo\'); BuscarSalasAtivo(this);">\
+                                                            <option value="" selected>Filiais da Regional</option>\
+                                                        </select>\
+                                                    </div>\
+                                                </div>\
+                                            </div>\
+                                            <div class="col-lg-4" id="sala" style="display:none">\
+                                                <div class="form-group">\
+                                                    <label for="cbbSala">Local <label style="color:red">*</label></label>\
+                                                    <div class="input-group">\
+                                                        <div class="input-group-append">\
+                                                            <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                        </div>\
+                                                        <select id="cbbSalaAtivo" name="cbbSalaAtivo" class="form-control selectpicker" data-live-search="true">\
+                                                            <option value="" selected>Salas da Filial</option>\
+                                                        </select>\
+                                                    </div>\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                <div class="row">\
+                                    <div id="divAlertaPlaca" class="alert alert-danger col-lg-8" role="alert" style="display:none"></div>\
+                                </div>\
+                                <input type="hidden" name="txtIdNotaFiscal" id="txtIdNotaFiscal" value="0" />\
+                                <div class="card card-body" style="border-radius: 4px; border-left: 4px solid blue;">\
+                                    <div class="d-sm-flex align-items-center justify-content-between mb-0">\
+                                        <h1 class="h6 mb-0 text-gray-800">Dados Fiscais</h1>\
+                                    </div>\
+                                    <hr />\
+                                    <div class="row">\
+                                        <div class="col-lg-4">\
+                                            <div class="form-group">\
+                                                <label for="txtNumeroNota">Nº Nota <label style="color:red">*</label></label>\
+                                                <div class="input-group">\
+                                                    <div class="input-group-append">\
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                    </div>\
+                                                    <input class="form-control" type="number" name="txtNumeroNota" id="txtNumeroNota" autocomplete="off" maxlength="30" required />\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+                                        <div class="col-lg-4">\
+                                            <div class="form-group">\
+                                                <label for="txtValorNota">Valor <label style="color:red">*</label></label>\
+                                                <div class="input-group">\
+                                                    <div class="input-group-append">\
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-dollar-sign"></i></div>\
+                                                    </div>\
+                                                    <input class="form-control money" type="text" name="txtValorNota" id="txtValorNota" autocomplete="off" maxlength="30" required />\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+                                        <div class="col-lg-4">\
+                                            <div class="form-group">\
+                                                <label for="txtDataEmissao">Data Emissão <label style="color:red">*</label></label>\
+                                                <div class="input-group">\
+                                                    <div class="input-group-append">\
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-dollar-sign"></i></div>\
+                                                    </div>\
+                                                    <input class="form-control" type="date" name="txtDataEmissao" id="txtDataEmissao" autocomplete="off" maxlength="30" required />\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                    <div class="row">\
+                                        <div class="col-lg-4">\
+                                            <div class="form-group">\
+                                                <label for="txtFornecedor">Fornecedor <label style="color:red">*</label></label>\
+                                                <div class="input-group">\
+                                                    <div class="input-group-append">\
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-dollar-sign"></i></div>\
+                                                    </div>\
+                                                    <input class="form-control" type="text" name="txtFornecedor" id="txtFornecedor" autocomplete="off" maxlength="30" required />\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+                                        <div class="col-lg-4">\
+                                            <div class="form-group">\
+                                                <label for="txtCnpj">CNPJ <label style="color:red">*</label></label>\
+                                                <div class="input-group">\
+                                                    <div class="input-group-append">\
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                    </div>\
+                                                    <input class="form-control" type="text" name="txtCnpj" id="txtCnpj" autocomplete="off" maxlength="30" required data-mask="00.000.000/0000-00" />\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+                                        <div class="col-lg-6">\
+                                            <div class="form-group">\
+                                                <label for="fuDoc">Documento</label>\
+                                                <div class="input-group">\
+                                                    <div class="custom-file" id="customFile" lang="pt-br">\
+                                                        <input type="file" class="custom-file-input" id="fuDoc" aria-describedby="fileHelp" onchange="SalvarAnexo()">\
+                                                            <label class="custom-file-label" for="fuDoc" id="labelDoc">\
+                                                                Selecione o Documento\
+                                                        </label>\
+                                                    </div>\
+                                                        <div class="input-group-append">\
+                                                            <button class="btn btn-success" type="button" id="btnSalvarDoc" onclick="javascript: SalvarAnexo();">Anexar</button>\
+                                                        </div>\
+                                                    </div>\
+                                                </div>\
+                                            </div>\
+\
+                                            <div class="col-lg-6" id="anexo" style="display:none">\
+                                                <div class="form-group">\
+                                                    <label for="nomeAnexo" style="color:white">.</label>\
+                                                    <input type="hidden" id="hdAnexo" name="hdAnexo" value="" />\
+\
+                                                    <div class="input-group-append">\
+                                                        <a id="linkAnexo" href="#" target="_blank" class="stretched-link" style="width: 100%;">\
+                                                            <input class="form-control" type="text" id="nomeAnexo" disabled />\
+                                                        </a>\
+                                                        <button class="btn btn-danger" type="button" onclick="javascript: LimparAnexo();">X</button>\
+                                                    </div>\
+                                                </div>\
+                                            </div>\
+\
+                                            <div id="divAlertaAnexo" class="alert alert-danger col-lg-6" role="alert" style="display:none"></div>\
+\
+                                        </div>\
+                                    </div>\
+                                    <div class="row">\
+                                        <div class="col-lg-4">\
+                                            <div class="form-group">\
+                                                <label for="txtPlaca">Placa <label style="color:red">*</label></label>\
+                                                <div class="input-group">\
+                                                    <div class="input-group-append">\
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                    </div>\
+                                                    <input class="form-control" type="number" name="txtPlaca" id="txtPlaca" required autocomplete="off" maxlength="30" onchange="javascript: ValidarPlaca(this);" />\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+                                        <div class="col-lg-4">\
+                                            <div class="form-group">\
+                                                <label for="txtTag">Tag </label>\
+                                                <div class="input-group">\
+                                                    <div class="input-group-append">\
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                    </div>\
+                                                    <input class="form-control" type="text" name="txtTag" id="txtTag" autocomplete="off" maxlength="30" disabled />\
+                                                </div>\
+\
+                                            </div>\
+                                        </div>\
+                                        <div class="col-lg-4">\
+                                            <div class="form-group">\
+                                                <label for="cbbEstado">Estado <label style="color:red">*</label></label>\
+                                                <div class="input-group">\
+                                                    <div class="input-group-append">\
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-map"></i></div>\
+                                                    </div>\
+                                                    <select id="cbbEstado" name="cbbEstado" class="form-control" required>\
+                                                        <option value="" selected>Estado</option>\
+                                                        <option value="Novo" selected>Novo</option>\
+                                                        <option value="Usado">Usado</option>\
+                                                    </select>\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+\
+                                    </div>\
+\
+                                    <div class="row">\
+                                        <div class="col-lg-4">\
+                                            <div class="form-group">\
+                                                <label for="cbbTpAtivo">Tipo Ativo <label style="color:red">*</label></label>\
+                                                <div class="input-group">\
+                                                    <div class="input-group-append">\
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                    </div>\
+                                                    <select id="cbbTpAtivo" name="cbbTpAtivo" class="form-control selectpicker" data-live-search="true" required onchange="PreencherValorAtivo(this);">\
+                                                        <option value="" selected>Tipo Ativo</option>\
+                                                    </select>\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+\
+                                        <div class="col-lg-4">\
+                                            <div class="form-group">\
+                                                <label for="txtDescricao">Descricao <label style="color:red">*</label></label>\
+                                                <div class="input-group">\
+                                                    <div class="input-group-append">\
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                    </div>\
+                                                    <input class="form-control" type="text" name="txtDescricao" id="txtDescricao" required autocomplete="off" maxlength="30" disabled />\
+                                                </div>\
+\
+                                            </div>\
+                                        </div>\
+                                        <div class="col-lg-4">\
+                                            <div class="form-group">\
+                                                <label for="txtNumSerie">Numero de Serie <label style="color:red">*</label></label>\
+                                                <div class="input-group">\
+                                                    <div class="input-group-append">\
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                    </div>\
+                                                    <input class="form-control" type="text" name="txtNumSerie" id="txtNumSerie" required autocomplete="off" maxlength="30" disabled />\
+                                                </div>\
+\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                    <div class="row" id="marcaMod">\
+\
+                                        <div class="col-lg-4">\
+                                            <div class="form-group">\
+                                                <label for="txtMarca">Marca <label style="color:red">*</label></label>\
+                                                <div class="input-group">\
+                                                    <div class="input-group-append">\
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                    </div>\
+                                                    <input class="form-control" type="text" name="txtMarca" id="txtMarca" required autocomplete="off" maxlength="30" disabled />\
+                                                </div>\
+\
+                                            </div>\
+                                        </div>\
+\
+                                        <div class="col-lg-4">\
+                                            <div class="form-group">\
+                                                <label for="txtModelo">Modelo <label style="color:red">*</label></label>\
+                                                <div class="input-group">\
+                                                    <div class="input-group-append">\
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                    </div>\
+                                                    <input class="form-control" type="text" name="txtModelo" id="txtModelo" required autocomplete="off" maxlength="30" disabled />\
+                                                </div>\
+\
+                                            </div>\
+                                        </div>\
+\
+                                        <div class="col-lg-4">\
+                                            <div class="form-group">\
+                                                <label for="txtObservacao">Observacao </label>\
+                                                <div class="input-group">\
+                                                    <div class="input-group-append">\
+                                                        <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>\
+                                                    </div>\
+                                                    <input class="form-control" type="text" name="txtObservacao" id="txtObservacao" autocomplete="off" maxlength="30" disabled />\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                    <div class="row" id="modalArquivo">\
+                                        <div class="col-lg-6">\
+                                            <div class="form-group">\
+                                                <label for="fuArquivoAtivo">Fotos do Ativo</label>\
+                                                <div class="input-group">\
+                                                    <div class="custom-file" id="customFile" lang="pt-br">\
+                                                        <input type="file" class="custom-file-input" id="fuArquivoAtivo" aria-describedby="fileHelp" required disabled>\
+                                                            <label class="custom-file-label" for="fuArquivoAtivo" id="labelFoto">\
+                                                                Selecione a Foto\
+                                                    </label>\
+                                                </div>\
+                                                        <div class="input-group-append">\
+                                                            <button class="btn btn-success" type="button" onclick="javascript: SalvarFotosAtivo();" id="btnSalvarFotosAtivo">Adicionar</button>\
+                                                        </div>\
+                                                    </div>\
+                                                </div>\
+                                            </div>\
+\
+                                            <div id="divAlerta" class="alert alert-danger col-lg-6" role="alert" style="display:none"></div>\
+                                        </div>\
+                                        <hr />\
+                                        <div class="card mb-4 shadow p-3 mb-5 bg-white rounded" style="display:none" id="modalFotos">\
+                                            <div class="card-header">\
+                                                <i class="fa fa-table"></i>\
+                                                <span><b>Fotos Adiconadas</b></span>\
+                                            </div>\
+                                            <input id="txtQtd" value="0" hidden />\
+                                            <div class="card-body" id="cardFotos">\
+                                                <div class="row" id="imagem">\
+\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+\
+                                        <div class="row">\
+                                            <div class="col-8">\
+                                                (*) - Campos Obrigatórios\
+                                    </div>\
+                                        </div><br />\
+\
+                                        <div class="d-inline">\
+                                            <button type="submit" name="btnConfirmar" id="btnConfirmar" class="btn btn-success"><i class="fas fa-check"></i> Confirmar</button>\
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-ban"></i> Cancelar</button>\
+                                        </div>\
+                                    </div>\
+                        </form>\
+                            </div>\
+                </div>\
+                    </div>\
+                </div>';
+
+                if(!mostrar)
+                    txt='';
+
+    $('#novoAtivo').html(txt);
+
+    $('.money').mask('000.000.000.000.000,00', { reverse: true });
+    $('#txtCnpj').mask('00.000.000/0000-00', { reverse: true });
+
+    CarregarTiposAtivo();
 }

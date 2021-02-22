@@ -93,6 +93,26 @@ namespace ProjetoAtivos.DAO
                 return null;
         }
 
+        internal Imagem Buscar(int Codigo)
+        {
+            b.getComandoSQL().Parameters.Clear();
+
+            
+                b.getComandoSQL().CommandText = @"select *
+                                                    from imagem i where i.img_codigo = @codigo;";
+            
+
+            b.getComandoSQL().Parameters.AddWithValue("@codigo", Codigo);
+
+
+            DataTable dt = b.ExecutaSelect(true);
+
+            if (dt.Rows.Count > 0)
+                return TableToList(dt).FirstOrDefault();
+            else
+                return null;
+        }
+
         internal Boolean Excluir(int Codigo)
         {
             if (new LocalizacaoDAO().Excluir(Codigo))

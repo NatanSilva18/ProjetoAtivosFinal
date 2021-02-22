@@ -28,7 +28,7 @@ namespace ProjetoAtivos.DAO
                                          Convert.ToDouble(row["nt_valor"]),
                                          Convert.ToDateTime(row["nt_dataemissao"]),
                                          row["nt_fornecedor"].ToString(),
-                                         row["nt_cnpj"] == DBNull.Value ? "" : row["nt_codigo"].ToString()
+                                         row["nt_cnpj"] == DBNull.Value ? "" : row["nt_cnpj"].ToString()
                          )).ToList();
 
             return dados;
