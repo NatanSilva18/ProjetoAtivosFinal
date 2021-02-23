@@ -1358,7 +1358,7 @@ function ValidarPlaca() {
                 document.getElementById('validaPlaca').value = "0";
                 $("#txtTag").focus();
             }
-            $("#divLoading").hide(1000);
+            $("#divLoading").hide(0);
 
             
         },

@@ -1,6 +1,10 @@
 ﻿$(document).ready(function () {
+    $("#divLoading").show();
+
     CarregarRegionais();
     CarregarPessoas();
+    $("#divLoading").hide(300);
+
 });
 function CarregarRegionais() {
     var cbbRegional = document.getElementById("cbbRegional");

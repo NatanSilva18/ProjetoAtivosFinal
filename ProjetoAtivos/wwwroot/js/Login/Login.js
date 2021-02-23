@@ -5,7 +5,7 @@
 
 ///////////////////////############Login############///////////////////////
 function Login() {
-    $("#divLoading").show(400);
+    $("#divLoading").show();
 
     var Login = document.getElementById('txtUsuario').value;
     var Senha = document.getElementById('txtSenha').value;
@@ -29,11 +29,11 @@ function Login() {
             else {
                 window.location.href = '/Home/Index';
             }
-            $("#divLoading").hide(400);
+            $("#divLoading").hide(0);
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(400);
+            $("#divLoading").hide(0);
         }
     });
 };
