@@ -72,6 +72,9 @@ namespace ProjetoAtivos.DAO
                 dados.GetFilialDestino().SetResponsavel(new Pessoa(0,dt.Rows[0]["RespDestino"].ToString()));
                 dados.GetFilialOrigem().SetResponsavel(new Pessoa(0, dt.Rows[0]["RespOrigem"].ToString()));
 
+                dados.SetObsRecusa(dt.Rows[0]["transf_obsRecusa"] != DBNull.Value ? dt.Rows[0]["transf_obsRecusa"].ToString() : "");
+                dados.PessoaRecusa = dt.Rows[0]["transf_pesRecusa"] != DBNull.Value ? new PessoaDAO().BuscarPessoa(Convert.ToInt32(dt.Rows[0]["transf_pesRecusa"])) : null;
+
                 if (dados.AprovacaoDestino != null)
                 {
                     dados.AprovacaoDestino.Responsável = new Pessoa(0, dt.Rows[0]["AprovanteDest"].ToString());
@@ -114,6 +117,8 @@ namespace ProjetoAtivos.DAO
                         RazaoDestino = dt.Rows[i]["destino"].ToString(),
                         dtRecebimento = dt.Rows[i]["aprovacaoDestino"].ToString(),
                         dtAprovacao = dt.Rows[i]["aprovacaoGerente"].ToString(),
+                        obsrecusa = dt.Rows[i]["transf_obsRecusa"] != DBNull.Value ? dt.Rows[i]["transf_obsRecusa"].ToString(): "",
+                        pessoarecusa = dt.Rows[i]["transf_pesRecusa"] != DBNull.Value ? new PessoaDAO().BuscarPessoa(Convert.ToInt32(dt.Rows[i]["transf_pesRecusa"])) : null
                     });
                 }
             }
@@ -209,6 +214,14 @@ INSERT INTO itens_ativos
 
             b.getComandoSQL().Parameters.Clear();
 
+            string recusada = " and transf_pesRecusa is null ";
+
+            if (Ativo == 2)//recusadas
+            {
+                Ativo = 0;
+                recusada = " and transf_pesRecusa is not null ";
+            }
+
             if(Origem != 0)
             {
               
@@ -216,14 +229,14 @@ INSERT INTO itens_ativos
                 {
                     b.getComandoSQL().CommandText = @"select t.transf_codigo, t.transf_observacao, t.transf_stativo, t.transf_dtabertura, ifnull(t.transf_dtfechamento, ' ') as transf_dtfechamento, 
                                               m.mot_codigo, m.mot_descricao, fo.fil_codigo, fd.fil_codigo,  fo.fil_razao as origem, fd.fil_razao as destino
-                                              , ifnull(aprdes_dtinsercao,' ') as aprovacaoDestino, ifnull(apr_dtinsercao,' ') as aprovacaoGerente
+                                              , ifnull(aprdes_dtinsercao,' ') as aprovacaoDestino, ifnull(apr_dtinsercao,' ') as aprovacaoGerente, transf_pesRecusa, transf_obsRecusa
                                               from tranferencia t
                                               inner join Motivo m on m.mot_codigo = t.mot_codigo
                                               inner join Filial fo on fo.fil_codigo = t.fil_codigo
                                               inner join Filial fd on fd.fil_codigo = t.fil_codigo_destino
                                               left outer join Aprovacao_Destino ad on ad.aprdes_codigo = t.aprdes_codigo
                                               left outer join Aprovacao_Gerente ag on ag.apr_codigo = t.apr_codigo
-                                              where t.fil_codigo = @origem and t.fil_codigo_destino = @destino
+                                              where t.fil_codigo = @origem and t.fil_codigo_destino = @destino and transf_stativo = @ativo"+ recusada+@"
                                               order by t.transf_dtabertura desc;";
 
                     b.getComandoSQL().Parameters.AddWithValue("@origem", Origem);
@@ -234,14 +247,14 @@ INSERT INTO itens_ativos
                 {
                     b.getComandoSQL().CommandText = @"select t.transf_codigo, t.transf_observacao, t.transf_stativo, t.transf_dtabertura, ifnull(t.transf_dtfechamento, ' ') as transf_dtfechamento, 
                                               m.mot_codigo, m.mot_descricao, fo.fil_codigo, fd.fil_codigo,  fo.fil_razao as origem, fd.fil_razao as destino
-                                              , ifnull(aprdes_dtinsercao,' ') as aprovacaoDestino, ifnull(apr_dtinsercao,' ') as aprovacaoGerente
+                                              , ifnull(aprdes_dtinsercao,' ') as aprovacaoDestino, ifnull(apr_dtinsercao,' ') as aprovacaoGerente, transf_pesRecusa, transf_obsRecusa
                                               from tranferencia t
                                               inner join Motivo m on m.mot_codigo = t.mot_codigo
                                               inner join Filial fo on fo.fil_codigo = t.fil_codigo
                                               inner join Filial fd on fd.fil_codigo = t.fil_codigo_destino
                                               left outer join Aprovacao_Destino ad on ad.aprdes_codigo = t.aprdes_codigo
                                               left outer join Aprovacao_Gerente ag on ag.apr_codigo = t.apr_codigo
-                                              where t.fil_codigo = @origem
+                                              where t.fil_codigo = @origem and transf_stativo = @ativo" + recusada + @"
                                               order by t.transf_dtabertura desc;";
 
                     b.getComandoSQL().Parameters.AddWithValue("@origem", Origem);
@@ -255,14 +268,14 @@ INSERT INTO itens_ativos
                 {
                     b.getComandoSQL().CommandText = @"select t.transf_codigo, t.transf_observacao, t.transf_stativo, t.transf_dtabertura, ifnull(t.transf_dtfechamento, ' ') as transf_dtfechamento, 
                                               m.mot_codigo, m.mot_descricao, fo.fil_codigo, fd.fil_codigo,  fo.fil_razao as origem, fd.fil_razao as destino
-                                              , ifnull(aprdes_dtinsercao,' ') as aprovacaoDestino, ifnull(apr_dtinsercao,' ') as aprovacaoGerente
+                                              , ifnull(aprdes_dtinsercao,' ') as aprovacaoDestino, ifnull(apr_dtinsercao,' ') as aprovacaoGerente, transf_pesRecusa, transf_obsRecusa
                                               from tranferencia t
                                               inner join Motivo m on m.mot_codigo = t.mot_codigo
                                               inner join Filial fo on fo.fil_codigo = t.fil_codigo
                                               inner join Filial fd on fd.fil_codigo = t.fil_codigo_destino
                                               left outer join Aprovacao_Destino ad on ad.aprdes_codigo = t.aprdes_codigo
                                               left outer join Aprovacao_Gerente ag on ag.apr_codigo = t.apr_codigo
-                                              where t.fil_codigo_destino = @destino
+                                              where t.fil_codigo_destino = @destino and transf_stativo = @ativo" + recusada + @"
                                               order by t.transf_dtabertura desc;";
                     b.getComandoSQL().Parameters.AddWithValue("@destino", Destino);
                 }
@@ -270,17 +283,20 @@ INSERT INTO itens_ativos
                 {
                     b.getComandoSQL().CommandText = @"select t.transf_codigo, t.transf_observacao, t.transf_stativo, t.transf_dtabertura, ifnull(t.transf_dtfechamento, ' ') as transf_dtfechamento, 
                                               m.mot_codigo, m.mot_descricao, fo.fil_codigo, fd.fil_codigo,  fo.fil_razao as origem, fd.fil_razao as destino
-                                              , ifnull(aprdes_dtinsercao,' ') as aprovacaoDestino, ifnull(apr_dtinsercao,' ') as aprovacaoGerente
+                                              , ifnull(aprdes_dtinsercao,' ') as aprovacaoDestino, ifnull(apr_dtinsercao,' ') as aprovacaoGerente, transf_pesRecusa, transf_obsRecusa
                                               from tranferencia t
                                               inner join Motivo m on m.mot_codigo = t.mot_codigo
                                               inner join Filial fo on fo.fil_codigo = t.fil_codigo
                                               inner join Filial fd on fd.fil_codigo = t.fil_codigo_destino
                                               left outer join Aprovacao_Destino ad on ad.aprdes_codigo = t.aprdes_codigo
                                               left outer join Aprovacao_Gerente ag on ag.apr_codigo = t.apr_codigo
+                                               where transf_stativo = @ativo" + recusada + @"
                                               order by t.transf_dtabertura desc;";
                 }
 
             }
+
+            b.getComandoSQL().Parameters.AddWithValue("@ativo", Ativo);
 
             DataTable dt = b.ExecutaSelect();
 
@@ -298,7 +314,7 @@ INSERT INTO itens_ativos
             b.getComandoSQL().CommandText = @"select t.transf_codigo, t.transf_observacao, t.transf_stativo, t.transf_dtabertura, t.transf_dtfechamento, m.mot_codigo, m.mot_descricao, m.mot_stativo, f.fil_codigo, f.fil_razao, f.fil_stativo, 
                                                 ff.fil_codigo as fil_codigoD, ff.fil_razao as fil_razaoD, ff.fil_stativo as fil_stativoD, p.pes_nome as RespOrigem , pp.pes_nome as RespDestino
                                               , t.aprdes_codigo, t.apr_codigo, pad.pes_nome as AprovanteDest, pag.pes_nome as GerenteAprov, ad.aprdes_dtinsercao as dtAprovDestino, ag.apr_dtinsercao as dtAprovGerente
-                                              , ifnull(ad.aprdes_observacao,'') as obsAprovDestino, ifnull(ag.apr_observacao,'') as obsAprovGerente
+                                              , ifnull(ad.aprdes_observacao,'') as obsAprovDestino, ifnull(ag.apr_observacao,'') as obsAprovGerente, transf_pesRecusa, transf_obsRecusa
                                               from tranferencia t
                                               inner join Motivo m on m.mot_codigo = t.mot_codigo
                                               inner join Filial f on f.fil_codigo = t.fil_codigo
@@ -473,6 +489,30 @@ INSERT INTO itens_ativos
                 Dados = null;
 
             return Dados;
+        }
+
+        internal bool Recusar(Transferencia transf)
+        {
+
+            Boolean OK = false;
+
+            b.getComandoSQL().Parameters.Clear();
+
+            b.getComandoSQL().CommandText = @"
+                                                update tranferencia set 
+                                                transf_pesRecusa = @pes,
+                                                transf_obsRecusa = @obs,
+                                                transf_stativo = 0
+                                                where transf_codigo = @codigo
+                                                ";
+
+            b.getComandoSQL().Parameters.AddWithValue("@pes", transf.PessoaRecusa.GetCodigo());
+            b.getComandoSQL().Parameters.AddWithValue("@obs", transf.GetObsRecusa());
+            b.getComandoSQL().Parameters.AddWithValue("@codigo", transf.GetCodigo());
+
+            OK = b.ExecutaComando() == 1;
+
+            return OK;
         }
     }
 }

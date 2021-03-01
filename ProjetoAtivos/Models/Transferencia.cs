@@ -21,11 +21,13 @@ namespace ProjetoAtivos.Models
         private Filial FilialOrigem;
         private Filial FilialDestino;
         private bool Status;
+        private string ObsRecusa;
 
         public List<Ativo> Ativos { get; set; }
         public List<Documento> Documentos { get; set; }
         public Aprovacao AprovacaoGerente { get; set; }
         public Aprovacao AprovacaoDestino { get; set; }
+        public Pessoa PessoaRecusa { get; set; }
         public Transferencia()
         {
             Status = true;
@@ -37,6 +39,8 @@ namespace ProjetoAtivos.Models
             this.FilialDestino = new Filial();
             this.DtAbertura = DateTime.Now;
             this.DtFechamento = DateTime.MinValue;
+            ObsRecusa = "";
+            PessoaRecusa = null;
         }
         public Transferencia(int Codigo)
         {
@@ -49,6 +53,8 @@ namespace ProjetoAtivos.Models
             this.FilialDestino = new Filial();
             this.DtAbertura = DateTime.Now;
             this.DtFechamento = DateTime.MinValue;
+            ObsRecusa = "";
+            PessoaRecusa = null;
         }
         public Transferencia(int Codigo, string Observacao, String Status, DateTime dtAbertura, DateTime dtFechamento, int Motivo, int FilialOrigem, int FilialDestino, int Ativo)
         {
@@ -61,6 +67,8 @@ namespace ProjetoAtivos.Models
             this.Motivo = new Motivo(Motivo);
             this.FilialOrigem = new Filial(FilialOrigem);
             this.FilialDestino = new Filial(FilialDestino);
+            ObsRecusa = "";
+            PessoaRecusa = null;
         }
         public Transferencia(int Codigo, string Observacao, bool Status, DateTime dtAbertura, DateTime dtFechamento, int MotivoCod, string MotDescricao, Boolean MotAtivo, int FilialOrigem, string RazaoOrigem, Boolean FilAtivoOrigem, int FilialDestino, string RazaoDestino, Boolean FilAtivoDestino, int Ativo, string DescricaoAtivo, Boolean StAtivoAtivo)
         {
@@ -73,7 +81,8 @@ namespace ProjetoAtivos.Models
             this.Motivo = new Motivo(MotivoCod); this.Motivo.SetDescricao(MotDescricao); this.Motivo.SetStAtivo(MotAtivo);
             this.FilialOrigem = new Filial(FilialOrigem); this.FilialOrigem.SetRazao(RazaoOrigem); this.FilialOrigem.SetStAtivo(FilAtivoOrigem);
             this.FilialDestino = new Filial(FilialDestino); this.FilialDestino.SetRazao(RazaoDestino); this.FilialDestino.SetStAtivo(FilAtivoDestino);
-
+            ObsRecusa = "";
+            PessoaRecusa = null;
         }
 
         public int GetCodigo()
@@ -84,6 +93,16 @@ namespace ProjetoAtivos.Models
         {
             this.Codigo = Codigo;
         }
+
+        public string GetObsRecusa()
+        {
+            return this.ObsRecusa;
+        }
+        public void SetObsRecusa(string obsRec)
+        {
+            this.ObsRecusa = obsRec;
+        }
+
         public string GetObservacao()
         {
             return this.Observacao;
@@ -302,7 +321,37 @@ namespace ProjetoAtivos.Models
             return new TransferenciaDAO().ObterTransferencias(Origem, Destino, Ativo, Regiao, Filial);
         }
 
-        public bool Aprovar(int Transf, string Obs, int Pessoa)
+        public bool Recusar(int Transf, string Obs, int Pessoa)
+        {           
+            this.Codigo = Transf;
+            ObsRecusa = Obs;
+            PessoaRecusa = new Pessoa(Pessoa).BuscarPessoa(Pessoa);
+
+            if(new TransferenciaDAO().Recusar(this))
+            {
+                Transferencia T = new Transferencia().BuscarTransferencia(this.Codigo);
+                this.FilialDestino = T.GetFilialDestino();
+                this.FilialOrigem = T.GetFilialOrigem();
+
+
+                this.FilialOrigem = new FilialDAO().BuscarFilialEmail(this.FilialOrigem.GetCodigo());
+                this.FilialDestino = new FilialDAO().BuscarFilialEmail(this.FilialDestino.GetCodigo());
+
+                string dest = FilialOrigem.GetRegional().GetPessoa().GetEmail();
+                string dest2 = FilialDestino.GetRegional().GetPessoa().GetEmail();
+
+
+                var result = EnviarEmail("m2ntech.20@gmail.com", "ParebemSystem", dest, "PareBem Recusa de Transferência", "A Transferência foi recusada por: "+ PessoaRecusa.GetNome() + " - "+ PessoaRecusa.GetCargo()+"<br>Observação: "+ObsRecusa);
+
+                var result2 = EnviarEmail("m2ntech.20@gmail.com", "ParebemSystem", dest2, "PareBem Recusa de Transferência", "A Transferência foi recusada por: " + PessoaRecusa.GetNome() + " - " + PessoaRecusa.GetCargo() + "<br>Observação: " + ObsRecusa);
+
+                return true;
+            }
+
+            return false;
+        }
+
+            public bool Aprovar(int Transf, string Obs, int Pessoa)
         {
             AprovacaoGerente = new Aprovacao()
             {

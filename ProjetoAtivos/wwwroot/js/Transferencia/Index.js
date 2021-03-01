@@ -922,6 +922,30 @@ function ConfirmarCampos(dados = null) {
             var extensao = '.' + aux[aux.length - 1]
             $("#confirmarDocsAprov").append(MontarConfirmDocs(dados.docs[i].nome, extensao, dados.docs[i].codigo, dados.docs[i].caminho));
         }
+
+
+        if (dados.pessoarecusa != null) {
+            var txt = '\
+                <br>\
+                <hr>\
+                <h6 style="color:red;">Recusa</h6>\
+                <div class="row" style = "border-radius: 4px; border-left: 4px solid red;" >\
+                <div class="col-lg-6">\
+                    <div class="form-group">\
+                        <label>Recusada Por: <b>'+ dados.pessoarecusa + '</b></label>\
+                    </div>\
+                </div>\
+                <div class="col-lg-6">\
+                    <div class="form-group">\
+                        <label>Observação da Recusa: <b>'+ dados.obsrecusa + '</b></label>\
+                    </div>\
+                </div>\
+            </div>\
+            <hr />';
+            $("#InfoRecusa").html(txt);
+        }
+        else
+            $("#InfoRecusa").html('');
     }
     var txt = '';
 
@@ -1207,7 +1231,9 @@ function Data(data) {
     return 'Data Invalida';
 };
 
-function StatusTransf(DataRecebimento, DataAprovacao) {
+function StatusTransf(DataRecebimento, DataAprovacao, obsRecusa) {
+    if (obsRecusa != "")
+        return '<span class="badge badge-danger">Recusada</span>';
     if (DataRecebimento == ' ' && DataAprovacao == ' ') {
         return '<span class="badge badge-primary">Novo</span>';
     }
@@ -1218,8 +1244,8 @@ function StatusTransf(DataRecebimento, DataAprovacao) {
             if (DataAprovacao != ' ')
                 return '<span class="badge badge-success">Aprovado Origem</span>';
         }
-
     }
+    
 };
 function PreencherTabela(dados) {
     var regiao = parseInt($("#regional").val());
@@ -1234,7 +1260,7 @@ function PreencherTabela(dados) {
                 <th scope="col">Motivo</th>\
                 <th scope="col">Status</th>\
                 <th scope="col">Data Abertura</th>\
-                <th scope="col" style="min-width:150px; width:250px"></th>\
+                <th scope="col" style="min-width:200px; width:400px"></th>\
             </tr>\
         </thead >\
         <tbody>';
@@ -1245,29 +1271,35 @@ function PreencherTabela(dados) {
         this.dtRecebimento = this.dtRecebimento == '01/01/1900 00:00:00' || this.dtRecebimento == '1/1/1900 12:00:00 AM' ? ' ' : this.dtRecebimento;
         this.dtAprovacao = this.dtAprovacao == '01/01/1900 00:00:00' || this.dtAprovacao == '1/1/1900 12:00:00 AM' ? ' ' : this.dtAprovacao;
 
-        txt += '<tr><td>' + this.razaoOrigem + '</td><td>' + this.razaoDestino + '</td><td>' + this.motivoDesc + '</td><td>' + StatusTransf(this.dtRecebimento, this.dtAprovacao) + '</td><td>' + Data(this.dtAbertura) + '</td><td align="right" class="form-group">'
+        txt += '<tr><td>' + this.razaoOrigem + '</td><td>' + this.razaoDestino + '</td><td>' + this.motivoDesc + '</td><td>' + StatusTransf(this.dtRecebimento, this.dtAprovacao, this.obsrecusa) + '</td><td>' + Data(this.dtAbertura) + '</td><td align="right" class="form-group">'
         txt += '<button role="button" class="btn btn-info" href="#" onclick="javascript:MostraTransf(' + this.codigo + ',0);" data-toggle="modal" data-target="#VisualizarTransf" title="Visualizar"><i class="fas fa-eye"></i> <span>Visualizar</span></button> ';
 
+        if (this.pessoarecusa == null)
         if (filial != 0) {
 
             if (this.dtRecebimento == " " && this.dtAprovacao != " ") {
                 txt += '<button role="button" class="btn btn-success" href="#" onclick="javascript:LimparReceber(); alterar(' + this.codigo + ');MostraTransf(' + this.codigo + ',1);" data-toggle="modal" data-target="#ReceberTransf" title="Receber"><i class="fas fa-check"></i> <span>Receber</span></button>';
+                txt += '&nbsp;<button role="button" class="btn btn-danger" onclick="javascript:recusar(' + this.codigo + ');" data-toggle="modal" data-target="#RecusarTransf" title="Recusar"><i class="fas fa-times-circle"></i> <span>Recusar</span></button>';
             }
 
         }
         else {
             if (regiao != 0) {
-                if (this.dtAprovacao == " ")
+                if (this.dtAprovacao == " ") {
                     txt += '<button role="button" class="btn btn-warning" onclick="javascript:alterar(' + this.codigo + ');" data-toggle="modal" data-target="#AprovarTransf" title="Aprovar"><i class="fas fa-check-circle"></i> <span>Aprovar</span></button>';
-
+                    txt += '&nbsp;<button role="button" class="btn btn-danger" onclick="javascript:recusar(' + this.codigo + ');" data-toggle="modal" data-target="#RecusarTransf" title="Recusar"><i class="fas fa-times-circle"></i> <span>Recusar</span></button>';
+                }
             }
             else {
                 if (this.dtAprovacao == " ") {
                     txt += '<button role="button" class="btn btn-warning" onclick="javascript:alterar(' + this.codigo + ');" data-toggle="modal" data-target="#AprovarTransf" title="Aprovar"><i class="fas fa-check-circle"></i> <span>Aprovar</span></button>';
+                    txt += '&nbsp;<button role="button" class="btn btn-danger" onclick="javascript:recusar(' + this.codigo + ');" data-toggle="modal" data-target="#RecusarTransf" title="Recusar"><i class="fas fa-times-circle"></i> <span>Recusar</span></button>';
                 }
                 else
-                    if (this.dtRecebimento == " ")
+                    if (this.dtRecebimento == " ") {
                         txt += '<button role="button" class="btn btn-success" href="#" onclick="javascript: LimparReceber(); alterar(' + this.codigo + ',1); MostraTransf(' + this.codigo + ',1);" data-toggle="modal" data-target="#ReceberTransf" title="Receber"><i class="fas fa-check"></i> <span>Receber</span></button>';
+                        txt += '&nbsp;<button role="button" class="btn btn-danger" onclick="javascript:recusar(' + this.codigo + ');" data-toggle="modal" data-target="#RecusarTransf" title="Recusar"><i class="fas fa-times-circle"></i> <span>Recusar</span></button>';
+                    }
             }
         }
 
@@ -1283,6 +1315,10 @@ function PreencherTabela(dados) {
 
 function alterar(cod) {
     $("#HcdTransfAprov").val(cod);
+}
+
+function recusar(cod) {
+    $("#HcdTransfRecusa").val(cod);
 }
 
 function Receber(dados) {   //preencher combo receber ativos...
@@ -1595,3 +1631,51 @@ document.getElementById('fuArquivoRec').addEventListener('change', function (e) 
     var nextSibling = e.target.nextElementSibling;
     nextSibling.innerText = fileName.substring(0, 8);
 });
+
+function GravarRecusa() {
+    $("#divLoading").show(300);
+
+    var Transf = $("#HcdTransfRecusa").val();
+    var Obs = $("#txtObsRecusa").val();
+
+
+    $.ajax({
+        type: 'POST',
+        url: '/Transferencia/Recusar',
+        data: { Transf: Transf, Obs: Obs },
+        success: function (result) {
+            if (result == "") {
+                $('#RecusarTransf').modal('hide');
+
+                Swal.fire({
+                    title: 'Sucesso',
+                    type: 'success',
+                    text: 'Transferência Recusada!',
+                    timer: 5000
+                })
+                ObterTransferencias();
+                $("#txtObsRecusa").val("");
+            }
+            else {
+                Swal.fire({
+                    title: 'Erro',
+                    type: 'danger',
+                    text: 'Erro ao Gravar',
+                    timer: 5000
+                })
+                ObterTransferencias();
+
+            }
+
+            $("#divLoading").hide(300);
+            ObterTransferencias();
+
+        },
+        error: function (XMLHttpRequest, txtStatus, errorThrown) {
+            alert("Status: " + txtStatus); alert("Error: " + errorThrown);
+            $("#divLoading").hide(300);
+            ObterTransferencias();
+
+        }
+    });
+}

@@ -75,6 +75,10 @@
                             <input class="form-check-input" type="radio" name="rdAtivo" id="rdAtivo2" value="0">
                             <label class="form-check-label" for="rdAtivo2">Fechado</label>
                         </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="rdAtivo" id="rdAtivo3" value="2">
+                            <label class="form-check-label" for="rdAtivo3">Recusada</label>
+                        </div>
                     </div>
 
                 </div>
@@ -404,6 +408,52 @@
     </div>
 </div>
 
+@*Recusar Transf*@
+<div id="RecusarTransf" class="modal fade bd-example-modal-lg" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Recusar Transferência</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <form name="formRecusar" id="formRecusar" action="javascript:GravarRecusa()" method="post">
+                        <div class="form-group">
+                            <input type="hidden" name="HcdTransfRecusa" id="HcdTransfRecusa" value="0" />
+                            
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group" id="FormAprov">
+                                        <label for="txtDescricaoRecusa">Motivo</label>
+                                        <div class="input-group">
+
+                                            <div class="input-group-append">
+
+                                                <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-info"></i></div>
+                                            </div>
+                                            <input class="form-control" type="text" name="txtObsRecusa" id="txtObsRecusa" required autocomplete="off" maxlength="255" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+
+                            <div class="d-inline">
+                                <button type="submit" name="btnGravaRecusa" id="btnGravaAprov" class="btn btn-danger" ><i class="fas fa-check"></i>Recusar</button>
+                                <button type="button" class="btn btn-success" data-dismiss="modal"><i class="fas fa-ban"></i> Cancelar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 @*Aprovar Transf*@
 <div id="AprovarTransf" class="modal fade bd-example-modal-lg" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
@@ -610,6 +660,7 @@
                             </div>
                         </div>
                         <div id="InfoAprovGerente"></div>
+                        <div id="InfoRecusa"></div>
                     </div>
                 </div>
             </div>

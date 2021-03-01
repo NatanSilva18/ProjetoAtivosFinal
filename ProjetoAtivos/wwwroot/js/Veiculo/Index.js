@@ -279,7 +279,7 @@ function LimparCamposVeiculo() {
     //$("#txtValor").val("");
     $("#txtModelo").val("");
     $("#txtQtd").val("0");
-    $("#validaPlaca").val("0");
+    $("#validaPlacaVeiculo").val("0");
     $('#cbbTpAtivo').selectpicker('val', '');
 
 
@@ -650,7 +650,7 @@ function GravarVeiculo() {
     $("#divLoading").show();
     document.getElementById('btnConfirmar').disabled = true;
 
-    if (document.getElementById('validaPlaca').value == '0') {
+    if (document.getElementById('validaPlacaVeiculo').value == '0') {
         navigator.geolocation.getCurrentPosition(function Responder(position) {
             var Latitude = position.coords.latitude;
             var Longitude = position.coords.longitude;
@@ -1364,7 +1364,7 @@ function ValidarPlacaVeiculo() {
         async: false,
         success: function (result) {
             if (result.length > 0) {
-                LockFields();
+                LockFieldsVeiculo();
                 for (var i = 0; i < result.length; i++) {
                     if (result[i].status)
                         status = '<span class="badge badge-success">Ativo</span>';
@@ -1373,12 +1373,12 @@ function ValidarPlacaVeiculo() {
 
                     txt += 'Placa Ja Cadastrada - Regional: <b>' + result[i].regional + '</b> - Filial: <b>' + result[i].filial + '</b> - Status: ' + status+'<br>'
                 }
-                Mensagem("divAlertaPlaca", txt);
-                document.getElementById('validaPlaca').value = "1";
+                Mensagem("divAlertaPlacaVeiculo", txt);
+                document.getElementById('validaPlacaVeiculo').value = "1";
             }
             else {
                 UnlockFieldsVeiculo();
-                document.getElementById('validaPlaca').value = "0";
+                document.getElementById('validaPlacaVeiculo').value = "0";
                 $('#txtDescricao').focus();
             }
             $("#divLoading").hide(1000);
@@ -2056,7 +2056,7 @@ function mostraDivVeiculo(mostrar = true) {
         \
                         <form name="formRegional" id="formRegional" action="javascript: GravarVeiculo();" method="post">\
                             <input type="hidden" id="minhaImagemHidden" name="minhaImagemHidden" value="" />\
-                            <input type="hidden" id="validaPlaca" name="validaPlaca" value="0" />\
+                            <input type="hidden" id="validaPlacaVeiculo" name="validaPlacaVeiculo" value="0" />\
         \
                             <div class="form-group">\
                                 <input type="hidden" name="txtId" id="txtId" value="0" />\
@@ -2098,10 +2098,7 @@ function mostraDivVeiculo(mostrar = true) {
                                         </div>\
                                     </div>\
                                 </div>\
-                                <div class="row">\
-                                    <div id="divAlertaPlaca" class="alert alert-danger col-lg-8" role="alert" style="display:none"></div>\
-\
-                                </div>\
+                                \
                                 <input type="hidden" name="txtIdNotaFiscal" id="txtIdNotaFiscal" value="0" />\
 \
                                 <div class="card card-body" style="border-radius: 4px; border-left: 4px solid blue;">\
@@ -2204,6 +2201,10 @@ function mostraDivVeiculo(mostrar = true) {
                                         <div id="divAlertaAnexoVeiculo" class="alert alert-danger col-lg-6" role="alert" style="display:none"></div>\
 \
                                     </div>\
+                                </div>\
+        <div class="row">\
+                                    <div id="divAlertaPlacaVeiculo" class="alert alert-danger col-lg-8" role="alert" style="display:none"></div>\
+\
                                 </div>\
                                 <div class="row">\
                                     <div class="col-lg-4">\

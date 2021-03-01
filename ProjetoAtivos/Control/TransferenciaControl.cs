@@ -70,6 +70,11 @@ namespace ProjetoAtivos.Control
             return new Transferencia().Aprovar(Transf, Obs, Pessoa);
         }
 
+        public bool Recusar(int Transf, string Obs, int Pessoa)
+        {
+            return new Transferencia().Recusar(Transf, Obs, Pessoa);
+        }
+
         public List<object> BuscaDocs(int Codigo)
         {
             return new Documento().Busca(new Transferencia(Codigo));

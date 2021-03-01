@@ -67,6 +67,7 @@ namespace ProjetoAtivos.Models
 
         public Pessoa(int Codigo, string Matricula, string Nome, string Email, string Cargo, string Telefone1, string Telefone2, Boolean StAtivo, string EndLogradouro, int EndNumero, string EndReferencia, string EndBairro, string EndCep, string EndCidade, string EndEstado)
         {
+            this.Codigo = Codigo;
             this.Matricula = Matricula;
             this.Nome = Nome;
             this.Email = Email;

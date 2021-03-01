@@ -2077,9 +2077,7 @@ function mostraDivAtivo(mostrar = true) {
                                         </div>\
                                     </div>\
                                 </div>\
-                                <div class="row">\
-                                    <div id="divAlertaPlaca" class="alert alert-danger col-lg-8" role="alert" style="display:none"></div>\
-                                </div>\
+\
                                 <input type="hidden" name="txtIdNotaFiscal" id="txtIdNotaFiscal" value="0" />\
                                 <div class="card card-body" style="border-radius: 4px; border-left: 4px solid blue;">\
                                     <div class="d-sm-flex align-items-center justify-content-between mb-0">\
@@ -2179,6 +2177,9 @@ function mostraDivAtivo(mostrar = true) {
 \
                                         </div>\
                                     </div>\
+        <div class="row">\
+                                    <div id="divAlertaPlaca" class="alert alert-danger col-lg-8" role="alert" style="display:none"></div>\
+                                </div>\
                                     <div class="row">\
                                         <div class="col-lg-4">\
                                             <div class="form-group">\

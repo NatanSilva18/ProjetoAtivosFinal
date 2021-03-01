@@ -74,7 +74,9 @@ namespace ProjetoAtivos.Controllers
                     ObsAprovDestino = L.AprovacaoDestino != null ? L.AprovacaoDestino.Observacao : "",
                     ObsAprovGerente = L.AprovacaoGerente != null ? L.AprovacaoGerente.Observacao : "",
                     Ativos = ativos,
-                    Docs = docs
+                    Docs = docs,
+                    obsrecusa = L.GetObsRecusa(),
+                    pessoarecusa = L.PessoaRecusa.GetNome() + " - " + L.PessoaRecusa.GetCargo()
                 }); 
             }
 
@@ -165,6 +167,20 @@ namespace ProjetoAtivos.Controllers
             int pessoa = Convert.ToInt32(Request.Cookies["Pessoa"]);
 
             if (ctlTransferencia.Aprovar(Transf, Obs, pessoa))
+            {
+                return Json("");
+            }
+            else
+                return Json("Erro");
+        }
+
+        [HttpPost]
+        public JsonResult Recusar(int Transf, string Obs)
+        {
+
+            int pessoa = Convert.ToInt32(Request.Cookies["Pessoa"]);
+
+            if (ctlTransferencia.Recusar(Transf, Obs, pessoa))
             {
                 return Json("");
             }
