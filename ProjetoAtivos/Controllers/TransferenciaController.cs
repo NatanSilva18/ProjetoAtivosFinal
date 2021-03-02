@@ -76,7 +76,7 @@ namespace ProjetoAtivos.Controllers
                     Ativos = ativos,
                     Docs = docs,
                     obsrecusa = L.GetObsRecusa(),
-                    pessoarecusa = L.PessoaRecusa.GetNome() + " - " + L.PessoaRecusa.GetCargo()
+                    pessoarecusa = L.PessoaRecusa != null ? L.PessoaRecusa.GetNome() + " - " + L.PessoaRecusa.GetCargo() : null
                 }); 
             }
 

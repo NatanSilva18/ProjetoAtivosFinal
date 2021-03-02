@@ -389,7 +389,7 @@ namespace ProjetoAtivos.DAO
             b.getComandoSQL().Parameters.Clear();
 
 
-            if (Veiculo)
+            if (!Veiculo)
             {
                 b.getComandoSQL().CommandText = @" select a.ati_codigo, '' as loca_latitude, '' as loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo
                                                 from itens_ativos ia
@@ -397,7 +397,7 @@ namespace ProjetoAtivos.DAO
                                                 inner join imagem i on a.ati_codigo = i.ati_codigo
                                                 left outer join Sala s on s.sal_codigo = a.sal_codigo
                                                 inner join Filial f on s.fil_codigo = f.fil_codigo
-                                              left outer join veiculos v on v.ve_codigo = a.ve_codigo
+                                                left outer join veiculos v on v.ve_codigo = a.ve_codigo
                                                 where ia.transf_codigo = @transf and i.transf_codigo is null 
                                                 group by a.ati_codigo
                                                 order by a.ati_descricao;";
