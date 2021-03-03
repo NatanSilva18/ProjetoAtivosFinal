@@ -368,7 +368,7 @@ namespace ProjetoAtivos.DAO
             b.getComandoSQL().Parameters.Clear();
 
             b.getComandoSQL().CommandText = @"select a.ati_codigo, a.ati_placa, a.ati_descricao, a.ati_estado, a.ati_observacao, a.ati_tag, a.ati_marca,                                                                
-                                                a.ati_modelo, a.ati_numeroserie, a.ati_stativo, a.ati_valor, tp.tpa_codigo, tp.tpa_descricao, tp.tpa_valor, s.sal_codigo, s.sal_descricao, , a.nt_codigo
+                                                a.ati_modelo, a.ati_numeroserie, a.ati_stativo, a.ati_valor, tp.tpa_codigo, tp.tpa_descricao, tp.tpa_valor, s.sal_codigo, s.sal_descricao, a.nt_codigo, a.ve_codigo
                                               from Ativos a
                                               inner join Tipo_Ativo tp on tp.tpa_codigo = a.tpa_codigo
                                               left outer join Sala s on s.sal_codigo = a.sal_codigo
