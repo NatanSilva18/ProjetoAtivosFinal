@@ -33,7 +33,7 @@ function CarregarTiposAtivo() {
             },
             error: function (XMLHttpRequest, txtStatus, errorThrown) {
                 alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                $("#divLoading").hide(300);
+                $("#divLoading").hide(0);
             }
         });
     }
@@ -66,7 +66,7 @@ function CarregarRegionaisPesq() {
             },
             error: function (XMLHttpRequest, txtStatus, errorThrown) {
                 alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                $("#divLoading").hide(300);
+                $("#divLoading").hide(0);
             }
         });
     }
@@ -120,7 +120,7 @@ function CarregarRegionaisAtivo() {
             },
             error: function (XMLHttpRequest, txtStatus, errorThrown) {
                 alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                $("#divLoading").hide(300);
+                $("#divLoading").hide(0)
             }
         });
     }
@@ -157,7 +157,7 @@ function CarregarFiliaisPesq(regiao) {
             },
             error: function (XMLHttpRequest, txtStatus, errorThrown) {
                 alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                $("#divLoading").hide(300);
+                $("#divLoading").hide(0);
             }
         });
     }
@@ -206,7 +206,7 @@ function CarregarFiliaisAtivo(Combo) {
             },
             error: function (XMLHttpRequest, txtStatus, errorThrown) {
                 alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                $("#divLoading").hide(300);
+                $("#divLoading").hide(0);
             }
         });
     }
@@ -244,7 +244,7 @@ function BuscarSalasAtivo(Combo) {
                 },
                 error: function (XMLHttpRequest, txtStatus, errorThrown) {
                     alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                    $("#divLoading").hide(300);
+                    $("#divLoading").hide(0);
                 }
             });
 
@@ -593,14 +593,14 @@ function ObterAtivos() {
                 Radio[0].checked = true;
                 LimparTabela();
             }
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
             $("#txtPesquisar").val("");
             document.getElementById('btnPesquisar').disabled = false;
 
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
             document.getElementById('btnPesquisar').disabled = false;
 
         }
@@ -726,7 +726,7 @@ function GravarAtivo() {
                         },
                         error: function (XMLHttpRequest, txtStatus, errorThrown) {
                             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                            $("#divLoading").hide(400);
+                            $("#divLoading").hide(0);
                             document.getElementById('btnConfirmar').disabled = false;
                         }
                     });
@@ -789,7 +789,7 @@ function GravarAtivo() {
                         },
                         error: function (XMLHttpRequest, txtStatus, errorThrown) {
                             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                            $("#divLoading").hide(400);
+                            $("#divLoading").hide(0);
                             document.getElementById('btnConfirmar').disabled = false;
                         }
                     });
@@ -854,7 +854,7 @@ function ExcluirLogico(Codigo) {
                 },
                 error: function (XMLHttpRequest, txtStatus, errorThrown) {
                     alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                    $("#divLoading").hide(400);
+                    $("#divLoading").hide(0);
                 }
             });
         }
@@ -902,7 +902,7 @@ function Ativar(Codigo) {
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(400);
+            $("#divLoading").hide(0)
         }
     });
 };
@@ -1044,14 +1044,14 @@ function Alterar(Codigo) {
 
                 }
 
-                $("#divLoading").hide(400);
+                $("#divLoading").hide(0);
 
             }
 
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(400);
+            $("#divLoading").hide(0)
         }
     });
 };
@@ -1076,7 +1076,7 @@ function BuscarLocalizacao(Codigo) {
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
         }
     });
 }
@@ -1241,20 +1241,20 @@ function SalvarFotosAtivo() {
                     }
 
                     document.getElementById('btnSalvarFotosAtivo').innerHTML = 'Adicionar';
-                    $("#divLoading").hide(2000);
+                    $("#divLoading").hide(0);
 
                 });
             },
             error: function (error) {
                 alert(error);
-                $("#divLoading").hide(2000);
+                $("#divLoading").hide(0);
             }
         });
     }
     else {
         Mensagem("divAlerta", 'Selecione um arquivo!');
     }
-    $("#divLoading").hide(2000);
+    $("#divLoading").hide(0);
 
 };
 function ExcluirFotoAtivo(Codigo) {   
@@ -1364,7 +1364,7 @@ function ValidarPlaca() {
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
         }
     });
 };
@@ -1421,7 +1421,7 @@ function PreencherValorAtivo(Combo) {
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
         }
     });
 };
@@ -1486,12 +1486,12 @@ function GravarTipoAtivo() {
                     }
                 })
 
-                $("#divLoading").hide(400);
+                $("#divLoading").hide(0);
             }
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(400);
+            $("#divLoading").hide(0);
         }
     });
 };
@@ -1527,7 +1527,7 @@ function ObterImagens(Codigo) {
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(400);
+            $("#divLoading").hide(0);
         }
     });
 };
@@ -1544,7 +1544,7 @@ function MontarGaleriaAtivo(dados) {
     $("#headerGaleria").html(Header);
     $("#corpoGaleria").html(Corpo);
 
-    $("#divLoading").hide(400);
+    $("#divLoading").hide(0);
 };
 
 function LimparAnexo(sulf = "Anexo", dest = "anexo", button ="btnSalvarDoc") {
@@ -1891,20 +1891,20 @@ function SalvarFotosAtivoInventario() {
                     }
 
                     //document.getElementById('btnSalvarFotosAtivoInventario').innerHTML = 'Adicionar';
-                    $("#divLoading").hide(2000);
+                    $("#divLoading").hide(0);
 
                 });
             },
             error: function (error) {
                 alert(error);
-                $("#divLoading").hide(2000);
+                $("#divLoading").hide(0);
             }
         });
     }
     else {
         Mensagem("divAlerta", 'Selecione um arquivo!');
     }
-    $("#divLoading").hide(2000);
+    $("#divLoading").hide(0);
 
 };
 
@@ -1995,7 +1995,7 @@ function GravarInventario() {
                 },
                 error: function (XMLHttpRequest, txtStatus, errorThrown) {
                     alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                    $("#divLoading").hide(400);
+                    $("#divLoading").hide(0);
                 }
             });
         }

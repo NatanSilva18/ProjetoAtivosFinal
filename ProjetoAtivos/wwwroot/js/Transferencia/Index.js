@@ -40,7 +40,7 @@ function CarregarFiliais() {
             },
             error: function (XMLHttpRequest, txtStatus, errorThrown) {
                 alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                $("#divLoading").hide(300);
+                $("#divLoading").hide(0);
             }
         });
     }
@@ -80,7 +80,7 @@ function CarregarMotivos() {
             },
             error: function (XMLHttpRequest, txtStatus, errorThrown) {
                 alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                $("#divLoading").hide(300);
+                $("#divLoading").hide(0);
             }
         });
     }
@@ -114,7 +114,7 @@ function BuscarLocaisDestino(Combo) {
                 },
                 error: function (XMLHttpRequest, txtStatus, errorThrown) {
                     alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                    $("#divLoading").hide(300);
+                    $("#divLoading").hide(0);
                 }
             });
 
@@ -146,7 +146,7 @@ function ObterResponsavel(Codigo, Contr) {
             },
             error: function (XMLHttpRequest, txtStatus, errorThrown) {
                 alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                $("#divLoading").hide(300);
+                $("#divLoading").hide(0);
             }
         });
     }
@@ -186,7 +186,7 @@ function BuscarLocais(Combo) {
                 },
                 error: function (XMLHttpRequest, txtStatus, errorThrown) {
                     alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                    $("#divLoading").hide(300);
+                    $("#divLoading").hide(0);
                 }
             });
             ObterResponsavel(Codigo, 1);
@@ -231,7 +231,7 @@ function BuscarAtivos(Combo) {
                 },
                 error: function (XMLHttpRequest, txtStatus, errorThrown) {
                     alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                    $("#divLoading").hide(300);
+                    $("#divLoading").hide(0);
                 }
             });
             var Sala = $('#cbbLocalOrigem').find(":selected").text();
@@ -293,7 +293,7 @@ function LimparTransferencia() {
 
     //itens transferencia ativos
     $("#tableItensTransferencia tr").remove();
-    $("#tbbItensTransferencia").hide(300);
+    $("#tbbItensTransferencia").hide(0);
 
     document.getElementById('Doc').innerHTML = '';
     document.getElementById('confirmarCampos').innerHTML = '';
@@ -301,9 +301,9 @@ function LimparTransferencia() {
 
     //itens confirmar transferencia ativos
     $("#tableConfirmarItens tr").remove();
-    $("#tbbConfirmarItens").hide(300);
-    $("#modalDocs").hide(300);
-    $("#tbbConfirmarDocs").hide(300);
+    $("#tbbConfirmarItens").hide(0);
+    $("#modalDocs").hide(0);
+    $("#tbbConfirmarDocs").hide(0);
 
 
     //desabilita todos campos menos o default
@@ -412,7 +412,7 @@ function AdicionarAtivos(rec = '') {
 
                     $("#tableItensTransferencia" + rec).html(txt);
                     $("#tableConfirmarItens" + rec).html(MontarTableConfirmar(result, Imagem));
-                    $("#divLoading").hide(300);
+                    $("#divLoading").hide(0);
 
                 }
                 else {
@@ -436,14 +436,14 @@ function AdicionarAtivos(rec = '') {
                     }
 
                     $("#tableItensTransferencia" + rec + " tbody").append(txt);
-                    $("#divLoading").hide(300);
+                    $("#divLoading").hide(0);
 
                 }
 
                 if (rec == '') {
                     SegundaEtapa();
                     document.getElementById('btnSalvarFotos').innerHTML = 'Adicionar';
-                    $("#divLoading").hide(300);
+                    $("#divLoading").hide(0);
 
                 }
                 else {
@@ -451,13 +451,13 @@ function AdicionarAtivos(rec = '') {
                     $('#cbbAtivosRec').selectpicker('refresh');
                     VerificaGravaRec();
                     document.getElementById('btnSalvarFotosReceber').innerHTML = 'Adicionar';
-                    $("#divLoading").hide(300);
+                    $("#divLoading").hide(0);
                 }
 
             },
             error: function (XMLHttpRequest, txtStatus, errorThrown) {
                 alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                $("#divLoading").hide(300);
+                $("#divLoading").hide(0);
             }
         });
         document.getElementById("fuArquivo" + rec).value = "";
@@ -491,10 +491,10 @@ function RemoverItem(Codigo, rec = "", desc = "") {
 
     if (Linhas.length == 2) {
         $("#tableItensTransferencia" + rec + " tr").remove();
-        $("#tbbItensTransferencia" + rec).hide(300);
+        $("#tbbItensTransferencia" + rec).hide(0);
 
         $("#tableConfirmarItens tr").remove();
-        $("#tbbConfirmarItens").hide(300);
+        $("#tbbConfirmarItens").hide(0);
 
     }
     else {
@@ -546,7 +546,7 @@ function SalvarFotos(rec = "") {
         else {
             document.getElementById('btnSalvarFotos').innerHTML = '<div class="spinner-border text-primary" role="status"><span class="sr-only" > Loading...</span></div>';
         }
-        $("#divLoading").show(400);
+        $("#divLoading").show();
 
         var formData = new FormData();
         formData.append("id", "1");
@@ -588,12 +588,12 @@ function SalvarFotos(rec = "") {
                     else {
                         document.getElementById('btnSalvarFotosReceber').innerHTML = 'Adicionar';
                     }
-                    $("#divLoading").hide();
+                    $("#divLoading").hide(0);
                 });
             },
             error: function (error) {
                 alert(error);
-                $("#divLoading").hide(2000);
+                $("#divLoading").hide(0);
             }
         });
     }
@@ -605,7 +605,7 @@ function Mensagem(div, msg) {
     $("#" + div).html(msg);
     $("#" + div).show(300);
     $("#" + div).delay(5000);
-    $("#" + div).hide(300);
+    $("#" + div).hide(0);
 };
 
 function PrimeiraEtapa() {
@@ -869,7 +869,7 @@ function Gravar() {     //gravar transferencia
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
         }
     });
     ObterTransferencias();
@@ -1374,13 +1374,13 @@ function ObterTransferencias() {
                 Radio[0].checked = true;
                 LimparTabela();
             }
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
             $("#txtPesquisar").val("");
 
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
         }
     });
 };
@@ -1420,13 +1420,13 @@ function GravarAprovacao() {        //gravar aprovação origem...
 
             }
 
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
             ObterTransferencias();
 
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
             ObterTransferencias();
 
         }
@@ -1527,7 +1527,7 @@ function GravarRec() {      //gravar recebimento destino...
                     },
                     error: function (XMLHttpRequest, txtStatus, errorThrown) {
                         alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                        $("#divLoading").hide(300);
+                        $("#divLoading").hide(0);
                     }
                 });
 
@@ -1585,7 +1585,7 @@ function BuscarSalasReceber(Codigo) {
                 },
                 error: function (XMLHttpRequest, txtStatus, errorThrown) {
                     alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                    $("#divLoading").hide(300);
+                    $("#divLoading").hide(0);
                 }
             });
         }
@@ -1613,7 +1613,7 @@ function BuscarSalas(Codigo) {
                 },
                 error: function (XMLHttpRequest, txtStatus, errorThrown) {
                     alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                    $("#divLoading").hide(300);
+                    $("#divLoading").hide(0);
                 }
             });
 
@@ -1667,13 +1667,13 @@ function GravarRecusa() {
 
             }
 
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
             ObterTransferencias();
 
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
             ObterTransferencias();
 
         }
