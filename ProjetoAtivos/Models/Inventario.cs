@@ -24,6 +24,8 @@ namespace ProjetoAtivos.Models
         public bool Gravar()
         {
             Filial = new FilialDAO().BuscarFilial(Ativo);
+            Filial = Filial == null ? new FilialDAO().BuscarFilial(Ativo, true) : Filial;
+
             Imagem.SetAtivo(Ativo);
 
             return new InventarioDAO().Gravar(this);

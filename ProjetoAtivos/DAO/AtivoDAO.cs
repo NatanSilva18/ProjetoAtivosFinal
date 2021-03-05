@@ -1155,7 +1155,8 @@ select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_plac
                    LEFT join imagem i on a.ati_codigo = i.ati_codigo
                    LEFT join localizacao l on l.img_codigo = i.img_codigo
                    left outer join Sala s on s.sal_codigo = a.sal_codigo
-                   inner join Filial f on s.fil_codigo = f.fil_codigo
+                   left outer join veiculos v on v.ve_codigo = a.ve_codigo
+                   inner join Filial f on (a.ve_codigo is null and s.fil_codigo = f.fil_codigo) or (v.fil_codigo = f.fil_codigo)
                    inner join Regional r on r.reg_codigo = f.reg_codigo
                    left outer join nota_fiscal nf on nf.nt_codigo = a.nt_codigo  
                    where a.ati_codigo = @cod

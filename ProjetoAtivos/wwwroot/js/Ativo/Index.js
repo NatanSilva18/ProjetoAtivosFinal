@@ -524,13 +524,13 @@ function PreencherTabelaAtivo(dados) {
                 txt += '<a role="button" class="btn btn-warning" href="javascript: mostraDivVeiculo(false); mostraDivAtivo(); UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>';
                 txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
                 txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>&nbsp;';
-                txt += '<a role="button" class="btn btn-info" href="javascript: Inventariar(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
+                txt += '<a role="button" class="btn btn-info" href="javascript: InventariarAtivo(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
             }
             else {
                 txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(false); mostraDivAtivo();UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
                 txt += '<a role="button" class="btn btn-warning" href="javascript: mostraDivVeiculo(false); mostraDivAtivo(); UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
                 txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>&nbsp;';
-                txt += '<a role="button" class="btn btn-info" href="javascript: Inventariar(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
+                txt += '<a role="button" class="btn btn-info" href="javascript: InventariarAtivo(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
             }
         }
         else {
@@ -538,12 +538,12 @@ function PreencherTabelaAtivo(dados) {
                 txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(false); mostraDivAtivo();UnlockFields(); Alterar(' + this.codigo + ');"><td onclick="javascript:ObterImagens(' + this.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
                 txt += '<a role="button" class="btn btn-success" href="javascript:Ativar(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>';
                 txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>&nbsp;';
-                txt += '<a role="button" class="btn btn-info" href="javascript: Inventariar(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
+               
             }
             else {
                 txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(false); mostraDivAtivo();UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
                 txt += '<a role="button" class="btn btn-success" href="javascript:Ativar(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>&nbsp;';
-                txt += '<a role="button" class="btn btn-info" href="javascript: Inventariar(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
+               
 
             }
         }
@@ -1823,9 +1823,9 @@ function registraFipe(x, parts = null, mod = null) {
 }
 
 
-function SalvarFotosAtivoInventario() {
+function SalvarFotosInventarioAtivo() {
 
-    var arquivos = document.getElementById("fuArquivoAtivoInventario");
+    var arquivos = document.getElementById("fuArquivoInventarioAtivo");
     if (arquivos.files.length > 0) {
         $("#divLoading").show(0);
 
@@ -1851,43 +1851,43 @@ function SalvarFotosAtivoInventario() {
                 var txt = "";
                 $.each(response, function () {
                     if (this.id >= 0) {
-                        $("#txtQtdInventario").val(parseInt($("#txtQtdInventario").val()) + 1);
+                        $("#txtQtdInventarioAtivo").val(parseInt($("#txtQtdInventarioAtivo").val()) + 1);
 
                         txr2 = 'data:image/jpg;base64, ' + this.dados;
 
-                        var imgs = $("#minhaImagemHiddenInventario").val();
+                        var imgs = $("#minhaImagemHiddenInventarioAtivo").val();
 
                         if (imgs != "")
                             imgs += "**Separdor Imagem**";
 
                         imgs += txr2;
 
-                        $("#minhaImagemHiddenInventario").val(imgs);
+                        $("#minhaImagemHiddenInventarioAtivo").val(imgs);
 
-                        var txt = '  <div class="col-lg-2" id="fotosInventario' + $("#txtQtdInventario").val() + '">\
+                        var txt = '  <div class="col-lg-2" id="fotosInventario' + $("#txtQtdInventarioAtivo").val() + '">\
                                         <div class="form-group">\
                                             <div class="card " style="width: 10rem;">\
-                                                <img id="minhaImagemInventario" src="'+ txr2 + '" class="card-img-top" alt="...">\
+                                                <img id="minhaimagemInventarioAtivo" src="'+ txr2 + '" class="card-img-top" alt="...">\
                                                     <div class="card-body">\
-                                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="javascript: ExcluirFotoAtivoInventario('+ $("#txtQtdInventario").val() + ')"><i class="fas fa-trash"></i></button>\
+                                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="javascript: ExcluirFotoAtivoInventario('+ $("#txtQtdInventarioAtivo").val() + ')"><i class="fas fa-trash"></i></button>\
                                                     </div>\
                                                 </div>\
                                             </div>\
                                         </div>';
                         $("#fotosInventario").show();
-                        $("#modalFotosInventario").show();
+                        $("#modalFotosInventarioAtivo").show();
 
 
-                        $("#imagemInventario").append(txt)
+                        $("#imagemInventarioAtivo").append(txt)
                         //document.getElementById("imagem").innerHTML = txt;
-                        $('#fuArquivoAtivoInventario').attr('disabled', 'disabled');
+                        $('#fuArquivoInventarioAtivo').attr('disabled', 'disabled');
                     }
                     if (this.id == -1) {
-                        Mensagem("divAlertaInventario", this.dados);
+                        Mensagem("divAlertaInventarioAtivo", this.dados);
                     }
 
                     if (this.id == -2) {
-                        Mensagem("divAlertaInventario", this.dados);
+                        Mensagem("divAlertaInventarioAtivo", this.dados);
                     }
 
                     //document.getElementById('btnSalvarFotosAtivoInventario').innerHTML = 'Adicionar';
@@ -1913,12 +1913,12 @@ function ExcluirFotoAtivoInventario(Codigo) {
 
     if (Foto != null) {
         Foto.remove();
-        $("#txtQtdInventario").val(parseInt($("#txtQtdInventario").val()) - 1);
+        $("#txtQtdInventarioAtivo").val(parseInt($("#txtQtdInventarioAtivo").val()) - 1);
 
-        document.getElementById("fuArquivoAtivoInventario").value = "";
-        document.getElementById("labelFotoInventario").innerHTML = 'Selecione uma Foto';
+        document.getElementById("fuArquivoInventarioAtivo").value = "";
+        document.getElementById("labelFotoInventarioAtivo").innerHTML = 'Selecione uma Foto';
 
-        var bases = $("#minhaImagemHiddenInventario").val().split("**Separdor Imagem**");
+        var bases = $("#minhaImagemHiddenInventarioAtivo").val().split("**Separdor Imagem**");
         var novo = "";
 
         for (var i = 0; i < bases.length - 1; i++) {
@@ -1926,7 +1926,7 @@ function ExcluirFotoAtivoInventario(Codigo) {
 
                 novo += bases[i];
 
-                if ($("#txtQtdInventario").val() > 1)
+                if ($("#txtQtdInventarioAtivo").val() > 1)
                     novo += "**Separdor Imagem**";
             }
         }
@@ -1934,34 +1934,34 @@ function ExcluirFotoAtivoInventario(Codigo) {
         if (bases.length - 1 != Codigo - 1)
             novo += bases[bases.length - 1];
 
-        $("#minhaImagemHiddenInventario").val(novo);
+        $("#minhaImagemHiddenInventarioAtivo").val(novo);
     }
-    var Imagem = document.getElementById('imagemInventario');
+    var Imagem = document.getElementById('imagemInventarioAtivo');
 
     if (Imagem.childElementCount == 0)
-        $("#modalFotosInventario").hide();
+        $("#modalFotosInventarioAtivo").hide();
 
-    $('#fuArquivoAtivoInventario').removeAttr('disabled');
+    $('#fuArquivoInventarioAtivo').removeAttr('disabled');
 };
 
-function Inventariar(x) {
-    $('#idAtivoInventario').val(x);
-    $('#inventario').modal('show');
+function InventariarAtivo(x) {
+    $('#idAtivoInventarioAtivo').val(x);
+    $('#inventarioAtivo').modal('show');
 }
 
-function GravarInventario() {
+function GravarInventarioAtivo() {
     $("#divLoading").show();
 
     navigator.geolocation.getCurrentPosition(function Responder(position) {
         var Latitude = position.coords.latitude;
         var Longitude = position.coords.longitude;
 
-        var ativo = $('#idAtivoInventario').val();
-        var obs = $('#txtObservacaoInv').val();
+        var ativo = $('#idAtivoInventarioAtivo').val();
+        var obs = $('#txtObservacaoInvAtivo').val();
 
-        var VerificaImagem = $('#minhaImagemHiddenInventario').val();
+        var VerificaImagem = $('#minhaImagemHiddenInventarioAtivo').val();
         if (VerificaImagem != "") {
-            var Imagem = $('#minhaImagemHiddenInventario').val();
+            var Imagem = $('#minhaImagemHiddenInventarioAtivo').val();
 
             $.ajax({
                 type: 'POST',
@@ -1970,7 +1970,7 @@ function GravarInventario() {
                     Codigo: ativo, Observacao: obs, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude
                 },
                 success: function (result) {
-                    $('#inventario').modal('hide');
+                    $('#inventarioAtivo').modal('hide');
 
                     if (result.length > 0) {
                         Swal.fire({
@@ -2000,7 +2000,7 @@ function GravarInventario() {
             });
         }
         else {
-            Mensagem("divAlertaInventario", 'Por favor Envie a Imagem');
+            Mensagem("divAlertaInventarioAtivo", 'Por favor Envie a Imagem');
             $("#divLoading").hide();
         }
 

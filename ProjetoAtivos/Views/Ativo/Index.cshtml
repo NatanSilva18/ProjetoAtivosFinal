@@ -784,7 +784,7 @@
 
 
 @*Inventario*@
-<div id="inventario" class="modal fade bd-example-modal-xl" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="novoAtivoLabel" aria-hidden="true">
+<div id="inventarioAtivo" class="modal fade bd-example-modal-xl" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="novoAtivoLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -796,33 +796,33 @@
             <div class="modal-body">
                 <div class="container-fluid">
 
-                    <form name="formInventario" id="formInventario" action="javascript: GravarInventario();" method="post">
-                        <input type="hidden" id="idAtivoInventario" name="idAtivoInventario" value="" />
-                        <input type="hidden" id="minhaImagemHiddenInventario" name="minhaImagemHiddenInventario" value="" />
+                    <form name="formInventario" id="formInventario" action="javascript: GravarInventarioAtivo();" method="post">
+                        <input type="hidden" id="idAtivoInventarioAtivo" name="idAtivoInventarioAtivo" value="" />
+                        <input type="hidden" id="minhaImagemHiddenInventarioAtivo" name="minhaImagemHiddenInventarioAtivo" value="" />
                         <div class="form-group">
 
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label for="txtObservacao">Observacao </label>
+                                        <label for="txtObservacaoInv">Observacao </label>
                                         <div class="input-group">
                                             <div class="input-group-append">
                                                 <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
                                             </div>
-                                            <input class="form-control" type="text" name="txtObservacaoInv" id="txtObservacaoInv" autocomplete="off" maxlength="30" />
+                                            <input class="form-control" type="text" name="txtObservacaoInvAtivo" id="txtObservacaoInvAtivo" autocomplete="off" maxlength="30" />
                                         </div>
 
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" id="modalArquivoInventario">
+                            <div class="row" id="modalArquivoInventarioAtivo">
                                 <div class="col-lg-6">
                                     <div class="form-group">
-                                        <label for="fuArquivoInventario">Foto do Ativo</label>
+                                        <label for="fuArquivoInventarioAtivo">Foto do Ativo</label>
                                         <div class="input-group">
                                             <div class="custom-file" id="customFile" lang="pt-br">
-                                                <input type="file" class="custom-file-input" id="fuArquivoInventario" aria-describedby="fileHelp" onchange="SalvarFotosInventario();" required>
-                                                <label class="custom-file-label" for="fuArquivoInventario" id="labelFotoInventario">
+                                                <input type="file" class="custom-file-input" id="fuArquivoInventarioAtivo" aria-describedby="fileHelp" onchange="SalvarFotosInventarioAtivo();" required>
+                                                <label class="custom-file-label" for="fuArquivoInventarioAtivo" id="labelFotoInventarioAtivo">
                                                     Selecione a Foto
                                                 </label>
                                             </div>
@@ -833,17 +833,17 @@
                                     </div>
                                 </div>
 
-                                <div id="divAlertaInventario" class="alert alert-danger col-lg-6" role="alert" style="display:none"></div>
+                                <div id="divAlertaInventarioAtivo" class="alert alert-danger col-lg-6" role="alert" style="display:none"></div>
                             </div>
                             <hr />
-                            <div class="card mb-4 shadow p-3 mb-5 bg-white rounded" style="display:none" id="modalFotosInventario">
+                            <div class="card mb-4 shadow p-3 mb-5 bg-white rounded" style="display:none" id="modalFotosInventarioAtivo">
                                 <div class="card-header">
                                     <i class="fa fa-table"></i>
                                     <span><b>Foto Adiconada</b></span>
                                 </div>
-                                <input id="txtQtdInventario" value="0" hidden />
-                                <div class="card-body" id="cardFotosInventario">
-                                    <div class="row" id="imagemInventario">
+                                <input id="txtQtdInventarioAtivo" value="0" hidden />
+                                <div class="card-body" id="cardFotosInventarioAtivo">
+                                    <div class="row" id="imagemInventarioAtivo">
 
                                     </div>
                                 </div>
@@ -856,7 +856,7 @@
                             </div><br />
 
                             <div class="d-inline">
-                                <button type="submit" name="btnConfirmarInventario" id="btnConfirmarInventario" class="btn btn-success"><i class="fas fa-check"></i> Confirmar</button>
+                                <button type="submit" name="btnConfirmarInventarioAtivo" id="btnConfirmarInventarioAtivo" class="btn btn-success"><i class="fas fa-check"></i> Confirmar</button>
                                 <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-ban"></i> Cancelar</button>
                             </div>
                         </div>

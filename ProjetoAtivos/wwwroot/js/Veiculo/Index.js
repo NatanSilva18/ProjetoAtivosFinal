@@ -537,11 +537,13 @@ function PreencherTabela(dados) {
                 txt += '<a role="button" class="btn btn-warning" href="javascript: mostraDivVeiculo(); mostraDivAtivo(false); UnlockFieldsVeiculo(); AlterarVeiculo(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
                 txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogicoVeiculo(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
                 txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacaoVeiculo(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>';
+                txt += '&nbsp;<a role="button" class="btn btn-info" href="javascript: Inventariar(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
             }
             else {
                 txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(); mostraDivAtivo(false);UnlockFieldsVeiculo(); AlterarVeiculo(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
                 txt += '<a role="button" class="btn btn-warning" href="javascript: mostraDivVeiculo(); mostraDivAtivo(false); UnlockFieldsVeiculo(); AlterarVeiculo(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
                 txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogicoVeiculo(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
+                txt += '&nbsp;<a role="button" class="btn btn-info" href="javascript: Inventariar(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
             }
         }
         else {
@@ -1852,7 +1854,7 @@ function registraFipe(x, parts = null, mod = null) {
 
 function SalvarFotosInventario() {
 
-    var arquivos = document.getElementById("fuArquivoVeiculoInventario");
+    var arquivos = document.getElementById("fuArquivoInventario");
     if (arquivos.files.length > 0) {
         $("#divLoading").show(0);
 
@@ -1907,7 +1909,7 @@ function SalvarFotosInventario() {
 
                         $("#imagemInventario").append(txt)
                         //document.getElementById("imagem").innerHTML = txt;
-                        $('#fuArquivoVeiculoInventario').attr('disabled', 'disabled');
+                        $('#fuArquivoInventario').attr('disabled', 'disabled');
                     }
                     if (this.id == -1) {
                         Mensagem("divAlertaInventario", this.dados);
@@ -1942,7 +1944,7 @@ function ExcluirFotoInventario(Codigo) {
         Foto.remove();
         $("#txtQtdInventario").val(parseInt($("#txtQtdInventario").val()) - 1);
 
-        document.getElementById("fuArquivoVeiculoInventario").value = "";
+        document.getElementById("fuArquivoInventario").value = "";
         document.getElementById("labelFotoInventario").innerHTML = 'Selecione uma Foto';
 
         var bases = $("#minhaImagemHiddenInventario").val().split("**Separdor Imagem**");
@@ -1968,7 +1970,7 @@ function ExcluirFotoInventario(Codigo) {
     if (Imagem.childElementCount == 0)
         $("#modalFotosInventario").hide();
 
-    $('#fuArquivoVeiculoInventario').removeAttr('disabled');
+    $('#fuArquivoInventario').removeAttr('disabled');
 };
 
 function Inventariar(x) {
@@ -1986,15 +1988,15 @@ function GravarInventario() {
         var ativo = $('#idAtivoInventario').val();
         var obs = $('#txtObservacaoInv').val();
 
-        var VerificaImagem = $('#minhaImagemHidden').val();
+        var VerificaImagem = $('#minhaImagemHiddenInventario').val();
         if (VerificaImagem != "") {
-            var Imagem = $('#minhaImagemHidden').val();
+            var Imagem = $('#minhaImagemHiddenInventario').val();
 
             $.ajax({
                 type: 'POST',
                 url: '/Ativo/Inventariar',
                 data: {
-                    Codigo: Codigo, Observacao: Observacao, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude
+                    Codigo: ativo, Observacao: obs, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude
                 },
                 success: function (result) {
                     $('#inventario').modal('hide');
@@ -2008,22 +2010,14 @@ function GravarInventario() {
                         })
                     }
                     else {
-                        if (Codigo == 0) {
-                            Swal.fire({
-                                title: 'Sucesso',
-                                type: 'success',
-                                text: 'Ativo Inventariado com Sucesso',
-                                timer: 5000
-                            })
-                        }
-                        else {
-                            Swal.fire({
-                                title: 'Sucesso',
-                                type: 'success',
-                                text: 'Ativo Inventariado com Sucesso',
-                                timer: 5000
-                            })
-                        }
+
+                        Swal.fire({
+                            title: 'Sucesso',
+                            type: 'success',
+                            text: 'Ativo Inventariado com Sucesso',
+                            timer: 5000
+                        })
+
                     }
 
                     $("#divLoading").hide();

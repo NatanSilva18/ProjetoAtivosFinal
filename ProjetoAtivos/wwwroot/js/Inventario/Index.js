@@ -519,7 +519,7 @@ function PreencherTabela(dados) {
         </thead >\
         <tbody>';
     $.each(dados, function () {
-        if (this.notaFiscal == "") 
+        if (this.ativo.notaFiscal == "") 
             ValorAtivo = this.ativo.valorAtivo;
         else
             ValorAtivo = this.ativo.valorNota;
