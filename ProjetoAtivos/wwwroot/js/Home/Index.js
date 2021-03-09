@@ -65,7 +65,7 @@ function Grafico() {
                 GraficoImagem(result[i + 1]);
                 CardSomaAtivos(result[i + 2]);
                 CardStatusTransferencia(result[i + 3]);
-                $("#divLoading").hide(400);
+                $("#divLoading").hide(0);
 
             }
             else {
@@ -78,12 +78,12 @@ function Grafico() {
                     text: 'Deu Algo errado',
                     timer: 5000
                 })
-                $("#divLoading").hide(400);
+                $("#divLoading").hide(0);
             }
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(400);
+            $("#divLoading").hide(0);
         }
     });
 };
@@ -128,7 +128,7 @@ function CarregarFiliais(Codigo) {
             },
             error: function (XMLHttpRequest, txtStatus, errorThrown) {
                 alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                $("#divLoading").hide(300);
+                $("#divLoading").hide(0);
             }
         });
 
@@ -156,7 +156,7 @@ function CarregarFiliaisImg(Codigo) {
             },
             error: function (XMLHttpRequest, txtStatus, errorThrown) {
                 alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                $("#divLoading").hide(300);
+                $("#divLoading").hide(0);
             }
         });
 
@@ -175,7 +175,7 @@ function CardStatusTransferencia(dados) {
 function CardSomaAtivos(dados) {
     var Texto = document.getElementById("txtSoma");
     Texto.innerHTML = '<i class="fa fa-dollar-sign"></i> Soma Ativos: ' + dados.valorTotal.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-    $("#divLoading").hide(400);
+    $("#divLoading").hide(0);
 
 };
 function CardQuantidadeAtivos(dados) {
@@ -402,7 +402,7 @@ function PreencherTabela(dados) {
     txt += '</tbody>';
     $("#tableValorAtivos").html(txt);
     funcaoTable("#tableValorAtivos")
-    $("#divLoading").hide(400);
+    $("#divLoading").hide(0);
 
 };
 function ObterValores() {
@@ -422,7 +422,7 @@ function ObterValores() {
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
             document.getElementById('btnPesquisar').disabled = false;
 
         }
@@ -482,7 +482,7 @@ function PreencherTabelaImagem(dados) {
 
     $("#tableRelatorioImagem").html(txt);
     funcaoTable("#tableRelatorioImagem")
-    $("#divLoading").hide(400);
+    $("#divLoading").hide(0);
 }
 function ObterRelatorioImagem() {
     $("#divLoading").show();
@@ -501,7 +501,7 @@ function ObterRelatorioImagem() {
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
             document.getElementById('btnPesquisar').disabled = false;
 
         }

@@ -60,7 +60,7 @@ namespace ProjetoAtivos.DAO
                 Localizacao.SetCodigoImagem(Codigo);
                 LocalizacaoDAO LocalizacaoDAO = new LocalizacaoDAO();
 
-                if (LocalizacaoDAO.Gravar(Localizacao))
+                if (LocalizacaoDAO.Gravar(Localizacao, true))
                     OK = true;
                 else
                     OK = false;
@@ -93,7 +93,7 @@ namespace ProjetoAtivos.DAO
                 return null;
         }
 
-        internal Imagem Buscar(int Codigo)
+        internal Imagem Buscar(int Codigo, Boolean Transacao = false)
         {
             b.getComandoSQL().Parameters.Clear();
 
@@ -105,7 +105,7 @@ namespace ProjetoAtivos.DAO
             b.getComandoSQL().Parameters.AddWithValue("@codigo", Codigo);
 
 
-            DataTable dt = b.ExecutaSelect(true);
+            DataTable dt = b.ExecutaSelect(Transacao);
 
             if (dt.Rows.Count > 0)
                 return TableToList(dt).FirstOrDefault();

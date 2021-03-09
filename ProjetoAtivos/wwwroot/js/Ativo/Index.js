@@ -497,7 +497,7 @@ function PreencherTabelaAtivo(dados) {
     var i = 0;
     var ValorAtivo = 0;
 
-    $("#tbbAtivo").show(300);
+    $("#tbbAtivo").show();
     var txt = '<thead>\
             <tr class="thead-light">\
                 <th scope="col" width="6%">Ativo</th>\
@@ -556,7 +556,7 @@ function PreencherTabelaAtivo(dados) {
     Rolagem();
 }
 function ObterAtivos() {
-    $("#divLoading").show(300);
+    $("#divLoading").show();
     document.getElementById('btnPesquisar').disabled = true;
 
     var Chave = $("#txtPesquisar").val();
@@ -1029,7 +1029,7 @@ function Alterar(Codigo) {
                     $("#nomeAnexo").val(result.anexo.nome);
                     $('#linkAnexo').attr('href', '/Ativo/BaixarAnexo/' + result.codigo);
                     $('#hdAnexo').val(result.anexo.base64);
-                    $("#anexo").show(300);
+                    $("#anexo").show();
                 }
 
                 if (result.notaFiscal.codigo > 0) {
@@ -1292,7 +1292,7 @@ function ExcluirFotoAtivo(Codigo) {
 };
 function Mensagem(div, msg) {
     $("#" + div).html(msg);
-    $("#" + div).show(300);
+    $("#" + div).show();
     $("#" + div).delay(6000);
     $("#" + div).hide(300);
 };
@@ -1600,7 +1600,7 @@ function SalvarAnexo(input = "fuDoc", button = 'btnSalvarDoc', sulf = 'Anexo', d
                             $("#nome" + sulf).val(this.nome);
                         
                         
-                        $("#" + dest).show(300);
+                        $("#" + dest).show();
                         document.getElementById(button).innerHTML = 'Substituir';
 
                     }
@@ -1613,20 +1613,20 @@ function SalvarAnexo(input = "fuDoc", button = 'btnSalvarDoc', sulf = 'Anexo', d
                     }
 
                     
-                    $("#divLoading").hide(2000);
+                    $("#divLoading").hide(0);
 
                 });
             },
             error: function (error) {
                 alert(error);
-                $("#divLoading").hide(2000);
+                $("#divLoading").hide(0);
             }
         });
     }
     else {
         Mensagem("divAlerta" + sulf, 'Selecione um arquivo!');
     }
-    $("#divLoading").hide(2000);
+    $("#divLoading").hide(0);
 
 };
 
@@ -1674,7 +1674,7 @@ function buscaMarcas(x, parts = null, mod = null) {
             },
             error: function (error) {
                 alert(error);
-                $("#divLoading").hide(2000);
+                $("#divLoading").hide(0);
             }
         });
 
@@ -1721,7 +1721,7 @@ function buscaModelos(x, parts = null, mod = null) {
             },
             error: function (error) {
                 alert(error);
-                $("#divLoading").hide(2000);
+                $("#divLoading").hide(0)
             }
         });
 
@@ -1762,7 +1762,7 @@ function buscaVersoes(x, parts = null, mod = null) {
             },
             error: function (error) {
                 alert(error);
-                $("#divLoading").hide(2000);
+                $("#divLoading").hide(0);
             }
         });
 
@@ -1816,7 +1816,7 @@ function registraFipe(x, parts = null, mod = null) {
             },
             error: function (error) {
                 alert(error);
-                $("#divLoading").hide(2000);
+                $("#divLoading").hide(0);
             }
         });
     }

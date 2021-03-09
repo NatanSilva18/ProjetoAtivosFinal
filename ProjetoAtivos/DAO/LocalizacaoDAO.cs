@@ -29,7 +29,7 @@ namespace ProjetoAtivos.DAO
             return dados;
         }
 
-        internal Boolean Gravar(Localizacao Localizacao)
+        internal Boolean Gravar(Localizacao Localizacao, Boolean Transacao = false)
         {
             Boolean Ok = false;
             b.getComandoSQL().Parameters.Clear();

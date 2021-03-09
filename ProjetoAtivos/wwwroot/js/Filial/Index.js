@@ -3,7 +3,7 @@
 
     CarregarRegionais();
     CarregarPessoas();
-    $("#divLoading").hide(300);
+    $("#divLoading").hide(0);
 
 });
 function CarregarRegionais() {
@@ -31,7 +31,7 @@ function CarregarRegionais() {
             },
             error: function (XMLHttpRequest, txtStatus, errorThrown) {
                 alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                $("#divLoading").hide(300);
+                $("#divLoading").hide(0);
             }
         });
     }
@@ -64,7 +64,7 @@ function CarregarPessoas() {
             },
             error: function (XMLHttpRequest, txtStatus, errorThrown) {
                 alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                $("#divLoading").hide(300);
+                $("#divLoading").hide(0);
             }
         });
     }
@@ -357,13 +357,13 @@ function ObterFiliais() {
                 Radio[0].checked = true;
                 LimparTabela();
             }
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
             $("#txtPesquisar").val("");
 
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
         }
     });
 };
@@ -424,14 +424,14 @@ function Gravar() {
                     })
                 }
 
-                $("#divLoading").hide(400);
+                $("#divLoading").hide(0);
             }
             ObterFiliais();
             LimparCampos();
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(400);
+            $("#divLoading").hide(0);
         }
     });
 };
@@ -484,7 +484,7 @@ function ExcluirLogico(Codigo) {
                 },
                 error: function (XMLHttpRequest, txtStatus, errorThrown) {
                     alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                    $("#divLoading").hide(400);
+                    $("#divLoading").hide(0);
                 }
             });
         }
@@ -524,7 +524,7 @@ function Alterar(Codigo) {
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(400);
+            $("#divLoading").hide(0);
         }
     });
 };
@@ -569,7 +569,7 @@ function Ativar(Codigo) {
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(400);
+            $("#divLoading").hide(0);
         }
     });
 };

@@ -387,6 +387,7 @@ namespace ProjetoAtivos.DAO
         public List<object> ObterAtivos(Transferencia t, bool Veiculo = false)
         {
             b.getComandoSQL().Parameters.Clear();
+            b.getComandoSQL().CommandTimeout = 0;
 
 
             if (!Veiculo)

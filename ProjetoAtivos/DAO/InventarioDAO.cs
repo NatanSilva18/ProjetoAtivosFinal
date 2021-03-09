@@ -63,6 +63,7 @@ namespace ProjetoAtivos.DAO
         internal List<object> Buscar(string dtIni, string dtFim, int regiao, int filial)
         {
             b.getComandoSQL().Parameters.Clear();
+            b.getComandoSQL().CommandTimeout = 0;
 
             string where = "f.reg_codigo = @reg";
 

@@ -39,7 +39,7 @@ function CarregarTiposAtivo() {
             },
             error: function (XMLHttpRequest, txtStatus, errorThrown) {
                 alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                $("#divLoading").hide(300);
+                $("#divLoading").hide(0);
             }
         });
     }
@@ -72,7 +72,7 @@ function CarregarRegionaisPesq() {
             },
             error: function (XMLHttpRequest, txtStatus, errorThrown) {
                 alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                $("#divLoading").hide(300);
+                $("#divLoading").hide(0);
             }
         });
     }
@@ -126,7 +126,7 @@ function CarregarRegionais() {
             },
             error: function (XMLHttpRequest, txtStatus, errorThrown) {
                 alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                $("#divLoading").hide(300);
+                $("#divLoading").hide(0);
             }
         });
     }
@@ -163,7 +163,7 @@ function CarregarFiliaisPesq(regiao) {
             },
             error: function (XMLHttpRequest, txtStatus, errorThrown) {
                 alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                $("#divLoading").hide(300);
+                $("#divLoading").hide(0);
             }
         });
     }
@@ -212,7 +212,7 @@ function CarregarFiliais(Combo) {
             },
             error: function (XMLHttpRequest, txtStatus, errorThrown) {
                 alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                $("#divLoading").hide(300);
+                $("#divLoading").hide(0);
             }
         });
     }
@@ -249,7 +249,7 @@ function BuscarSalas(Combo) {
                 },
                 error: function (XMLHttpRequest, txtStatus, errorThrown) {
                     alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                    $("#divLoading").hide(300);
+                    $("#divLoading").hide(0);
                 }
             });
 
@@ -502,7 +502,7 @@ function PreencherTabela(dados) {
     var i = 0;
     var ValorAtivo = 0;
 
-    $("#tbbAtivo").show(300);
+    $("#tbbAtivo").show();
     var txt = '<thead>\
             <tr class="thead-light">\
                 <th scope="col" width="6%">Ativo</th>\
@@ -577,7 +577,7 @@ function BuscarLocalizacao(latitude, longitude) {
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
         }
     });*/
 
@@ -743,20 +743,20 @@ function SalvarFotos() {
                     }
 
                     document.getElementById('btnSalvarFotos').innerHTML = 'Adicionar';
-                    $("#divLoading").hide(2000);
+                    $("#divLoading").hide(0);
 
                 });
             },
             error: function (error) {
                 alert(error);
-                $("#divLoading").hide(2000);
+                $("#divLoading").hide(0);
             }
         });
     }
     else {
         Mensagem("divAlerta", 'Selecione um arquivo!');
     }
-    $("#divLoading").hide(2000);
+    $("#divLoading").hide(0)
 
 };
 function ExcluirFoto(Codigo) {   
@@ -794,9 +794,9 @@ function ExcluirFoto(Codigo) {
 };
 function Mensagem(div, msg) {
     $("#" + div).html(msg);
-    $("#" + div).show(300);
+    $("#" + div).show();
     $("#" + div).delay(6000);
-    $("#" + div).hide(300);
+    $("#" + div).hide(0);
 };
 
 function UnlockFields() {
@@ -859,12 +859,12 @@ function ValidarPlaca() {
                 UnlockFields();
                 document.getElementById('validaPlaca').value = "0";
             }
-            $("#divLoading").hide(1000);
+            $("#divLoading").hide(0);
 
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
         }
     });
 };
@@ -921,7 +921,7 @@ function PreencherValor(Combo) {
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
         }
     });
 };
@@ -986,12 +986,12 @@ function GravarTipoAtivo() {
                     }
                 })
 
-                $("#divLoading").hide(400);
+                $("#divLoading").hide(0);
             }
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(400);
+            $("#divLoading").hide(0);
         }
     });
 };
@@ -1027,7 +1027,7 @@ function ObterImagens(Codigo) {
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(400);
+            $("#divLoading").hide(0);
         }
     });
 };
@@ -1044,7 +1044,7 @@ function MontarGaleriaAtivo(dados) {
     $("#headerGaleria").html(Header);
     $("#corpoGaleria").html(Corpo);
 
-    $("#divLoading").hide(400);
+    $("#divLoading").hide(0);
 };
 
 function LimparAnexo(sulf = "Anexo", dest = "anexo", button ="btnSalvarDoc") {
@@ -1100,7 +1100,7 @@ function SalvarAnexo(input = "fuDoc", button = 'btnSalvarDoc', sulf = 'Anexo', d
                             $("#nome" + sulf).val(this.nome);
                         
                         
-                        $("#" + dest).show(300);
+                        $("#" + dest).show();
                         document.getElementById(button).innerHTML = 'Substituir';
 
                     }
@@ -1113,20 +1113,20 @@ function SalvarAnexo(input = "fuDoc", button = 'btnSalvarDoc', sulf = 'Anexo', d
                     }
 
                     
-                    $("#divLoading").hide(2000);
+                    $("#divLoading").hide(0);
 
                 });
             },
             error: function (error) {
                 alert(error);
-                $("#divLoading").hide(2000);
+                $("#divLoading").hide(0);
             }
         });
     }
     else {
         Mensagem("divAlerta" + sulf, 'Selecione um arquivo!');
     }
-    $("#divLoading").hide(2000);
+    $("#divLoading").hide(0);
 
 };
 
@@ -1174,7 +1174,7 @@ function buscaMarcas(x, parts = null, mod = null) {
             },
             error: function (error) {
                 alert(error);
-                $("#divLoading").hide(2000);
+                $("#divLoading").hide(0);
             }
         });
 
@@ -1221,7 +1221,7 @@ function buscaModelos(x, parts = null, mod = null) {
             },
             error: function (error) {
                 alert(error);
-                $("#divLoading").hide(2000);
+                $("#divLoading").hide(0);
             }
         });
 
@@ -1262,7 +1262,7 @@ function buscaVersoes(x, parts = null, mod = null) {
             },
             error: function (error) {
                 alert(error);
-                $("#divLoading").hide(2000);
+                $("#divLoading").hide(0);
             }
         });
 
@@ -1316,7 +1316,7 @@ function registraFipe(x, parts = null, mod = null) {
             },
             error: function (error) {
                 alert(error);
-                $("#divLoading").hide(2000);
+                $("#divLoading").hide(0);
             }
         });
     }
@@ -1391,20 +1391,20 @@ function SalvarFotosInventario() {
                     }
 
                     //document.getElementById('btnSalvarFotosInventario').innerHTML = 'Adicionar';
-                    $("#divLoading").hide(2000);
+                    $("#divLoading").hide(0);
 
                 });
             },
             error: function (error) {
                 alert(error);
-                $("#divLoading").hide(2000);
+                $("#divLoading").hide(0);
             }
         });
     }
     else {
         Mensagem("divAlerta", 'Selecione um arquivo!');
     }
-    $("#divLoading").hide(2000);
+    $("#divLoading").hide(0);
 
 };
 
@@ -1503,7 +1503,7 @@ function GravarInventario() {
                 },
                 error: function (XMLHttpRequest, txtStatus, errorThrown) {
                     alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-                    $("#divLoading").hide(400);
+                    $("#divLoading").hide(0);
                 }
             });
         }
@@ -1516,7 +1516,7 @@ function GravarInventario() {
 }
 
 function ObterInventario() {
-    $("#divLoading").show(300);
+    $("#divLoading").show();
     document.getElementById('btnPesquisar').disabled = true;
 
     var dtIni = $("#txtDtIni").val();    
@@ -1543,13 +1543,13 @@ function ObterInventario() {
                 
                 LimparTabela();
             }
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
             document.getElementById('btnPesquisar').disabled = false;
 
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
-            $("#divLoading").hide(300);
+            $("#divLoading").hide(0);
             document.getElementById('btnPesquisar').disabled = false;
 
         }
