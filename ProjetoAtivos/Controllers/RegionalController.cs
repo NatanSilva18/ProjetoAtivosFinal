@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace ProjetoAtivos.Controllers
 {
+    [FiltroBanco]
     [FiltroSession]
     public class RegionalController : Controller
     {

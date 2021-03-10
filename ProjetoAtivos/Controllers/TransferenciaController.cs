@@ -11,6 +11,7 @@ using System.Linq;
 
 namespace ProjetoAtivos.Controllers
 {
+    [FiltroBanco]
     [FiltroSession]
     public class TransferenciaController : Controller
     {

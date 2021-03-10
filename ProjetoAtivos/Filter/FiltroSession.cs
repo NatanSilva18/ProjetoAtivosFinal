@@ -22,6 +22,7 @@ namespace ProjetoAtivos.Filter
             else
                 if(login && context.HttpContext.Session.GetString("Usuario") != null)
                     context.Result = new RedirectResult("/Home/Index");
+            
         }
 
         public void OnActionExecuting(ActionExecutingContext context)
