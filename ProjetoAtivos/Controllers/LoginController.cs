@@ -8,8 +8,8 @@ using ProjetoEstagio.Controls;
 using System;
 
 namespace ProjetoAtivos.Controllers
-{
-    
+{    
+    [FiltroBanco]
     public class LoginController : Controller
     {
         private static LoginControl ctlLogin = new LoginControl();

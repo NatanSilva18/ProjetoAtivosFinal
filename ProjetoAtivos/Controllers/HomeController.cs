@@ -6,6 +6,7 @@ using ProjetoAtivos.Filter;
 
 namespace ProjetoAtivos.Controllers
 {
+    [FiltroBanco]
     [FiltroSession]
     public class HomeController : Controller
     {

@@ -8,6 +8,7 @@ using ProjetoAtivos.Filter;
 
 namespace ProjetoAtivos.Controllers
 {
+    [FiltroBanco]
     [FiltroSession]
     public class UsuarioController : Controller
     {
