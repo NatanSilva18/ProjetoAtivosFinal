@@ -77,22 +77,21 @@ namespace ProjetoAtivos.DAO
             {
                 if(dtFim != null)
                 {
-                    where += " and iv_data between @dtIni and @dtFim";
-                    b.getComandoSQL().Parameters.AddWithValue("@dtFim", dtFim);
-                }
-                else
-                {
-                    where += " and iv_data >= @dtIni";
-                }
-                b.getComandoSQL().Parameters.AddWithValue("@dtIni", dtIni);
-            }
-            else
-            if (dtFim != null)
-            {
-                where += " and iv_data <= @dtFim";
-                b.getComandoSQL().Parameters.AddWithValue("@dtFim", dtFim);
-            }
+                    if(dtIni == dtFim)
+                    {
+                        string [] Datas = dtFim.Split("-");
+                        int Dia = Convert.ToInt32(Datas[2]); Dia++;
+                        string DataFormatada = Datas[0] + "-" + Datas[1] + "-" + Dia;
+                        dtFim = DataFormatada;
+                    }
+                    where += " and iv_data >= @dtIni and  iv_data <= @dtFim";
 
+                    b.getComandoSQL().Parameters.AddWithValue("@dtFim", dtFim);
+                    b.getComandoSQL().Parameters.AddWithValue("@dtIni", dtIni);
+                }
+               
+            }
+           
             b.getComandoSQL().CommandText = @"select * from inventario i
                                                inner join filial f on f.fil_codigo = i.fil_codigo
                                                where "+ where + " order by i.fil_codigo, iv_data";
@@ -147,6 +146,24 @@ namespace ProjetoAtivos.DAO
 
             b.FinalizaTransacao(ok);
             return ok;
+        }
+        internal object BuscarInventarioAtivo(int CodigoAtivo)
+        {
+            b.getComandoSQL().Parameters.Clear();
+            b.getComandoSQL().CommandText = @"select iv_codigo, iv_data from inventario where ati_codigo = @ativo;";
+            b.getComandoSQL().Parameters.AddWithValue("@ativo", CodigoAtivo);
+            DataTable dt = b.ExecutaSelect();
+
+            if (dt.Rows.Count > 0)
+            {
+                return new
+                {
+                    Codigo = Convert.ToInt32(dt.Rows[0]["iv_codigo"]),
+                    Data = Convert.ToDateTime(dt.Rows[0]["iv_data"])
+                };
+            }
+            else
+                return null;
         }
     }
 }

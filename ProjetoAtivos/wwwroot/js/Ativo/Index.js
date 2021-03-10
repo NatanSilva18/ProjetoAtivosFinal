@@ -493,6 +493,27 @@ function Status(Ativo) {
     else
         return '<span class="badge badge-danger">Inativo</span>';
 };
+function DataInventario(Inventario) {
+    if (Inventario != null) {
+        var data = Inventario.data;
+        if (data != null && data != "") {
+            var partes = data.split('-');
+            var dia;
+            if (partes.length > 2) {
+                dia = '' + partes[2][0];
+                dia += '' + partes[2][1];
+                var dtFormatada = '' + dia + '/' + partes[1] + '/' + partes[0];
+                return dtFormatada;
+            }
+            return data;
+
+        }
+        return 'Sem Inventario';
+    }
+    return 'Sem Inventario';
+   
+};
+
 function PreencherTabelaAtivo(dados) {
     var i = 0;
     var ValorAtivo = 0;
@@ -507,6 +528,7 @@ function PreencherTabelaAtivo(dados) {
                 <th scope="col">Estado</th>\
                 <th scope="col">Filial</th>\
                 <th scope="col" style="width: 6%;">Status</th>\
+                <th scope="col">Dt Inventario</th>\
                 <th scope="col" style="display:none;"></th>\
                 <th scope="col"></th>\
             </tr>\
@@ -517,17 +539,17 @@ function PreencherTabelaAtivo(dados) {
             ValorAtivo = this.valorAtivo;
         else
             ValorAtivo = this.valorNota;
-
+        
         if (this.stAtivo == 1) {
             if (this.imagem != "") {
-                txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(false); mostraDivAtivo(); UnlockFields(); Alterar(' + this.codigo + ');"><td onclick="javascript:ObterImagens(' + this.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo+'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
+                txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(false); mostraDivAtivo(); UnlockFields(); Alterar(' + this.codigo + ');"><td onclick="javascript:ObterImagens(' + this.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td>' + DataInventario(this.inventario)+'</td><td style="display:none;">1</td><td align="right" class="form-group">'
                 txt += '<a role="button" class="btn btn-warning" href="javascript: mostraDivVeiculo(false); mostraDivAtivo(); UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>';
                 txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
                 txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>&nbsp;';
                 txt += '<a role="button" class="btn btn-info" href="javascript: InventariarAtivo(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
             }
             else {
-                txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(false); mostraDivAtivo();UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
+                txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(false); mostraDivAtivo();UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td>' + DataInventario(this.inventario) +'</td><td style="display:none;">0</td><td align="right" class="form-group">'
                 txt += '<a role="button" class="btn btn-warning" href="javascript: mostraDivVeiculo(false); mostraDivAtivo(); UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
                 txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>&nbsp;';
                 txt += '<a role="button" class="btn btn-info" href="javascript: InventariarAtivo(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
@@ -535,13 +557,13 @@ function PreencherTabelaAtivo(dados) {
         }
         else {
             if (this.imagem != "") {
-                txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(false); mostraDivAtivo();UnlockFields(); Alterar(' + this.codigo + ');"><td onclick="javascript:ObterImagens(' + this.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
+                txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(false); mostraDivAtivo();UnlockFields(); Alterar(' + this.codigo + ');"><td onclick="javascript:ObterImagens(' + this.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td>' + DataInventario(this.inventario) +'</td><td style="display:none;">1</td><td align="right" class="form-group">'
                 txt += '<a role="button" class="btn btn-success" href="javascript:Ativar(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>';
                 txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>&nbsp;';
                
             }
             else {
-                txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(false); mostraDivAtivo();UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo +'</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
+                txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(false); mostraDivAtivo();UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td>' + DataInventario(this.inventario) +'</td><td style="display:none;">0</td><td align="right" class="form-group">'
                 txt += '<a role="button" class="btn btn-success" href="javascript:Ativar(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>&nbsp;';
                
 

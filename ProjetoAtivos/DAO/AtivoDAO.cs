@@ -70,6 +70,7 @@ namespace ProjetoAtivos.DAO
                         NotaFiscal = dt.Rows[i]["nt_codigo"].ToString(),
                         ValorAtivo = dt.Rows[i]["ati_valor"].ToString(),
                         ValorNota = dt.Rows[i]["nt_valor"].ToString(),
+                        Inventario = new InventarioDAO().BuscarInventarioAtivo(Convert.ToInt32(dt.Rows[i]["ati_codigo"]))
                     });
                 }
             }
