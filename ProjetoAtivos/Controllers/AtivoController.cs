@@ -218,10 +218,10 @@ namespace ProjetoAtivos.Controllers
 
        
 
-        public JsonResult ObterAtivos(string Chave, string Filtro, int Ativo, int Regiao, int Filial)
+        public JsonResult ObterAtivos(string Chave, string Filtro, int Ativo, int Regiao, int Filial, bool Todos = false, bool Fotos = true)
         {
 
-            List<object> Dados = ctlAtivo.ObterAtivos(Chave, Filtro, Ativo,  Regiao,  Filial);
+            List<object> Dados = ctlAtivo.ObterAtivos(Chave, Filtro, Ativo,  Regiao,  Filial, false, Todos, Fotos);
 
             return Dados == null ? Json("") : Json(Dados);
         }

@@ -432,23 +432,30 @@ namespace ProjetoAtivos.DAO
 
 
 
-        public List<object> ObterAtivos(string Chave, string Filtro, int Ativo, int Regiao, int Filial, bool Veiculo = false)
+        public List<object> ObterAtivos(string Chave, string Filtro, int Ativo, int Regiao, int Filial, bool Veiculo = false, bool Todos = false, bool Fotos = true)
         {
+            string joinImg = Fotos ? "left join imagem i on a.ati_codigo = i.ati_codigo left join localizacao l on l.img_codigo = i.img_codigo" : "";
+            string joinImgR = Fotos ? "right join imagem i on a.ati_codigo = i.ati_codigo right join localizacao l on l.img_codigo = i.img_codigo" : "";
+            string colImg = Fotos ? "l.loca_latitude, l.loca_longitude, i.img_imagem" : "NULL as loca_latitude, NULL as loca_longitude, NULL as img_imagem";
+
             string Txt = "";
 
             b.getComandoSQL().CommandTimeout = 0;
             b.getComandoSQL().Parameters.Clear();
 
-
+            if (Todos)
+                Chave = null;
 
             if(Chave == null)
             {
                 if(Filial > 0)
                 {
-                    b.getComandoSQL().CommandText = !Veiculo ? @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                    if (!Todos)
+                    {
+                        b.getComandoSQL().CommandText = !Veiculo ? @"select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                    from Ativos a 
-                   LEFT join imagem i on a.ati_codigo = i.ati_codigo
-                   LEFT join localizacao l on l.img_codigo = i.img_codigo
+                   " + joinImg + @"
+                   
                    left outer join Sala s on s.sal_codigo = a.sal_codigo
                    inner join Filial f on s.fil_codigo = f.fil_codigo
                    inner join Regional r on r.reg_codigo = f.reg_codigo
@@ -456,23 +463,23 @@ namespace ProjetoAtivos.DAO
                    where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and f.fil_codigo = @filialONE
                    group by a.ati_codigo
                         union
-                   select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                   select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
                    f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                    from Ativos a 
-                   RIGHT join imagem i on a.ati_codigo = i.ati_codigo
-                   RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                   " + joinImgR + @"
+                   
                    left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                    left outer join Sala s on s.sal_codigo = a.sal_codigo
                    inner join Filial f on s.fil_codigo = f.fil_codigo
                    inner join Regional r on r.reg_codigo = f.reg_codigo
                    where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and f.fil_codigo = @filialTWO
                    group by a.ati_codigo" :
-                     @"
-                   select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                         @"
+                   select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
                    f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                    from Ativos a 
-                   RIGHT join imagem i on a.ati_codigo = i.ati_codigo
-                   RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                   " + joinImgR + @"
+                   
                    left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                    left outer join Sala s on s.sal_codigo = a.sal_codigo
                     inner join veiculos v on v.ve_codigo = a.ve_codigo
@@ -481,11 +488,11 @@ namespace ProjetoAtivos.DAO
                    where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and f.fil_codigo = @filialONE
                    group by a.ati_codigo
                     union
-                   select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                   select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
                    f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                    from Ativos a 
-                   RIGHT join imagem i on a.ati_codigo = i.ati_codigo
-                   RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                   " + joinImgR + @"
+                   
                    left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                    left outer join Sala s on s.sal_codigo = a.sal_codigo
                     inner join veiculos v on v.ve_codigo = a.ve_codigo
@@ -494,15 +501,71 @@ namespace ProjetoAtivos.DAO
                    where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and f.fil_codigo = @filialTWO
                    group by a.ati_codigo;";
 
+                        
+                    }
+                    else
+                    {
+                        b.getComandoSQL().CommandText = !Veiculo ? @"select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                   from Ativos a 
+                   " + joinImg + @"
+                   
+                   left outer join Sala s on s.sal_codigo = a.sal_codigo
+                   inner join Filial f on s.fil_codigo = f.fil_codigo
+                   inner join Regional r on r.reg_codigo = f.reg_codigo
+                   inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo  
+                   where f.reg_codigo = @regionalONE and f.fil_codigo = @filialONE
+                   group by a.ati_codigo
+                        union
+                   select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
+                   f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                   from Ativos a 
+                   " + joinImgR + @"
+                   
+                   left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                   left outer join Sala s on s.sal_codigo = a.sal_codigo
+                   inner join Filial f on s.fil_codigo = f.fil_codigo
+                   inner join Regional r on r.reg_codigo = f.reg_codigo
+                   where f.reg_codigo = @regionalTWO and f.fil_codigo = @filialTWO
+                   group by a.ati_codigo" :
+                         @"
+                   select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
+                   f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                   from Ativos a 
+                   " + joinImgR + @"
+                   
+                   left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                   left outer join Sala s on s.sal_codigo = a.sal_codigo
+                    inner join veiculos v on v.ve_codigo = a.ve_codigo
+                   inner join Filial f on v.fil_codigo = f.fil_codigo
+                   inner join Regional r on r.reg_codigo = f.reg_codigo
+                   where f.reg_codigo = @regionalONE and f.fil_codigo = @filialONE
+                   group by a.ati_codigo
+                    union
+                   select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
+                   f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                   from Ativos a 
+                   " + joinImgR + @"
+                   
+                   left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                   left outer join Sala s on s.sal_codigo = a.sal_codigo
+                    inner join veiculos v on v.ve_codigo = a.ve_codigo
+                   inner join Filial f on v.fil_codigo = f.fil_codigo
+                   inner join Regional r on r.reg_codigo = f.reg_codigo
+                   where  f.reg_codigo = @regionalTWO and f.fil_codigo = @filialTWO
+                   group by a.ati_codigo;";
+                    }
+
                     b.getComandoSQL().Parameters.AddWithValue("@filialONE", Filial);
                     b.getComandoSQL().Parameters.AddWithValue("@filialTWO", Filial);
                 }
                 else
                 {
-                    b.getComandoSQL().CommandText = !Veiculo ? @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                    if (!Todos)
+                    {
+                        b.getComandoSQL().CommandText = !Veiculo ? @"select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                    from Ativos a 
-                   LEFT join imagem i on a.ati_codigo = i.ati_codigo
-                   LEFT join localizacao l on l.img_codigo = i.img_codigo
+                   " + joinImg + @"
+                   
                    left outer join Sala s on s.sal_codigo = a.sal_codigo
                    inner join Filial f on s.fil_codigo = f.fil_codigo
                    inner join Regional r on r.reg_codigo = f.reg_codigo
@@ -510,24 +573,24 @@ namespace ProjetoAtivos.DAO
                    where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE
                    group by a.ati_codigo
                         union
-                   select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                   select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
                    f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                    from Ativos a 
-                   RIGHT join imagem i on a.ati_codigo = i.ati_codigo
-                   RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                   " + joinImgR + @"
+                   
                    left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                    left outer join Sala s on s.sal_codigo = a.sal_codigo
                    inner join Filial f on s.fil_codigo = f.fil_codigo
                    inner join Regional r on r.reg_codigo = f.reg_codigo
                    where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO
-                   group by a.ati_codigo" 
-                    : 
-                   @"
-                   select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                   group by a.ati_codigo"
+                        :
+                       @"
+                   select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
                    f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                    from Ativos a 
-                   RIGHT join imagem i on a.ati_codigo = i.ati_codigo
-                   RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                   " + joinImgR + @"
+                   
                    left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                    left outer join Sala s on s.sal_codigo = a.sal_codigo
                    inner join veiculos v on v.ve_codigo = a.ve_codigo
@@ -535,12 +598,12 @@ namespace ProjetoAtivos.DAO
                    inner join Regional r on r.reg_codigo = f.reg_codigo
                    where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE
                    group by a.ati_codigo
-union
-                   select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                   union
+                   select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
                    f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                    from Ativos a 
-                   RIGHT join imagem i on a.ati_codigo = i.ati_codigo
-                   RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                   " + joinImgR + @"
+                   
                    left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                    left outer join Sala s on s.sal_codigo = a.sal_codigo
                    inner join veiculos v on v.ve_codigo = a.ve_codigo
@@ -548,9 +611,60 @@ union
                    inner join Regional r on r.reg_codigo = f.reg_codigo
                    where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO
                    group by a.ati_codigo";
+
+                        b.getComandoSQL().Parameters.AddWithValue("@regionalONE", Regiao);
+                        b.getComandoSQL().Parameters.AddWithValue("@regionalTWO", Regiao);
+                    }
+                    else
+                    {
+                        b.getComandoSQL().CommandText = !Veiculo ? @"select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                   from Ativos a 
+                   " + joinImg + @"
+                   
+                   left outer join Sala s on s.sal_codigo = a.sal_codigo
+                   inner join Filial f on s.fil_codigo = f.fil_codigo
+                   inner join Regional r on r.reg_codigo = f.reg_codigo
+                   inner join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                   group by a.ati_codigo
+                        union
+                   select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
+                   f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                   from Ativos a 
+                   " + joinImgR + @"
+                   
+                   left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                   left outer join Sala s on s.sal_codigo = a.sal_codigo
+                   inner join Filial f on s.fil_codigo = f.fil_codigo
+                   inner join Regional r on r.reg_codigo = f.reg_codigo
+                   group by a.ati_codigo"
+                        :
+                       @"
+                   select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
+                   f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                   from Ativos a 
+                   " + joinImgR + @"
+                   
+                   left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                   left outer join Sala s on s.sal_codigo = a.sal_codigo
+                   inner join veiculos v on v.ve_codigo = a.ve_codigo
+                   inner join Filial f on v.fil_codigo = f.fil_codigo
+                   inner join Regional r on r.reg_codigo = f.reg_codigo
+                   group by a.ati_codigo
+                   union
+                   select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
+                   f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                   from Ativos a 
+                   " + joinImgR + @"
+                   
+                   left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
+                   left outer join Sala s on s.sal_codigo = a.sal_codigo
+                   inner join veiculos v on v.ve_codigo = a.ve_codigo
+                   inner join Filial f on v.fil_codigo = f.fil_codigo
+                   inner join Regional r on r.reg_codigo = f.reg_codigo
+                   group by a.ati_codigo";
+                    }
                 }
-                b.getComandoSQL().Parameters.AddWithValue("@regionalONE", Regiao);
-                b.getComandoSQL().Parameters.AddWithValue("@regionalTWO", Regiao);
+                
             }
             else
             {
@@ -558,10 +672,10 @@ union
                 {
                     if(Filial > 0)
                     {
-                        b.getComandoSQL().CommandText = !Veiculo ? @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                        b.getComandoSQL().CommandText = !Veiculo ? @"select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
-                           LEFT join imagem i on a.ati_codigo = i.ati_codigo
-                           LEFT join localizacao l on l.img_codigo = i.img_codigo
+                           " + joinImg + @"
+                           
                            left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
@@ -569,11 +683,11 @@ union
                            where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and a.ati_descricao like @nomeONE and f.fil_codigo = @filialONE
                            group by a.ati_codigo
                                 union
-                           select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                           select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
                            f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
-                           RIGHT join imagem i on a.ati_codigo = i.ati_codigo
-                           RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                           " + joinImgR + @"
+                           
                            left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                            left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
@@ -581,10 +695,10 @@ union
                            where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and a.ati_descricao like @nomeTWO and f.fil_codigo = @filialTWO
                            group by a.ati_codigo" : @"
                         
-                            select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                            select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
-                           LEFT join imagem i on a.ati_codigo = i.ati_codigo
-                           LEFT join localizacao l on l.img_codigo = i.img_codigo
+                           " + joinImg + @"
+                           
                            left outer join Sala s on s.sal_codigo = a.sal_codigo
                             inner join veiculos v on v.ve_codigo = a.ve_codigo
                            inner join Filial f on v.fil_codigo = f.fil_codigo
@@ -593,11 +707,11 @@ union
                            where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and a.ati_descricao like @nomeONE and f.fil_codigo = @filialONE
                            group by a.ati_codigo
                                 union
-                           select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                           select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
                            f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
-                           RIGHT join imagem i on a.ati_codigo = i.ati_codigo
-                           RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                           " + joinImgR + @"
+                           
                            left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                            left outer join Sala s on s.sal_codigo = a.sal_codigo
                             inner join veiculos v on v.ve_codigo = a.ve_codigo
@@ -611,10 +725,10 @@ union
                     }
                     else
                     {
-                        b.getComandoSQL().CommandText = !Veiculo ? @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                        b.getComandoSQL().CommandText = !Veiculo ? @"select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
-                           LEFT join imagem i on a.ati_codigo = i.ati_codigo
-                           LEFT join localizacao l on l.img_codigo = i.img_codigo
+                           " + joinImg + @"
+                           
                            left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
@@ -622,11 +736,11 @@ union
                            where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and a.ati_descricao like @nomeONE
                            group by a.ati_codigo
                                 union
-                           select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                           select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
                            f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
-                           RIGHT join imagem i on a.ati_codigo = i.ati_codigo
-                           RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                           " + joinImgR + @"
+                           
                            left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                            left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
@@ -634,10 +748,10 @@ union
                            where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and a.ati_descricao like @nomeTWO
                            group by a.ati_codigo" : @"
                             
-                            select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                            select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
-                           LEFT join imagem i on a.ati_codigo = i.ati_codigo
-                           LEFT join localizacao l on l.img_codigo = i.img_codigo
+                           " + joinImg + @"
+                           
                            left outer join Sala s on s.sal_codigo = a.sal_codigo
                             inner join veiculos v on v.ve_codigo = a.ve_codigo
                            inner join Filial f on v.fil_codigo = f.fil_codigo
@@ -646,11 +760,11 @@ union
                            where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and a.ati_descricao like @nomeONE
                            group by a.ati_codigo
                                 union
-                           select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                           select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
                            f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
-                           RIGHT join imagem i on a.ati_codigo = i.ati_codigo
-                           RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                           " + joinImgR + @"
+                           
                            left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                            left outer join Sala s on s.sal_codigo = a.sal_codigo
                             inner join veiculos v on v.ve_codigo = a.ve_codigo
@@ -672,10 +786,10 @@ union
                     {
                         if(Filial > 0) //preencheu regional e filial
                         {
-                            b.getComandoSQL().CommandText = !Veiculo ? @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                            b.getComandoSQL().CommandText = !Veiculo ? @"select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
-                           LEFT join imagem i on a.ati_codigo = i.ati_codigo
-                           LEFT join localizacao l on l.img_codigo = i.img_codigo
+                           " + joinImg + @"
+                           
                            inner join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
@@ -683,11 +797,11 @@ union
                            where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and f.fil_codigo = @filialONE and a.ati_placa like @placaOne
                            group by a.ati_codigo
                                 union
-                           select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                           select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
                            f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
-                           RIGHT join imagem i on a.ati_codigo = i.ati_codigo
-                           RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                           " + joinImgR + @"
+                           
                            left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                            inner join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
@@ -695,10 +809,10 @@ union
                            where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and f.fil_codigo = @filialTWO and a.ati_placa like @placaTwo
                            group by a.ati_codigo" : @"
                             union
-select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
-                           LEFT join imagem i on a.ati_codigo = i.ati_codigo
-                           LEFT join localizacao l on l.img_codigo = i.img_codigo
+                           " + joinImg + @"
+                           
                            left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
@@ -706,11 +820,11 @@ select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_plac
                            where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and f.fil_codigo = @filialONE and a.ati_placa like @placaOne
                            group by a.ati_codigo
                                 union
-                           select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                           select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
                            f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
-                           RIGHT join imagem i on a.ati_codigo = i.ati_codigo
-                           RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                           " + joinImgR + @"
+                           
                            left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                            left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
@@ -729,10 +843,10 @@ select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_plac
                         }
                         else  //preencheu regional mas n filial
                         {
-                            b.getComandoSQL().CommandText = !Veiculo ? @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                            b.getComandoSQL().CommandText = !Veiculo ? @"select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
-                           LEFT join imagem i on a.ati_codigo = i.ati_codigo
-                           LEFT join localizacao l on l.img_codigo = i.img_codigo
+                           " + joinImg + @"
+                           
                            inner join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
@@ -740,11 +854,11 @@ select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_plac
                            where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and a.ati_placa like @placaOne
                            group by a.ati_codigo
                                 union
-                           select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                           select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
                            f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
-                           RIGHT join imagem i on a.ati_codigo = i.ati_codigo
-                           RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                           " + joinImgR + @"
+                           
                            left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                            inner join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
@@ -752,7 +866,7 @@ select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_plac
                            where a.ati_stativo = @ativoTWO  and f.reg_codigo = @regionalTWO and a.ati_placa like @placaTwo
                            group by a.ati_codigo" : @" 
 
-select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a
                            LEFT
                            join imagem i on a.ati_codigo = i.ati_codigo
@@ -767,11 +881,11 @@ select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_plac
                            where a.ati_stativo = @ativoONE  and f.reg_codigo = @regionalONE and a.ati_placa like @placaOne
                            group by a.ati_codigo
                                 union
-                           select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                           select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
                            f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a
-                           RIGHT join imagem i on a.ati_codigo = i.ati_codigo
-                           RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                           " + joinImgR + @"
+                           
                            left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                            left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
@@ -788,10 +902,10 @@ select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_plac
                     }
                     else //nao preencheu
                     {
-                        b.getComandoSQL().CommandText = !Veiculo ? @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                        b.getComandoSQL().CommandText = !Veiculo ? @"select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
-                           LEFT join imagem i on a.ati_codigo = i.ati_codigo
-                           LEFT join localizacao l on l.img_codigo = i.img_codigo
+                           " + joinImg + @"
+                           
                            inner join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
@@ -799,20 +913,20 @@ select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_plac
                            where a.ati_stativo = @ativoONE and a.ati_placa like @placaOne
                            group by a.ati_codigo
                                 union
-                           select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                           select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
                            f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
-                           RIGHT join imagem i on a.ati_codigo = i.ati_codigo
-                           RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                           " + joinImgR + @"
+                           
                            left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                            inner join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
                            where a.ati_stativo = @ativoTWO and a.ati_placa like @placaTwo
-                           group by a.ati_codigo" : @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+                           group by a.ati_codigo" : @"select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
-                           LEFT join imagem i on a.ati_codigo = i.ati_codigo
-                           LEFT join localizacao l on l.img_codigo = i.img_codigo
+                           " + joinImg + @"
+                           
                            left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
                            inner join Regional r on r.reg_codigo = f.reg_codigo
@@ -820,11 +934,11 @@ select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_plac
                            where a.ati_stativo = @ativoONE and a.ati_placa like @placaOne
                            group by a.ati_codigo
                                 union
-                           select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado,
+                           select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado,
                            f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                            from Ativos a 
-                           RIGHT join imagem i on a.ati_codigo = i.ati_codigo
-                           RIGHT join localizacao l on l.img_codigo = i.img_codigo
+                           " + joinImgR + @"
+                           
                            left join nota_fiscal nf on nf.nt_codigo = a.nt_codigo
                            left outer join Sala s on s.sal_codigo = a.sal_codigo
                            inner join Filial f on s.fil_codigo = f.fil_codigo
@@ -838,8 +952,11 @@ select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_plac
                 }
             }
 
-            b.getComandoSQL().Parameters.AddWithValue("@ativoONE", Ativo);
-            b.getComandoSQL().Parameters.AddWithValue("@ativoTWO", Ativo);
+            if (!Todos)
+            {
+                b.getComandoSQL().Parameters.AddWithValue("@ativoONE", Ativo);
+                b.getComandoSQL().Parameters.AddWithValue("@ativoTWO", Ativo);
+            }
 
             DataTable dt = b.ExecutaSelect();
 

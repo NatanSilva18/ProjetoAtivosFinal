@@ -50,7 +50,7 @@
                                 <div class="input-group-append">
                                     <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
                                 </div>
-                                <input type="search" name="txtPesquisar" id="txtPesquisar" class="form-control" placeholder="Pesquisar" value="" autofocus autocomplete="off" />
+                                <input type="search" name="txtPesquisar" id="txtPesquisar" class="form-control" placeholder="Pesquisar" value="" onchange="desmarcaTodos()" autofocus autocomplete="off" />
 
                             </div>
                         </div>
@@ -62,7 +62,7 @@
                                 <div class="input-group-append">
                                     <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
                                 </div>
-                                <select id="cbbRegiaoPesq" name="cbbRegiaoPesq " data-live-search="true" class="form-control selectpicker" required onchange="CarregarFiliaisPesq(this.value);">
+                                <select id="cbbRegiaoPesq" name="cbbRegiaoPesq " data-live-search="true" class="form-control selectpicker" required onchange="CarregarFiliaisPesq(this.value); desmarcaTodos()">
                                     <option value="" selected>Região</option>
                                 </select>
                             </div>
@@ -74,7 +74,7 @@
                                 <div class="input-group-append">
                                     <div class="input-group-text" style="background-color: #FFF"><i class="fas fa-building"></i></div>
                                 </div>
-                                <select id="cbbFilialPesq" name="cbbFilialPesq" class="form-control selectpicker" data-live-search="true">
+                                <select id="cbbFilialPesq" name="cbbFilialPesq" onchange="desmarcaTodos()" class="form-control selectpicker" data-live-search="true">
                                     <option value="0" selected>Filiais Pertecente a Região Selecionado</option>
                                 </select>
                             </div>
@@ -100,7 +100,7 @@
                             <label class="form-check-label" for="rdFiltro2">Placa</label>
                         </div>
                     </div>
-                    <div class="col-lg-7 col-md-7 col-xl-7">
+                    <div class="col-lg-3 col-md-3 col-xl-3">
                         <label><b><i class="fas fa-flag"></i> Status:</b></label>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="rdAtivo" id="rdAtivo1" value="1" checked>
@@ -109,6 +109,20 @@
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="rdAtivo" id="rdAtivo2" value="0">
                             <label class="form-check-label" for="rdAtivo2">Inativo</label>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-1 col-md-1 col-xl-1">
+
+                        <div class="input-group custom-control custom-switch">
+                            <input type="checkbox" onclick="clickTodos(this)" class="custom-control-input" id="cbTodos">
+                            <label class="custom-control-label" for="cbTodos">Todos</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-xl-1">
+                        <div class="input-group custom-control custom-switch">
+                            <input checked type="checkbox" class="custom-control-input" id="cbFotos">
+                            <label class="custom-control-label" for="cbFotos">Fotos</label>
                         </div>
                     </div>
 
@@ -780,7 +794,6 @@
         </div>
     </div>
 </div>
-
 
 
 @*Inventario*@
