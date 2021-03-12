@@ -549,7 +549,7 @@ function PreencherTabelaAtivo(dados) {
                 txt += '<a role="button" class="btn btn-info" href="javascript: InventariarAtivo(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
             }
             else {
-                txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(false); mostraDivAtivo();UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td>' + DataInventario(this.inventario) +'</td><td style="display:none;">0</td><td align="right" class="form-group">'
+                txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(false); mostraDivAtivo();UnlockFields(); Alterar(' + this.codigo + ');"><td></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td>' + DataInventario(this.inventario) +'</td><td style="display:none;">0</td><td align="right" class="form-group">'
                 txt += '<a role="button" class="btn btn-warning" href="javascript: mostraDivVeiculo(false); mostraDivAtivo(); UnlockFields(); Alterar(' + this.codigo + ');" title="Editar Registro"><i class="fas fa-edit"></i></a>'
                 txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>&nbsp;';
                 txt += '<a role="button" class="btn btn-info" href="javascript: InventariarAtivo(' + this.codigo + ');" title="Inventariar"><i class="fas fa-book"></i></a>';
@@ -563,7 +563,7 @@ function PreencherTabelaAtivo(dados) {
                
             }
             else {
-                txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(false); mostraDivAtivo();UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td>' + DataInventario(this.inventario) +'</td><td style="display:none;">0</td><td align="right" class="form-group">'
+                txt += '<tr class="galeria" ondblclick="mostraDivVeiculo(false); mostraDivAtivo();UnlockFields(); Alterar(' + this.codigo + ');"><td></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + Status(this.stAtivo) + '</td><td>' + DataInventario(this.inventario) +'</td><td style="display:none;">0</td><td align="right" class="form-group">'
                 txt += '<a role="button" class="btn btn-success" href="javascript:Ativar(' + this.codigo + ');" title="Ativar Registro"><i class="fas fa-check"></i></a>&nbsp;';
                
 
@@ -587,12 +587,13 @@ function ObterAtivos() {
     var Radio = document.getElementsByName("rdAtivo");
     var regiao = parseInt($("#cbbRegiaoPesq").val());
     var filial = parseInt($("#cbbFilialPesq").val());
-
+    var todos = document.getElementById("cbTodos").checked;
+    var fotos = document.getElementById("cbFotos").checked;
 
     $.ajax({
         type: 'POST',
         url: '/Ativo/ObterAtivos',
-        data: { Chave: Chave, Filtro: Filtro, Ativo: Ativo, Regiao: regiao, Filial: filial },
+        data: { Chave: Chave, Filtro: Filtro, Ativo: Ativo, Regiao: regiao, Filial: filial, Todos: todos, Fotos: fotos },
         success: function (result) {
             if (result != null && result.length > 0) {
                 PreencherTabelaAtivo(result);
@@ -2384,4 +2385,27 @@ function mostraDivAtivo(mostrar = true) {
     $('#txtCnpj').mask('00.000.000/0000-00', { reverse: true });
 
     CarregarTiposAtivo();
+}
+
+function clickTodos(x) {
+    var ch = x.checked;
+
+    if (ch) {
+        document.getElementById("cbbRegiaoPesq").required = false;
+        $("#cbbRegiaoPesq option:selected").prop("selected", false);
+        $("#cbbFilialPesq option:selected").prop("selected", false);        
+        $('#txtPesquisar').val("");
+        document.getElementById("cbFotos").checked = false;
+    }
+    else {
+        
+        document.getElementById("cbbRegiaoPesq").required = true;
+    }
+
+    $('#cbbRegiaoPesq').selectpicker('refresh');
+}
+
+function desmarcaTodos() {
+    document.getElementById("cbTodos").checked = false;
+    document.getElementById("cbFotos").checked = true;
 }
