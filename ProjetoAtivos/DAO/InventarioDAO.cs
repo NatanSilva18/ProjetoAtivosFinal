@@ -29,7 +29,7 @@ namespace ProjetoAtivos.DAO
                              Filial = new FilialDAO().BuscarFilial(Convert.ToInt32(row["fil_codigo"])),
                              Ativo = new AtivoDAO().BuscarAtivo(Convert.ToInt32(row["ati_codigo"])),
                              Obs = row["iv_obs"].ToString(),
-                             Imagem = new ImagemDAO().Buscar(Convert.ToInt32(row["fil_codigo"])),
+                             Imagem = null//new ImagemDAO().Buscar(Convert.ToInt32(row["fil_codigo"])),
                          }
                          ).ToList();
 
@@ -51,7 +51,7 @@ namespace ProjetoAtivos.DAO
                         Filial = new FilialDAO().BuscarFilial(Convert.ToInt32(dt.Rows[i]["fil_codigo"])),
                         Ativo = new AtivoDAO().BuscarObject(Convert.ToInt32(dt.Rows[i]["ati_codigo"])),
                         Obs = dt.Rows[i]["iv_obs"].ToString(),
-                        Imagem = new ImagemDAO().Buscar(Convert.ToInt32(dt.Rows[i]["img_codigo"])).GetFoto()                        
+                        Imagem = ""//new ImagemDAO().Buscar(Convert.ToInt32(dt.Rows[i]["img_codigo"])).GetFoto()                        
                     });
                 }
             }

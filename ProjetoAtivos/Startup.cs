@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,11 +27,15 @@ namespace ProjetoAtivos
 
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(20);
+                // Set a short timeout for easy testing.
+                options.IdleTimeout = TimeSpan.FromMinutes(3);
+                // You might want to only set the application cookies over a secure connection:
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Strict;
                 options.Cookie.HttpOnly = true;
+                // Make the session cookie essential
                 options.Cookie.IsEssential = true;
             });
-
             services.AddControllersWithViews();
         }
 
