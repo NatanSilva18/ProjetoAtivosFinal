@@ -20,7 +20,7 @@ function CarregarTiposAtivo() {
             url: '/TipoAtivo/ObterTiposAtivos',
             async: false,
             data: { Chave: Chave, Filtro: Filtro, Ativo: Ativo },
-            success: function (result) {
+            success: function (result) { validaLogin(result);
                 if (result != null && result.length > 0) {
                     for (var i = 0; i < result.length; i++) {
 
@@ -57,7 +57,7 @@ function CarregarRegionaisPesq() {
             url: '/Regional/ObterRegionais',
             async: false,
             data: { Chave: Chave, Filtro: Filtro, Ativo: Ativo },
-            success: function (result) {
+            success: function (result) { validaLogin(result);
                 if (result != null && result.length > 0) {
                     for (var i = 0; i < result.length; i++) {
                         $('#cbbRegiaoPesq').append('<option value="' + result[i].codigo + '">' + result[i].descricao + '</option>');
@@ -92,7 +92,7 @@ function CarregarRegionaisAtivo() {
             url: '/Regional/ObterRegionais',
             async: false,
             data: { Chave: Chave, Filtro: Filtro, Ativo: Ativo },
-            success: function (result) {
+            success: function (result) { validaLogin(result);
                 if (result != null && result.length > 0) {
                     for (var i = 0; i < result.length; i++) {
 
@@ -141,7 +141,7 @@ function CarregarFiliaisPesq(regiao) {
             url: '/Filial/BuscarFiliais',
             async: false,
             data: { Codigo: regiao },
-            success: function (result) {
+            success: function (result) { validaLogin(result);
                 if (result != null && result.length > 0) {
                     for (var i = 0; i < result.length; i++) {
 
@@ -184,7 +184,7 @@ function CarregarFiliaisAtivo(Combo) {
             url: '/Filial/BuscarFiliais',
             async: false,
             data: { Codigo: Codigo },
-            success: function (result) {
+            success: function (result) { validaLogin(result);
                 if (result != null && result.length > 0) {
                     for (var i = 0; i < result.length; i++) {
 
@@ -231,7 +231,7 @@ function BuscarSalasAtivo(Combo) {
                 url: '/Sala/BuscarSalas',
                 async: false,
                 data: { Codigo: Codigo },
-                success: function (result) {
+                success: function (result) { validaLogin(result);
                     if (result != null && result.length > 0) {
                         for (var i = 0; i < result.length; i++) {
 
@@ -594,7 +594,7 @@ function ObterAtivos() {
         type: 'POST',
         url: '/Ativo/ObterAtivos',
         data: { Chave: Chave, Filtro: Filtro, Ativo: Ativo, Regiao: regiao, Filial: filial, Todos: todos, Fotos: fotos },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
             if (result != null && result.length > 0) {
                 PreencherTabelaAtivo(result);
             }
@@ -712,7 +712,7 @@ function GravarAtivo() {
                             Descricao: Descricao, TipoAtivo: TipoAtivo, Marca: Marca, NumeroSerie: NumeroSerie, Modelo: Modelo, Valor: Valor, Imagem: imagem, Latitude: Latitude, Longitude: Longitude,
                             CodigoNota: CodigoNota, NumeroNota: NumeroNota, ValorNota: ValorNota, DataEmissao: DataEmissao, Fornecedor: Fornecedor, Cnpj: Cnpj, NomeAnexo: nomeAnexo, Anexo: anexo
                         },
-                        success: function (result) {
+                        success: function (result) { validaLogin(result);
                             $('#novoAtivo').modal('hide');
 
                             if (result.length > 0) {
@@ -775,7 +775,7 @@ function GravarAtivo() {
                             CodigoNota: CodigoNota, NumeroNota: NumeroNota, ValorNota: ValorNota, DataEmissao: DataEmissao, Fornecedor: Fornecedor, Cnpj: Cnpj, NomeAnexo: nomeAnexo, Anexo: anexo,
                             Cor: cor, PlacaVeiculo: placaVeiculo, CRLV: crlv, DUT: dut, FIPE: fipe, ModeloV: modeloV
                         },
-                        success: function (result) {
+                        success: function (result) { validaLogin(result);
                             $('#novoAtivo').modal('hide');
 
                             if (result.length > 0) {
@@ -846,7 +846,7 @@ function ExcluirLogico(Codigo) {
                 data: {
                     Codigo: Codigo
                 },
-                success: function (result) {
+                success: function (result) { validaLogin(result);
 
                     if (result.length > 0) {
                         Swal.fire({
@@ -892,7 +892,7 @@ function Ativar(Codigo) {
         data: {
             Codigo: Codigo
         },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
 
             if (result != null && result.length > 0) {
                 Swal.fire({
@@ -951,7 +951,7 @@ function Alterar(Codigo) {
             Codigo: Codigo
         },
         async: true,
-        success: function (result) {
+        success: function (result) { validaLogin(result);
 
             if (result != null) {
 
@@ -1091,7 +1091,7 @@ function BuscarLocalizacao(Codigo) {
         url: '/Ativo/BuscarLocalizacao',
         data: { Codigo: Codigo },
         async: false,
-        success: function (result) {
+        success: function (result) { validaLogin(result);
             if (result != null) {
                 Mapa(result.latitude, result.longitude)
             }
@@ -1362,7 +1362,7 @@ function ValidarPlaca() {
         url: '/Ativo/ObterAtivosPlaca',
         data: { Placa: Placa },
         async: false,
-        success: function (result) {
+        success: function (result) { validaLogin(result);
             if (result.length > 0) {
                 LockFields();
                 for (var i = 0; i < result.length; i++) {
@@ -1436,7 +1436,7 @@ function PreencherValorAtivo(Combo) {
         url: '/TipoAtivo/BuscarTipoAtivo',
         data: { Codigo: Codigo },
         async: false,
-        success: function (result) {
+        success: function (result) { validaLogin(result);
             if (result != null) {
                 $("#txtValorNota").val(result.valor);
             }
@@ -1476,7 +1476,7 @@ function GravarTipoAtivo() {
         data: {
             Codigo: Codigo, Descricao: Descricao, Valor: Valor, StAtivo: StAtivo
         },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
             $('#novaTipoAtivo').modal('hide');
 
             if (result.length > 0) {
@@ -1542,7 +1542,7 @@ function ObterImagens(Codigo) {
         data: {
             Codigo: Codigo
         },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
             if (result.length > 0) {
                 $('#galeria').modal('show');
                 MontarGaleriaAtivo(result);
@@ -1992,7 +1992,7 @@ function GravarInventarioAtivo() {
                 data: {
                     Codigo: ativo, Observacao: obs, Imagem: Imagem, Latitude: Latitude, Longitude: Longitude
                 },
-                success: function (result) {
+                success: function (result) { validaLogin(result);
                     $('#inventarioAtivo').modal('hide');
 
                     if (result.length > 0) {

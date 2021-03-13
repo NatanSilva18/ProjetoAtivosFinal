@@ -14,10 +14,15 @@ namespace ProjetoAtivos.Filter
         {
             bool login = context.ActionDescriptor.RouteValues.Values.Contains("Login") && context.ActionDescriptor.RouteValues.Values.Contains("Index");
 
+            string c = null;
+            context.HttpContext.Request.Cookies.TryGetValue("Regiao", out c);
 
-            if (!login && context.HttpContext.Session.GetString("Usuario") == null)
+            if (!login && (context.HttpContext.Session.GetString("Usuario") == null || c == null))
             {
-                context.Result = new RedirectResult("/Login/Logout");
+                if (context.HttpContext.Request.Method != "POST")
+                    context.Result = new RedirectResult("/Login/Logout");
+                else
+                    context.Result = new Controllers.LoginController().Json("logout");
             }
             else
                 if(login && context.HttpContext.Session.GetString("Usuario") != null)

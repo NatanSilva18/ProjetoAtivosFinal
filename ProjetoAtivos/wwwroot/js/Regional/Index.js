@@ -13,7 +13,7 @@ function CarregarPessoas() {
             url: '/Pessoa/ObterPessoas',
             async: false,
             data: { Chave: Chave, Filtro: Filtro, Ativo: Ativo },
-            success: function (result) {
+            success: function (result) { validaLogin(result);
                 if (result != null && result.length > 0) {
                     for (var i = 0; i < result.length; i++) {
 
@@ -277,7 +277,7 @@ function ObterRegionais() {
         type: 'POST',
         url: '/Regional/ObterRegionais',
         data: { Chave: Chave, Filtro: Filtro, Ativo: Ativo },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
             if (result != null && result.length > 0) {
                 PreencherTabela(result);
             }
@@ -325,7 +325,7 @@ function Gravar() {
         data: {
             Codigo: Codigo, Descricao: Descricao, StAtivo: StAtivo, Operacao: Operacao, PesCodigo: PesCodigo
         },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
             $('#novaRegional').modal('hide');
 
             if (result.length > 0) {
@@ -382,7 +382,7 @@ function ExcluirLogico(Codigo) {
                 data: {
                     Codigo: Codigo
                 },
-                success: function (result) {
+                success: function (result) { validaLogin(result);
 
                     if (result.length > 0) {
                         Swal.fire({
@@ -430,7 +430,7 @@ function Alterar(Codigo) {
         data: {
             Codigo: Codigo
         },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
 
             if (result != null) {
 
@@ -457,7 +457,7 @@ function Ativar(Codigo) {
         data: {
             Codigo: Codigo
         },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
 
             if (result != null && result.length > 0) {
                 Swal.fire({

@@ -36,7 +36,7 @@ namespace ProjetoAtivos.DAO
             return dados;
         }
 
-        internal List<Object> TableToListO(DataTable dt)
+        internal List<Object> TableToListO(DataTable dt, bool foto)
         {
             List<object> Dados = new List<object>();
 
@@ -49,9 +49,9 @@ namespace ProjetoAtivos.DAO
                         Codigo = Convert.ToInt32(dt.Rows[i]["iv_codigo"]),
                         Data = Convert.ToDateTime(dt.Rows[i]["iv_data"]).ToString("dd/MM/yyyy"),
                         Filial = new FilialDAO().BuscarFilial(Convert.ToInt32(dt.Rows[i]["fil_codigo"])),
-                        Ativo = new AtivoDAO().BuscarObject(Convert.ToInt32(dt.Rows[i]["ati_codigo"])),
+                        Ativo = new AtivoDAO().BuscarObject(Convert.ToInt32(dt.Rows[i]["ati_codigo"]), foto),
                         Obs = dt.Rows[i]["iv_obs"].ToString(),
-                        Imagem = ""//new ImagemDAO().Buscar(Convert.ToInt32(dt.Rows[i]["img_codigo"])).GetFoto()                        
+                        Imagem = foto ? new ImagemDAO().Buscar(Convert.ToInt32(dt.Rows[i]["img_codigo"])).GetFoto() : ""                       
                     });
                 }
             }
@@ -65,7 +65,13 @@ namespace ProjetoAtivos.DAO
             b.getComandoSQL().Parameters.Clear();
             b.getComandoSQL().CommandTimeout = 0;
 
-            string where = "f.reg_codigo = @reg";
+            string where = "";
+
+            if (regiao != 0)
+            {
+                where += "where f.reg_codigo = @reg";
+                b.getComandoSQL().Parameters.AddWithValue("@reg", regiao);
+            }
 
             if (filial != 0)
             {
@@ -73,35 +79,28 @@ namespace ProjetoAtivos.DAO
                 b.getComandoSQL().Parameters.AddWithValue("@fil", filial);
             }
 
-            if(dtIni != null)
+            if (dtIni != null)
             {
-                if(dtFim != null)
-                {
-                    if(dtIni == dtFim)
-                    {
-                        string [] Datas = dtFim.Split("-");
-                        int Dia = Convert.ToInt32(Datas[2]); Dia++;
-                        string DataFormatada = Datas[0] + "-" + Datas[1] + "-" + Dia;
-                        dtFim = DataFormatada;
-                    }
-                    where += " and iv_data >= @dtIni and  iv_data <= @dtFim";
-
-                    b.getComandoSQL().Parameters.AddWithValue("@dtFim", dtFim);
-                    b.getComandoSQL().Parameters.AddWithValue("@dtIni", dtIni);
-                }
-               
+                where += where == "" ? " where iv_data >= @dtIni" : " and iv_data >= @dtIni";
+                b.getComandoSQL().Parameters.AddWithValue("@dtIni", dtIni);
             }
-           
+
+
+            if (dtFim != null)
+            {
+                where += where == "" ? " where iv_data <= @dtFim" : " and iv_data <= @dtFim";
+                b.getComandoSQL().Parameters.AddWithValue("@dtFim", dtFim);
+            }
+                  
             b.getComandoSQL().CommandText = @"select * from inventario i
                                                inner join filial f on f.fil_codigo = i.fil_codigo
-                                               where "+ where + " order by i.fil_codigo, iv_data";
+                                               "+ where + " order by i.fil_codigo, iv_data";
 
-            b.getComandoSQL().Parameters.AddWithValue("@reg", regiao);
 
             DataTable dt = b.ExecutaSelect();
 
             if (dt.Rows.Count > 0)
-                return TableToListO(dt);
+                return TableToListO(dt, where != "");
             else
                 return null;
         }

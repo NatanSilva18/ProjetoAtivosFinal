@@ -14,7 +14,7 @@ function CarregarPessoas() {
             url: '/Pessoa/ObterPessoas',
             async: false,
             data: { Chave: Chave, Filtro: Filtro, Ativo: Ativo },
-            success: function (result) {
+            success: function (result) { validaLogin(result);
                 if (result != null && result.length > 0) {
                     for (var i = 0; i < result.length; i++) {
 
@@ -236,7 +236,7 @@ function Alterar(Codigo) {
         data: {
             Codigo: Codigo
         },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
 
             if (result != null) {
                 $('#novoUsu').modal('show');
@@ -275,7 +275,7 @@ function Excluir(Codigo) {
                 data: {
                     Codigo: Codigo
                 },
-                success: function (result) {
+                success: function (result) { validaLogin(result);
 
                     if (result.length > 0) {
                         Swal.fire({
@@ -324,7 +324,7 @@ function Pesquisar() {
         type: 'POST',
         url: '/Usuario/ObterUsuarios',
         data: { Chave: Chave, Filtro: Filtro },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
             if (result != null && result.length > 0) {
                 PreencherTabela(result);
             }
@@ -363,7 +363,7 @@ function Gravar() {
             data: {
                 Codigo: Codigo, Login: Login, Senha: Senha, TipoUsuario: TipoUsuario, CodigoPessoa: CodigoPessoa
             },
-            success: function (result) {
+            success: function (result) { validaLogin(result);
                 $('#novoUsu').modal('hide');
 
                 if (result.length > 0) {

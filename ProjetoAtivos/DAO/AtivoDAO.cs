@@ -1259,8 +1259,10 @@ select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado, f
 
         }
 
-        public object BuscarObject(int cod)
+        public object BuscarObject(int cod, bool Fotos = true)
         {
+            string colImg = Fotos ? "l.loca_latitude, l.loca_longitude, i.img_imagem," : "l.loca_latitude, l.loca_longitude, NULL as img_imagem,";
+
             string Txt = "";
 
             b.getComandoSQL().CommandTimeout = 0;
@@ -1269,7 +1271,7 @@ select a.ati_codigo,  " + colImg + @", a.ati_placa, ati_descricao, ati_estado, f
 
 
 
-            b.getComandoSQL().CommandText = @"select a.ati_codigo, l.loca_latitude, l.loca_longitude, i.img_imagem, a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
+            b.getComandoSQL().CommandText = @"select a.ati_codigo, "+colImg+ @" a.ati_placa, ati_descricao, ati_estado, f.fil_razao, a.ati_stativo, a.ati_valor, nf.nt_codigo, nf.nt_valor
                    from Ativos a 
                    LEFT join imagem i on a.ati_codigo = i.ati_codigo
                    LEFT join localizacao l on l.img_codigo = i.img_codigo

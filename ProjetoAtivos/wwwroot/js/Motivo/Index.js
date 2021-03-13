@@ -244,7 +244,7 @@ function ObterMotivos() {
         type: 'POST',
         url: '/Motivo/ObterMotivos',
         data: { Chave: Chave, Filtro: Filtro, Ativo: Ativo },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
             if (result != null && result.length > 0) {
                 PreencherTabela(result);
             }
@@ -291,7 +291,7 @@ function Gravar() {
         data: {
             Codigo: Codigo, Descricao: Descricao, StAtivo: StAtivo, Operacao: Operacao
         },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
             $('#novaMotivo').modal('hide');
 
             if (result.length > 0) {
@@ -348,7 +348,7 @@ function ExcluirLogico(Codigo) {
                 data: {
                     Codigo: Codigo
                 },
-                success: function (result) {
+                success: function (result) { validaLogin(result);
 
                     if (result.length > 0) {
                         Swal.fire({
@@ -396,7 +396,7 @@ function Alterar(Codigo) {
         data: {
             Codigo: Codigo
         },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
 
             if (result != null) {
 
@@ -422,7 +422,7 @@ function Ativar(Codigo) {
         data: {
             Codigo: Codigo
         },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
 
             if (result != null && result.length > 0) {
                 Swal.fire({

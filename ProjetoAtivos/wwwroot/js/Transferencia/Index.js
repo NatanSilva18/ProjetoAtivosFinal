@@ -17,7 +17,7 @@ function CarregarFiliais() {
             url: '/Filial/ObterFiliais',
             async: false,
             data: { Chave: Chave, Filtro: Filtro, Ativo: Ativo },
-            success: function (result) {
+            success: function (result) { validaLogin(result);
                 if (result != null && result.length > 0) {
                     for (var i = 0; i < result.length; i++) {
 
@@ -63,7 +63,7 @@ function CarregarMotivos() {
             url: '/Motivo/ObterMotivos',
             async: false,
             data: { Chave: Chave, Filtro: Filtro, Ativo: Ativo },
-            success: function (result) {
+            success: function (result) { validaLogin(result);
                 if (result != null && result.length > 0) {
                     for (var i = 0; i < result.length; i++) {
 
@@ -99,7 +99,7 @@ function BuscarLocaisDestino(Combo) {
                 url: '/Sala/BuscarSalas',
                 async: false,
                 data: { Codigo: Codigo },
-                success: function (result) {
+                success: function (result) { validaLogin(result);
                     if (result != null && result.length > 0) {
                         for (var i = 0; i < result.length; i++) {
 
@@ -169,7 +169,7 @@ function BuscarLocais(Combo) {
                 url: '/Sala/BuscarSalas',
                 async: false,
                 data: { Codigo: Codigo },
-                success: function (result) {
+                success: function (result) { validaLogin(result);
                     if (result != null && result.length > 0) {
                         for (var i = 0; i < result.length; i++) {
 
@@ -215,7 +215,7 @@ function BuscarAtivos(Combo) {
                 url: '/Ativo/BuscarAtivos',
                 async: false,
                 data: { Local: Local },
-                success: function (result) {
+                success: function (result) { validaLogin(result);
                     if (result != null && result.length > 0) {
 
                         for (var i = 0; i < result.length; i++) {
@@ -381,7 +381,7 @@ function AdicionarAtivos(rec = '') {
             type: 'POST',
             url: '/Ativo/BuscarAtivo',
             data: { Codigo: Codigo },
-            success: function (result) {
+            success: function (result) { validaLogin(result);
                 if (Linhas.length == 0) {   //insere o cabeçalho ... 
                     var txt = '<thead>\
                              <tr class="thead-light">\
@@ -845,7 +845,7 @@ function Gravar() {     //gravar transferencia
         url: '/Transferencia/Gravar',
         data: { Origem: origem, Destino: destino, Motivo: motivo, Descricao: descricao, Docs: docs, Nome: nome, Content: content, Ativos: ativos, Imgs: imgs },
         async: false,
-        success: function (result) {
+        success: function (result) { validaLogin(result);
 
             if (result == "") {
                 $('#novaTransferencia').modal('hide');
@@ -1357,7 +1357,7 @@ function ObterTransferencias() {
         url: '/Transferencia/ObterTransferencias',
         data: { Origem: Origem, Destino: Destino, Ativo: Ativo, Regiao: Regiao, Filial: Filial },
         async: false,
-        success: function (result) {
+        success: function (result) { validaLogin(result);
             if (result != null && result.length > 0) {
                 PreencherTabela(result);
             }
@@ -1396,7 +1396,7 @@ function GravarAprovacao() {        //gravar aprovação origem...
         type: 'POST',
         url: '/Transferencia/Aprovar',
         data: { Transf: Transf, Obs: Obs },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
             if (result == "") {
                 $('#AprovarTransf').modal('hide');
 
@@ -1449,7 +1449,7 @@ function MostraTransf(transf, rec = 0) {
         type: 'POST',
         url: '/Transferencia/BuscarTransferencia',
         data: { Codigo: transf },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
             if (result != "" && result != null) {
 
                 if (rec != 0) {
@@ -1503,7 +1503,7 @@ function GravarRec() {      //gravar recebimento destino...
                     url: '/Transferencia/Receber',
                     async: false,
                     data: { Codigo: transf, Obs: obs, Ativos: ativos, Imgs: imgs, Latitude: latitude, Longitude: longitude, Salas: salas },
-                    success: function (result) {
+                    success: function (result) { validaLogin(result);
 
                         if (result == "") {
                             $('#ReceberTransf').modal('hide');
@@ -1575,7 +1575,7 @@ function BuscarSalasReceber(Codigo) {
                 url: '/Sala/BuscarSalas',
                 async: false,
                 data: { Codigo: Codigo },
-                success: function (result) {
+                success: function (result) { validaLogin(result);
                     if (result != null && result.length > 0) {
                         for (var i = 0; i < result.length; i++) {
                             $('#cbbSalaDestino').append('<option value="' + result[i].codigo + '">' + result[i].descricao + '</option>');
@@ -1603,7 +1603,7 @@ function BuscarSalas(Codigo) {
                 url: '/Sala/BuscarSalas',
                 async: false,
                 data: { Codigo: Codigo },
-                success: function (result) {
+                success: function (result) { validaLogin(result);
                     if (result != null && result.length > 0) {
                         for (var i = 0; i < result.length; i++) {
                             $('#cbbSalaDestino').append('<option value="' + result[i].codigo + '">' + result[i].descricao + '</option>');
@@ -1643,7 +1643,7 @@ function GravarRecusa() {
         type: 'POST',
         url: '/Transferencia/Recusar',
         data: { Transf: Transf, Obs: Obs },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
             if (result == "") {
                 $('#RecusarTransf').modal('hide');
 

@@ -50,7 +50,7 @@ function Grafico() {
         data: {
 
         },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
 
             if (result != null) {
                 var i = 0;
@@ -119,7 +119,7 @@ function CarregarFiliais(Codigo) {
             url: '/Filial/BuscarFiliais',
             async: false,
             data: { Codigo: Codigo },
-            success: function (result) {
+            success: function (result) { validaLogin(result);
                 if (result != null && result.length > 0) {
                     for (var i = 0; i < result.length; i++) {
                         $('#cbbFilial').append('<option value="' + result[i].codigo + '">' + result[i].razao + '</option>');
@@ -147,7 +147,7 @@ function CarregarFiliaisImg(Codigo) {
             url: '/Filial/BuscarFiliais',
             async: false,
             data: { Codigo: Codigo },
-            success: function (result) {
+            success: function (result) { validaLogin(result);
                 if (result != null && result.length > 0) {
                     for (var i = 0; i < result.length; i++) {
                         $('#cbbFilialImg').append('<option value="' + result[i].codigo + '">' + result[i].razao + '</option>');
@@ -416,7 +416,7 @@ function ObterValores() {
         type: 'POST',
         url: '/Ativo/ObterValores',
         data: { Regional: Regional, Filial: Filial },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
                 PreencherTabela(result);
             document.getElementById('btnPesquisar').disabled = false;
         },
@@ -495,7 +495,7 @@ function ObterRelatorioImagem() {
         type: 'POST',
         url: '/Ativo/ObterRelatorioImagem',
         data: { Regional: Regional, Filial: Filial },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
             PreencherTabelaImagem(result);
             document.getElementById('btnPesquisarImg').disabled = false;
         },

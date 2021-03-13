@@ -245,7 +245,7 @@ function ObterTiposAtivos() {
         type: 'POST',
         url: '/TipoAtivo/ObterTiposAtivos',
         data: { Chave: Chave, Filtro: Filtro, Ativo: Ativo },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
             if (result != null && result.length > 0) {
                 PreencherTabela(result);
             }
@@ -293,7 +293,7 @@ function Gravar() {
         data: {
             Codigo: Codigo, Descricao: Descricao, Valor: Valor, StAtivo: StAtivo, Operacao: Operacao
         },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
             $('#novaTipoAtivo').modal('hide');
 
             if (result.length > 0) {
@@ -350,7 +350,7 @@ function ExcluirLogico(Codigo) {
                 data: {
                     Codigo: Codigo
                 },
-                success: function (result) {
+                success: function (result) { validaLogin(result);
 
                     if (result.length > 0) {
                         Swal.fire({
@@ -398,7 +398,7 @@ function Alterar(Codigo) {
         data: {
             Codigo: Codigo
         },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
 
             if (result != null) {
 
@@ -426,7 +426,7 @@ function Ativar(Codigo) {
         data: {
             Codigo: Codigo
         },
-        success: function (result) {
+        success: function (result) { validaLogin(result);
 
             if (result != null && result.length > 0) {
                 Swal.fire({
