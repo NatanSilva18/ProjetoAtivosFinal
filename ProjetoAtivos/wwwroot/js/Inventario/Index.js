@@ -3,7 +3,6 @@
     CarregarTiposAtivo();
     CarregarRegionaisPesq();
     $('.money').mask('000.000.000.000.000,00', { reverse: true });
-
 });
 function LimparCombo(Name) {
     var select = document.getElementById(Name);
@@ -519,22 +518,22 @@ function PreencherTabela(dados) {
         </thead >\
         <tbody>';
     $.each(dados, function () {
-        if (this.ativo.notaFiscal == "") 
-            ValorAtivo = this.ativo.valorAtivo;
+        if (this.notaFiscal == "") 
+            ValorAtivo = this.valorAtivo;
         else
-            ValorAtivo = this.ativo.valorNota;
+            ValorAtivo = this.valorNota;
 
        /* if (this.ativo.status == 1) {*/
             if (this.imagem != "") {
-        txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td onclick="javascript:ObterImagens(' + this.ativo.codigo + '); "><img id="minhaImagem' + i + '" src="' + this.imagem + '" class="rounded" alt="..." width=40 height=40></td><td>' + this.ativo.placa + '</td><td>' + this.ativo.descricao + '</td><td>R$' + ValorAtivo + '</td><td>' + this.ativo.estado + '</td><td>' + this.ativo.razao + '</td><td>' + this.data + '</td><td>' + this.obs + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
-               // txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
-                txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.ativo.latitude + ',' + this.ativo.longitude + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>&nbsp;';
+                txt += '<tr class="galeria"><td onclick="javascript:ObterImagens(' + this.codigoAtivo + '); "><img id="minhaImagem' + i + '" src="https://imagepng.org/wp-content/uploads/2019/12/check-icone-scaled.png" class="rounded" alt="..." width=40 height=40></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo + '</td><td>' + this.estado + '</td><td>' + this.filial + '</td><td>' + this.data + '</td><td>' + this.obs + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
+                // txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
+                txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigoAtivo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>&nbsp;';
                 
             }
             else {
-                txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td></td><td>' + this.ativo.placa + '</td><td>' + this.ativo.descricao + '</td><td>R$' + ValorAtivo + '</td><td>' + this.ativo.estado + '</td><td>' + this.ativo.razao + '</td><td>' + this.data + '</td><td>' + this.obs + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
+                txt += '<tr class="galeria"><td></td><td>' + this.placa + '</td><td>' + this.descricao + '</td><td>R$' + ValorAtivo + '</td><td>' + this.estado + '</td><td>' + this.razao + '</td><td>' + this.data + '</td><td>' + this.obs + '</td><td style="display:none;">1</td><td align="right" class="form-group">'
                 // txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>';
-                txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.ativo.latitude + ',' + this.ativo.longitude + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>&nbsp;';
+                txt += ' <a role="button" class="btn btn-success"  href="javascript: BuscarLocalizacao(' + this.codigoAtivo + ');" title="Localização Ativo"><i class="fas fa-map-marker"></i></a>&nbsp;';
                 /*
                 txt += '<tr class="galeria" ondblclick="UnlockFields(); Alterar(' + this.codigo + ');"><td><img id="minhaImagem' + i + '" src="" class="rounded" alt="..." width=40 height=40></td><td>' + this.ativo.placa + '</td><td>' + this.ativo.descricao + '</td><td>R$' + ativo.valor + '</td><td>' + this.ativo.estado + '</td><td>' + this.ativo.razao + '</td><td>' + this.data + '</td><td>' + this.obs + '</td><td style="display:none;">0</td><td align="right" class="form-group">'
                 txt += ' <a role="button" class="btn btn-danger" href="javascript:ExcluirLogico(' + this.codigo + ');" title="Excluir Registro"><i class="fas fa-trash"></i></a>&nbsp;';
@@ -567,13 +566,14 @@ function ObterDataInput(Data) {
         return NovaData;
     }
 }
-function BuscarLocalizacao(latitude, longitude) {
-    /*$.ajax({
+function BuscarLocalizacao(Codigo) {
+    $.ajax({
         type: 'POST',
         url: '/Ativo/BuscarLocalizacao',
         data: { Codigo: Codigo },
         async: false,
-        success: function (result) { validaLogin(result);
+        success: function (result) {
+            validaLogin(result);
             if (result != null) {
                 Mapa(result.latitude, result.longitude)
             }
@@ -583,9 +583,7 @@ function BuscarLocalizacao(latitude, longitude) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);
             $("#divLoading").hide(0);
         }
-    });*/
-
-    Mapa(latitude, longitude);
+    });
 }
 function Mapa(latitude, longitude) {
     $('#modalLocalizacao').modal('show');
@@ -1540,8 +1538,13 @@ function ObterInventario() {
             }
             else {
                
-                Texto = "Nenhum Item Encontrado!";
-
+                Swal.fire({
+                    title: 'Oops...',
+                    type: 'error',
+                    type: 'icon',
+                    text: 'Nenhum Item no Invetario Localizado',
+                    timer: 5000
+                })
                
                 $("#tbbAtivo").hide(0);
                 

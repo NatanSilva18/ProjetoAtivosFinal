@@ -117,6 +117,8 @@ namespace ProjetoAtivos.Controllers
                             retorno.Add(new { Id = -1, Dados = "Tamanho inválido de arquivo." });
                     }
                 }
+                else
+                    retorno.Add(new { Id = -1, Dados = "Arquivo Não Permitido" });
             }
             catch (Exception ex)
             {
@@ -217,11 +219,11 @@ namespace ProjetoAtivos.Controllers
         }
 
        
-
-        public JsonResult ObterAtivos(string Chave, string Filtro, int Ativo, int Regiao, int Filial, bool Todos = false, bool Fotos = true)
+        [HttpGet]
+        public JsonResult ObterAtivos(string Chave, string Filtro, int Ativo, int Regiao, int Filial, Boolean Todos)
         {
 
-            List<object> Dados = ctlAtivo.ObterAtivos(Chave, Filtro, Ativo,  Regiao,  Filial, false, Todos, Fotos);
+            List<object> Dados = ctlAtivo.ObterAtivos(Chave, Filtro, Ativo,  Regiao,  Filial, Todos);
 
             return Dados == null ? Json("") : Json(Dados);
         }

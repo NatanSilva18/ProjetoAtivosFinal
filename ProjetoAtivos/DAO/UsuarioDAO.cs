@@ -33,6 +33,7 @@ namespace ProjetoAtivos.DAO
                               Convert.ToInt32(row["user_codigo"]),
                                               row["user_login"].ToString(),
                                               row["user_senha"].ToString(),
+                                              Convert.ToBoolean(row["user_logado"]),
                                               Convert.ToInt32(row["pes_codigo"]),
                                               row["pes_nome"].ToString(),
                                               Convert.ToInt32(row["tpu_codigo"])
@@ -43,7 +44,7 @@ namespace ProjetoAtivos.DAO
         internal Usuario BuscarUsuario(string Login, string Senha)
         {
             b.getComandoSQL().Parameters.Clear();
-            b.getComandoSQL().CommandText = @"select u.user_codigo, u.user_login, u.user_senha, u.pes_codigo, u.tpu_codigo, p.pes_nome
+            b.getComandoSQL().CommandText = @"select u.user_codigo, u.user_login, u.user_senha, u.user_logado, u.pes_codigo, u.tpu_codigo, p.pes_nome
                                               from usuario u inner join Pessoa p on p.pes_codigo = u.pes_codigo
                                               where u.user_login = @login and u.user_senha = @senha ;";
             b.getComandoSQL().Parameters.AddWithValue("@login", Login);
@@ -64,7 +65,7 @@ namespace ProjetoAtivos.DAO
 
             if (Chave == "" || Chave == null)
             {
-                b.getComandoSQL().CommandText = @"select u.user_codigo, u.user_login, u.user_senha, u.pes_codigo, tpu_codigo, p.pes_nome
+                b.getComandoSQL().CommandText = @"select u.user_codigo, u.user_login, u.user_senha, u.user_logado, u.pes_codigo, tpu_codigo, p.pes_nome
                                                       from usuario u
                                                       inner join Pessoa p on u.pes_codigo = p.pes_codigo
                                                       order by user_login";
@@ -73,7 +74,7 @@ namespace ProjetoAtivos.DAO
             {
                 if (Filtro == "Email")
                 {
-                    b.getComandoSQL().CommandText = @"select u.user_codigo, u.user_login, u.user_senha, u.pes_codigo, u.tpu_codigo, p.pes_nome
+                    b.getComandoSQL().CommandText = @"select u.user_codigo, u.user_login, u.user_senha, u.user_logado, u.pes_codigo, u.tpu_codigo, p.pes_nome
                                                       from usuario u
                                                       inner join Pessoa p on u.pes_codigo = p.pes_codigo
                                                       where u.user_login like @login
@@ -82,7 +83,7 @@ namespace ProjetoAtivos.DAO
                 }
                 if (Filtro == "Pessoa")
                 {
-                    b.getComandoSQL().CommandText = @"select u.user_codigo, u.user_login, u.user_senha, u.pes_codigo, u.tpu_codigo,  p.pes_nome
+                    b.getComandoSQL().CommandText = @"select u.user_codigo, u.user_login, u.user_senha, u.user_logado, u.pes_codigo, u.tpu_codigo,  p.pes_nome
                                                       from usuario u
                                                       inner join Pessoa p on u.pes_codigo = p.pes_codigo
                                                       where p.pes_nome like @nome
@@ -112,8 +113,11 @@ namespace ProjetoAtivos.DAO
             b.getComandoSQL().Parameters.Clear();
             if (Usuario.GetCodigo() == 0)        //insert
             {
-                b.getComandoSQL().CommandText = @"insert into usuario (user_login, user_senha, pes_codigo, tpu_codigo) values
-                                        (@login, @senha, @pessoa, @tipousuario);";
+                b.getComandoSQL().CommandText = @"insert into usuario (user_login, user_senha, user_logado, pes_codigo, tpu_codigo) values
+                                        (@login, @senha, @logado, @pessoa, @tipousuario);";
+
+                b.getComandoSQL().Parameters.AddWithValue("@logado", false);
+
             }
             else                              //update
             {
@@ -143,7 +147,7 @@ namespace ProjetoAtivos.DAO
         internal Usuario BuscarUsuario(int Codigo)
         {
             b.getComandoSQL().Parameters.Clear();
-            b.getComandoSQL().CommandText = @"select u.user_codigo, u.user_login, u.user_senha, u.pes_codigo,u.tpu_codigo, p.pes_nome 
+            b.getComandoSQL().CommandText = @"select u.user_codigo, u.user_login, u.user_senha, u.user_logado, u.pes_codigo,u.tpu_codigo, p.pes_nome 
                                               from usuario u inner join pessoa p on p.pes_codigo = u.pes_codigo 
                                               where u.user_codigo = @codigo;";
             b.getComandoSQL().Parameters.AddWithValue("@codigo", Codigo);
@@ -157,7 +161,7 @@ namespace ProjetoAtivos.DAO
         internal Usuario BuscarUsuario(string Login)
         {
             b.getComandoSQL().Parameters.Clear();
-            b.getComandoSQL().CommandText = @"select u.user_codigo, u.user_login, u.user_senha, u.pes_codigo, u.tpu_codigo, p.pes_nome
+            b.getComandoSQL().CommandText = @"select u.user_codigo, u.user_login, u.user_senha, u.user_logado, u.pes_codigo, u.tpu_codigo, p.pes_nome
                                               from usuario u inner join Pessoa p on p.pes_codigo = u.pes_codigo 
                                               where u.user_login = @login;";
             b.getComandoSQL().Parameters.AddWithValue("@login", Login);
@@ -184,7 +188,15 @@ namespace ProjetoAtivos.DAO
                 return null;
         }
      
+        internal Boolean AlterarStatusLogin(int Codigo, Boolean Status)
+        {
+            b.getComandoSQL().Parameters.Clear();
+            b.getComandoSQL().CommandText = @"update usuario set user_logado = @logado where user_codigo = @codigo";
+            b.getComandoSQL().Parameters.AddWithValue("@codigo", Codigo);
+            b.getComandoSQL().Parameters.AddWithValue("@logado", Status);
 
-      
+            return b.ExecutaComando() == 1;
+        }
+
     }
 }

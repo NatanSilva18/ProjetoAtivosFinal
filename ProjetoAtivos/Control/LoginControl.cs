@@ -1,4 +1,5 @@
 ﻿using ProjetoAtivos.Models;
+using System;
 
 namespace ProjetoEstagio.Controls
 {
@@ -22,6 +23,10 @@ namespace ProjetoEstagio.Controls
             {
                 return null;
             }
+        }
+        public Boolean AlterarStatusLogin(int Codigo, Boolean Status)
+        {
+            return new Usuario().AlterarStatusLogin(Codigo, Status);
         }
     }
 

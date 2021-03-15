@@ -11,7 +11,7 @@ namespace ProjetoAtivos.Control
         {
             List<Usuario> Admin = new List<Usuario>();
             Usuario User = new Usuario();
-            Usuario Usuario = new Usuario(Codigo, Login, Senha, Pessoa, TipoUsuario);
+            Usuario Usuario = new Usuario(Codigo, Login, Senha, false, Pessoa, TipoUsuario);
             Boolean Ok = true;
 
 

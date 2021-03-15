@@ -14,22 +14,22 @@ function Login() {
         url: '/Login/Login',
         data: { Login: Login, Senha: Senha },
         success: function (result) {
-            if (result.length > 0) {
-                if (result == 'Parametrização') {
-                    window.location.href = '/Login/PrimeiroAcesso';
-                }
-                else {
-                    Swal.fire({
-                        type: 'error',
-                        title: 'Erro!',
-                        text: result,
-                    })
-                }     
-            }
-            else {
+            $("#divLoading").hide(0);
+            if (result.status) {
                 window.location.href = '/Home/Index';
             }
-            $("#divLoading").hide(0);
+            else {
+       
+                Swal.fire({
+                    title: 'Opss...',
+                    text: result.msg,
+                    type: 'error',
+                    icon: 'error',
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    confirmButtonColor: '#3085d6',
+                })
+            }
         },
         error: function (XMLHttpRequest, txtStatus, errorThrown) {
             alert("Status: " + txtStatus); alert("Error: " + errorThrown);

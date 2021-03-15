@@ -2,7 +2,66 @@
     $("#divLoading").show();
     Grafico();
     $('[data-toggle="tooltip"]').tooltip()
-});
+});/*
+(function ($) {
+    var refreshKeyPressed = false;
+    var modifierPressed = false;
+    var f5key = 116;
+    var rkey = 82;
+    var modkey = [17, 224, 91, 93];
+
+    // Check for refresh keys
+    $(document).bind('keydown', function (evt) {
+        // Check for refresh
+        if (evt.which == f5key || window.modifierPressed && evt.which == rkey) {
+            refreshKeyPressed = true;
+        }
+
+        // Check for modifier
+        if (modkey.indexOf(evt.which) >= 0) {
+            modifierPressed = true;
+        }
+    });
+
+    // Check for refresh keys
+    $(document).bind('keyup', function (evt) {
+        // Check undo keys
+        if (evt.which == f5key || evt.which == rkey) {
+            refreshKeyPressed = false;
+        }
+
+        // Check for modifier
+        if (modkey.indexOf(evt.which) >= 0) {
+            modifierPressed = false;
+        }
+    });
+
+    $(window).bind('beforeunload', function (event) {
+        var message = "not refreshed";
+
+        if (refreshKeyPressed) {
+            message = "refreshed";
+        }
+        else {
+            $.ajax({
+                type: 'POST',
+                url: '/Login/AlterarStatusLogin',
+                success: function (result) {
+
+                },
+                error: function (XMLHttpRequest, txtStatus, errorThrown) {
+                    alert("Status: " + txtStatus); alert("Error: " + errorThrown);
+                }
+            });
+        }
+
+        event.returnValue = message;
+        return message;
+    });
+}(jQuery));
+$(window).bind('beforeunload', function (e) {
+    return "If you close the window, your application with still be running. If you wish to stop the application, click 'cancel' and "
+});*/
 function ViraGrafico() {
     document.querySelector("#mycard").classList.toggle("flip");
 

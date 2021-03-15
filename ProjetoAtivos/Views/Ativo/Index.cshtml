@@ -39,9 +39,10 @@
 <div class="card mb-4 shadow p-3 mb-5 bg-white rounded">
     <div class="card-body">
         <form action="javascript:ObterAtivos()">
-            <input type="hidden" id="regional" value="@Context.Request.Cookies["Regiao"].ToString()" />
+            @*            <input type="hidden" id="regional" value="@Context.Request.Cookies["Regiao"].ToString()" />
             <input type="hidden" id="filial" value="@Context.Request.Cookies["Filial"].ToString()" />
-            <input type="hidden" id="regiaoFilial" value="@Context.Request.Cookies["RegiaoFilial"].ToString()" />
+            <input type="hidden" id="regiaoFilial" value="@Context.Request.Cookies["RegiaoFilial"].ToString()" />**@
+
             <div class="form-group">
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-xl-3">
@@ -113,16 +114,9 @@
                     </div>
 
                     <div class="col-lg-1 col-md-1 col-xl-1">
-
                         <div class="input-group custom-control custom-switch">
                             <input type="checkbox" onclick="clickTodos(this)" class="custom-control-input" id="cbTodos">
                             <label class="custom-control-label" for="cbTodos">Todos</label>
-                        </div>
-                    </div>
-                    <div class="col-lg-1 col-md-1 col-xl-1">
-                        <div class="input-group custom-control custom-switch">
-                            <input checked type="checkbox" class="custom-control-input" id="cbFotos">
-                            <label class="custom-control-label" for="cbFotos">Fotos</label>
                         </div>
                     </div>
 

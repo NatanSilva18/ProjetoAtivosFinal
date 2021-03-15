@@ -10,22 +10,25 @@ namespace ProjetoAtivos.Models
         private int Codigo;
         private string Login;
         private string Senha;
+        private Boolean Logado;
         private Pessoa Pessoa;
         private TipoUsuario TipoUsuario;
 
-        public Usuario(int Codigo, string Login, string Senha, int Pessoa, int TipoUsuario)
+        public Usuario(int Codigo, string Login, string Senha, Boolean Logado, int Pessoa, int TipoUsuario)
         {
             this.Codigo = Codigo;
             this.Login = Login;
             this.Senha = Senha;
+            this.Logado = Logado;
             this.Pessoa = new Pessoa(Pessoa);
             this.TipoUsuario = new TipoUsuario(TipoUsuario);
         }
-        public Usuario(int Codigo, string Login, string Senha, int Pessoa, string Nome, int TipoUsuario)
+        public Usuario(int Codigo, string Login, string Senha, Boolean Logado, int Pessoa, string Nome, int TipoUsuario)
         {
             this.Codigo = Codigo;
             this.Login = Login;
             this.Senha = Senha;
+            this.Logado = Logado;
             this.Pessoa = new Pessoa(Pessoa, Nome);
             this.TipoUsuario = new TipoUsuario(TipoUsuario);
         }
@@ -34,6 +37,7 @@ namespace ProjetoAtivos.Models
             this.Codigo = Codigo;
             this.Login = "";
             this.Senha = "";
+            this.Logado = false;
             this.Pessoa = new Pessoa();
             this.TipoUsuario = new TipoUsuario();
         }
@@ -42,6 +46,7 @@ namespace ProjetoAtivos.Models
             this.Codigo = 0;
             this.Login = "";
             this.Senha = "";
+            this.Logado = false;
             this.Pessoa = new Pessoa();
             this.TipoUsuario = new TipoUsuario();
         }
@@ -68,6 +73,14 @@ namespace ProjetoAtivos.Models
         public void SetSenha(string Senha)
         {
             this.Senha = Senha;
+        }
+        public Boolean GetLogado()
+        {
+            return this.Logado;
+        }
+        public void SetLogado(Boolean Logado)
+        {
+            this.Logado = Logado;
         }
         public Pessoa GetPessoa()
         {
@@ -115,6 +128,9 @@ namespace ProjetoAtivos.Models
         {
             return new UsuarioDAO().ObterUsuarios(Chave, Filtro);
         }
-      
+        public Boolean AlterarStatusLogin(int Codigo, Boolean Status)
+        {
+            return new UsuarioDAO().AlterarStatusLogin(Codigo, Status);
+        }
     }
 }

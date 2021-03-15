@@ -102,9 +102,9 @@ namespace ProjetoAtivos.Control
             return iv.Gravar();
         }
 
-        public List<object> ObterAtivos(string Chave, string Filtro, int Ativo, int Regiao, int Filial, bool Veiculo = false, bool Todos = false, bool Fotos = true)
+        public List<object> ObterAtivos(string Chave, string Filtro, int Ativo, int Regiao, int Filial, Boolean Todos)
         {
-            return new Ativo().ObterAtivos(Chave, Filtro, Ativo,  Regiao,  Filial, Veiculo, Todos, Fotos);
+            return new Ativo().ObterAtivos(Chave, Filtro, Ativo,  Regiao,  Filial, Todos);
         }
         public List<object> ObterAtivosPlaca(int Placa)
         {

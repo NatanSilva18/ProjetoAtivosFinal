@@ -219,9 +219,9 @@ namespace ProjetoAtivos.Models
             else
                 return -10;
         }
-        public List<object> ObterAtivos(string Chave, string Filtro, int Ativo, int Regiao, int Filial, bool Veiculo = false, bool Todos = false, bool Fotos = true)
+        public List<object> ObterAtivos(string Chave, string Filtro, int Ativo, int Regiao, int Filial, Boolean Todos)
         {
-            return new AtivoDAO().ObterAtivos(Chave, Filtro, Ativo,  Regiao,  Filial, Veiculo, Todos, Fotos);
+            return new AtivoDAO().ObterAtivos(Chave, Filtro, Ativo,  Regiao,  Filial, Todos);
         }
         public List<object> ObterAtivosPlaca(int Placa)
         {
